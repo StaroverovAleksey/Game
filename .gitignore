@@ -1,6 +1,8 @@
 /node_modules
 /.idea
 package-lock.json
+/config/default.json
+/config/production.json
 
 /client/dist
 /client/node_modules
