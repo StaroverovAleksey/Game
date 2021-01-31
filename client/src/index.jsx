@@ -4,7 +4,7 @@ import './styles/styles.css';
 
 const App = () => (
   <div className="container">
-    <h1>Сборка автоматизации под стек MERN (01.2021)</h1>
+    <h1>Сборка автоматизации под стек MERN (01.2021)!</h1>
   </div>
 );
 
