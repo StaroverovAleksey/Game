@@ -1,0 +1,7 @@
+{
+  "serverPort": 80,
+  "mongoUri": "mongodb://localhost",
+  "mongoPort": 27017,
+  "mongoLogin": "",
+  "mongoPass": ""
+}

@@ -1,0 +1,38 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    env:
+      USER: ubuntu
+      HOST: 99.999.999.99
+    name: Deploy
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [13.x]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      # Setup key
+      - run: set -eu
+      - run: mkdir "$HOME/.ssh"
+      - run: echo "${{ secrets.key }}" > "$HOME/.ssh/key"
+      - run: chmod 600 "$HOME/.ssh/key"
+
+      # Build
+      - run: npm run client_ci
+      - run: npm run build
+
+      # Deploy
+      - run: scp -i $HOME/.ssh/key -o StrictHostKeyChecking=no -r client/dist/ ${{ env.USER }}@${{ env.HOST }}:jaluzi812_crm/client
+      - run: scp -i $HOME/.ssh/key -r src/ ${{ env.USER }}@${{ env.HOST }}:jaluzi812_crm/
+      - run: scp -i $HOME/.ssh/key index.js ${{ env.USER }}@${{ env.HOST }}:jaluzi812_crm/
+      - run: scp -i $HOME/.ssh/key package.json ${{ env.USER }}@${{ env.HOST }}:jaluzi812_crm/

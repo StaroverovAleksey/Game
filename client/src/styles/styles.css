@@ -1,0 +1,11 @@
+@import "~normalize.css";
+@import "fonts.css";
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background: #6d8a92;
+}
+
+.container {
+    text-align: center;
+}
