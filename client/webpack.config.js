@@ -48,11 +48,19 @@ module.exports = {
       },
       {
         test: /\.(png|jpg|svg|gif)$/,
-        use: ['file-loader'],
+        loader: 'file-loader',
+        options: {
+          publicPath: '../',
+          name: 'image/[name].[ext]',
+        },
       },
       {
         test: /\.(ttf|woff|woff2|eot)$/,
-        use: ['file-loader'],
+        loader: 'file-loader',
+        options: {
+          publicPath: '../',
+          name: 'fonts/[name].[ext]',
+        },
       },
       {
         test: /\.(js|jsx)$/,
