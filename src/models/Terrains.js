@@ -3,9 +3,9 @@ const {Schema, model} = require('mongoose');
 const schema = new Schema({
     number: {type: Number, required: true},
     name: {type: String, required: true},
-    terrain: {type: String, required: true},
-    file: {type: Buffer, required: true},
+    sort: {type: String, required: true},
+    path: {type: String, required: true},
     passability: {type: Boolean, required: true},
 })
 
-module.exports = model('map_cell_types', schema);
+module.exports = model('terrains', schema);

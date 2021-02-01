@@ -6,7 +6,7 @@ const {CELL_SIZE} = require("../utils/constants");
 const {promisify} = require('util');
 const sizeOf = promisify(require('image-size'));
 const {body} = require("express-validator");
-const CellType = require('../models/MapCellType');
+const Terrain = require('../models/Terrains');
 const {check} = require("express-validator");
 const router = Router();
 
@@ -19,7 +19,7 @@ router.post('/create', multiparty, [
     body('name')
         .isString().withMessage('string expected')
         .isLength({ max: 32 }).withMessage('max length expected 32'),
-    body('terrain')
+    body('sort')
         .isString().withMessage('string expected')
         .isLength({ max: 32 }).withMessage('max length expected 32'),
     body('passability')
@@ -48,7 +48,7 @@ router.post('/create', multiparty, [
             });
         }
 
-        let result = !isNaN(req.body.number) ? await CellType.findOne({ number: req.body.number }).exec() : null;
+        let result = !isNaN(req.body.number) ? await Terrain.findOne({ number: req.body.number }).exec() : null;
         if (result) {
             errors.errors.push({
                 'msg': "number is exist",
@@ -66,18 +66,30 @@ router.post('/create', multiparty, [
 
         const number = req.body.number;
         const name = req.body.name;
-        const terrain = req.body.terrain;
-        const file = await fs.readFileSync(req.files.img.path);
+        const sort = req.body.sort;
         const passability = req.body.passability;
+        const file = await fs.readFileSync(req.files.img.path);
+        const pathToDirectory = `./client/src/assets/images/terrains/${sort}`;
+        const pathToFile = `./client/src/assets/images/terrains/${sort}/${name}.jpg`;
+        const path = `assets/images/terrains/${sort}/${name}.jpg`;
 
-        const cellType = new CellType({
-            number, name, terrain, file, passability
+        try {
+            await fs.statSync(pathToDirectory);
+        }
+        catch (e) {
+            await fs.mkdirSync(pathToDirectory);
+        }
+
+        await fs.writeFileSync(pathToFile, file);
+
+        const cellType = new Terrain({
+            number, name, sort, path, passability
         });
         await cellType.save();
 
         res.status(200).json({});
     } catch (error) {
-        res.status(500).json({massage: 'Server error'});
+        res.status(500).json({massage: 'server error'});
     }
 })
 

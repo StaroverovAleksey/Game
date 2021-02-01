@@ -1,7 +1,7 @@
 const {Router} = require('express');
 const {validationResult} = require('express-validator');
 const Cell = require('../models/MapCell');
-const CellType = require('../models/MapCellType');
+const Terrain = require('../models/Terrains');
 const {body} = require("express-validator");
 const router = Router();
 
@@ -58,7 +58,17 @@ router.post('/create', [
                 await Cell.deleteOne({ _id: valuesExist[repeatIndex]._id }).exec();
             }
 
-            const cellType = await CellType.findOne({ number: type }).exec();
+            const cellType = await Terrain.findOne({ number: type }).exec();
+            if (!cellType) {
+                return res.status(400).json({
+                    errors: [{
+                        'msg': "type is not exist",
+                        'param': "type",
+                        'location': "body"
+                    }],
+                    massage: 'bad request'
+                });
+            }
             type = cellType._id;
 
             const mapCell = new Cell({
@@ -69,8 +79,17 @@ router.post('/create', [
 
         res.status(200).json({});
     } catch (error) {
-        res.status(500).json({massage: 'Server error'});
+        res.status(500).json({massage: 'server error'});
     }
 })
+
+router.get('/get', async (req, res) => {
+    try {
+        const cellType = await Cell.find().populate('type');
+        res.status(200).json({cellType});
+    } catch (error) {
+        res.status(500).json({massage: 'server error'});
+    }
+});
 
 module.exports = router;

@@ -1,6 +1,6 @@
 {
   "serverPort": 80,
-  "mongoUri": "mongodb://99.999.999.99",
+  "mongoUri": "mongodb://18.191.118.122",
   "mongoPort": 27017,
   "mongoLogin": "",
   "mongoPass": ""

@@ -7,7 +7,7 @@ const app = express();
 
 app.use(express.json({ extended: true }));
 
-app.use('/api/map-cell-type', require('./src/routes/mapCellType.route'));
+app.use('/api/terrain', require('./src/routes/terrains'));
 app.use('/api/map-cell', require('./src/routes/mapCell.route'));
 
 if (process.env.NODE_ENV === 'production') {
