@@ -85,8 +85,8 @@ router.post('/create', [
 
 router.get('/get', async (req, res) => {
     try {
-        const cellType = await Cell.find().populate('type');
-        res.status(200).json({cellType});
+        const mapCells = await Cell.find().populate('type');
+        res.status(200).json({mapCells});
     } catch (error) {
         res.status(500).json({massage: 'server error'});
     }

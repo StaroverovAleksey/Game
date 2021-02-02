@@ -1,11 +1,21 @@
-import React from 'react';
-import { render } from 'react-dom';
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
+import { createStore } from 'redux';
+import { Provider } from 'react-redux';
 import './styles/styles.css';
 
-const App = () => (
-  <div className="container">
-    <h1>Сборка автоматизации под стек MERN (01.2021)</h1>
-  </div>
-);
+import App from './components/App';
+import reducer from './redux/reducers/index';
 
-render(<App />, document.getElementById('app'));
+const store = createStore(
+  reducer, window.REDUX_DEVTOOLS_EXTENSION && window.REDUX_DEVTOOLS_EXTENSION(),
+);
+const init = () => {
+  ReactDOM.render(
+    <Provider store={store}>
+      <App />
+    </Provider>,
+    document.querySelector('.react-container'),
+  );
+};
+init();

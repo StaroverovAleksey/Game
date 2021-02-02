@@ -20,12 +20,12 @@ module.exports = {
     port: 4200,
     open: true,
   },
-  /* resolve: {
-        extensions: ['.js', '.json', '.css'],
-        alias: {
-            '@models': path.resolve(__dirname, 'src/models')
-        }
+  resolve: {
+    extensions: ['.js', '.jsx', '.json', '.css'],
+    /* alias: {
+      '@models': path.resolve(__dirname, 'src/models'),
     }, */
+  },
   plugins: [
     new HtmlWebpackPlugin({
       template: './index.html',
