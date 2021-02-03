@@ -1,18 +1,9 @@
 import React from 'react';
+import MapCreator from './MapCreator';
 
 class App extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
-  async componentDidMount() {
-    const response = await fetch('http://localhost/api/map-cell/get');
-    const q = await response.json();
-    console.log(q);
-  }
-
   render() {
-    return <div>wewffewf</div>;
+    return <MapCreator />;
   }
 }
 
