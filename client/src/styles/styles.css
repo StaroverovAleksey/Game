@@ -5,24 +5,3 @@ body {
     font-family: 'Roboto', sans-serif;
     background: url("../assets/png.png");
 }
-
-.container {
-    display: flex;
-}
-
-.left-side {
-    background-color: red;
-    width: 20vw;
-    height: 100vh;
-    transition: 0.2s;
-}
-
-.close {
-    width: 0;
-}
-
-.right-side {
-    background-color: blue;
-    width: 100vw;
-    height: 100vh;
-}
