@@ -1,12 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
-import LeftPart from './LeftPart';
-import TopPart from './TopPart';
-import MainPart from './MainPart';
+import LeftPart from './leftPart/LeftPart';
+import TopPart from './topPart/TopPart';
+import MainPart from './mainPart/MainPart';
 
 const OuterWrapper = styled.div`
   display: flex;
-  height: 100vh;
 `;
 const InnerWrapper = styled.div`
   display: flex;

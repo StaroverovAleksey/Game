@@ -2,12 +2,19 @@ import React from 'react';
 import styled from 'styled-components';
 
 const Wrapper = styled.div`
-  flex-wrap: wrap;
+  //flex-wrap: wrap;
+  display: flex;
+  width: 100%;
   justify-content: space-between;
-  background-color: #0000ff;
+  background-color: #39dda0;
   transition: 0.1s;
   height: ${({ open }) => (open ? '200px' : '0')};
 
+  div {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+  }
   label {
     width: 50%;
     margin: 0;
@@ -16,12 +23,12 @@ const Wrapper = styled.div`
     height: 15px
   ;
   }
-  input {
+  /*input {
     width: 50%;
   }
   button {
     width: 50%;
-  }
+  }*/
 
 `;
 
@@ -40,17 +47,25 @@ class AddTerrain extends React.Component {
         <button onClick={() => this.setState({ open: !open })}>{open ? 'Скрыть' : 'Добавить'}</button>
         <Wrapper open={open}>
 
-          <label>Название</label>
-          <label>Изображение</label>
-          <input />
-          <button />
+          <div>
+            <label>Название</label>
+            <input />
+            <label>Класс</label>
+            <input />
+            <label>Номер</label>
+            <input />
+          </div>
+          <div>
+            <label>Изображение</label>
+            <input type={'file'}/>
+            <label>Проходимость</label>
 
-          <label>Класс</label>
-          <label>Проходимость</label>
-          <input />
-          <input type="checkbox" />
+            <input type="checkbox" />
 
-          <button>Добавить</button>
+            <button>Добавить</button>
+          </div>
+
+
         </Wrapper>
       </>
     );

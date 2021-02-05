@@ -1,5 +1,5 @@
 import React from 'react';
-import MapCreator from './MapCreator';
+import MapCreator from '../MapCreator';
 
 class App extends React.Component {
   render() {

@@ -5,7 +5,6 @@ const Container = styled.div`
   display: flex;
   width: 100%;
   height: 100%;
-  background-color: green;
 `;
 
 class MainPart extends React.Component {

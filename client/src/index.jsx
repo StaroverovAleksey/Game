@@ -4,7 +4,7 @@ import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 import './styles/styles.css';
 
-import App from './components/App';
+import App from './components/pages/mapCreator/leftPart/App';
 import reducer from './redux/reducers/index';
 
 const store = createStore(

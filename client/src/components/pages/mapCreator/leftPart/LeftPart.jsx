@@ -1,19 +1,17 @@
 import React from 'react';
 import styled from 'styled-components';
 import AddTerrain from './AddTerrain';
+import { asdfg } from '../../../../tools/palette';
+import Button from '../../../controls/Button';
 
-const Container = styled.aside`
+const OuterWrapper = styled.aside`
   display: flex;
   flex-direction: column;
   align-items: center;
   position: relative;
   width: ${({ open }) => (open ? '40vw' : '0')};
-  height: 100vh;
-  background-color: red;
+  background-color: ${asdfg};
   transition: 0.1s;
-  div {
-    opacity: ${({ open }) => (open ? '100%' : '0')};
-  }
 `;
 const CloseButton = styled.button`
   position: absolute;
@@ -23,33 +21,18 @@ const CloseButton = styled.button`
   height: 60px;
   cursor: pointer;
 `;
-const MapSize = styled.div`
+const InnerWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   overflow: hidden;
   width: 80%;
-  div {
-    display: flex;
-    width: 100%;
-  }
-  h3 {
+  opacity: ${({ open }) => (open ? '100%' : '0')};
+  >h3 {
     display: inline-block;
     text-align: center;
     margin-bottom: 5px;
     width: 100%;
-  }
-  input {
-    width: 40%;
-    height: 30px;
-    box-sizing: border-box;
-    cursor: text;
-  }
-  button {
-    width: 20%;
-    min-width: 100px;
-    height: 30px;
-    cursor: pointer;
   }
 `;
 
@@ -64,28 +47,28 @@ class LeftPart extends React.Component {
   render() {
     const { open } = this.state;
     return (
-      <Container open={open}>
+      <OuterWrapper open={open}>
         <CloseButton onClick={() => this.setState({ open: !open })} />
 
-        <MapSize>
+        <InnerWrapper open={open}>
           <h3>Размеры поля</h3>
-          <div>
+          {/* <div>
             <input />
             <input />
             <button>Применить</button>
-          </div>
-        </MapSize>
+          </div> */}
+        </InnerWrapper>
 
-        <MapSize>
+        <InnerWrapper open={open}>
           <h3>Очистить поле</h3>
-          <button>Очистить</button>
-        </MapSize>
+          <Button text="Очистить" />
+        </InnerWrapper>
 
-        <MapSize>
+        <InnerWrapper open={open}>
           <h3>Новая местность</h3>
           <AddTerrain />
-        </MapSize>
-      </Container>
+        </InnerWrapper>
+      </OuterWrapper>
     );
   }
 }
