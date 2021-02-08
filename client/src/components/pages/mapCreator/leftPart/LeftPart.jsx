@@ -1,17 +1,25 @@
 import React from 'react';
 import styled from 'styled-components';
-import AddTerrain from './AddTerrain';
-import { asdfg } from '../../../../tools/palette';
-import Button from '../../../controls/Button';
+import FieldSize from './FieldSize';
+import { fonBlue } from '../../../../tools/palette';
+import ResetField from './ResetField';
 
-const OuterWrapper = styled.aside`
+const Wrapper = styled.aside`
   display: flex;
+  padding: 20px;
+  box-sizing: border-box;
   flex-direction: column;
   align-items: center;
   position: relative;
-  width: ${({ open }) => (open ? '40vw' : '0')};
-  background-color: ${asdfg};
+  width: ${({ open }) => (open ? 'auto' : '0')};
+  background-color: ${fonBlue};
   transition: 0.1s;
+  >div {
+    margin-bottom: 20px;
+  }
+  >div:last-child {
+    margin-bottom: 0;
+  }
 `;
 const CloseButton = styled.button`
   position: absolute;
@@ -20,20 +28,6 @@ const CloseButton = styled.button`
   width: 30px;
   height: 60px;
   cursor: pointer;
-`;
-const InnerWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  overflow: hidden;
-  width: 80%;
-  opacity: ${({ open }) => (open ? '100%' : '0')};
-  >h3 {
-    display: inline-block;
-    text-align: center;
-    margin-bottom: 5px;
-    width: 100%;
-  }
 `;
 
 class LeftPart extends React.Component {
@@ -47,28 +41,15 @@ class LeftPart extends React.Component {
   render() {
     const { open } = this.state;
     return (
-      <OuterWrapper open={open}>
+
+      <Wrapper open={open}>
         <CloseButton onClick={() => this.setState({ open: !open })} />
 
-        <InnerWrapper open={open}>
-          <h3>Размеры поля</h3>
-          {/* <div>
-            <input />
-            <input />
-            <button>Применить</button>
-          </div> */}
-        </InnerWrapper>
+        <FieldSize />
+        <ResetField />
+        <FieldSize />
 
-        <InnerWrapper open={open}>
-          <h3>Очистить поле</h3>
-          <Button text="Очистить" />
-        </InnerWrapper>
-
-        <InnerWrapper open={open}>
-          <h3>Новая местность</h3>
-          <AddTerrain />
-        </InnerWrapper>
-      </OuterWrapper>
+      </Wrapper>
     );
   }
 }

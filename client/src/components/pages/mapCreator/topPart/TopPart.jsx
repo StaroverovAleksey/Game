@@ -1,12 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
-import {rsdfsdf} from '../../../../tools/palette';
+import { fonLine } from '../../../../tools/palette';
 
 const Container = styled.div`
   display: flex;
   width: 100%;
   height: 100px;
-  border-bottom: ${rsdfsdf} 2px solid;
+  border-bottom: ${fonLine} 2px solid;
 `;
 
 class TopPart extends React.Component {

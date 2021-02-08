@@ -22,9 +22,10 @@ class MapCreator extends React.Component {
   }
 
   async componentDidMount() {
-    const response = await fetch('http://localhost/api/map-cell/get');
-    const q = await response.json();
-    console.log(q);
+    const mapCells = await fetch('http://localhost/api/map-cell/get');
+    console.log(await mapCells.json());
+    const terrains = await fetch('http://localhost/api/terrain/get');
+    console.log(await terrains.json());
   }
 
   render() {

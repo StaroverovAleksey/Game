@@ -30,7 +30,7 @@ const PORT = config.get('serverPort') || 5000;
 
 async function start() {
     try {
-        await mongoose.connect(`${config.get('mongoUri')}:${config.get('mongoPort')}/main_db`, {
+        await mongoose.connect(config.get('mongoUri'), {
             useNewUrlParser: true,
             useUnifiedTopology: true,
             useCreateIndex: true

@@ -91,6 +91,15 @@ router.post('/create', multiparty, [
     } catch (error) {
         res.status(500).json({massage: 'server error'});
     }
-})
+});
+
+router.get('/get', async (req, res) => {
+    try {
+        const terrains = await Terrain.find().exec();
+        res.status(200).json({terrains});
+    } catch (error) {
+        res.status(500).json({massage: 'server error'});
+    }
+});
 
 module.exports = router;

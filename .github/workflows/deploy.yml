@@ -9,7 +9,7 @@ jobs:
   deploy:
     env:
       USER: ubuntu
-      HOST: 18.191.118.122
+      HOST: 3.18.225.147
     name: Deploy
     runs-on: ubuntu-latest
     strategy:

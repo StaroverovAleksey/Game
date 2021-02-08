@@ -57,14 +57,13 @@ class AddTerrain extends React.Component {
           </div>
           <div>
             <label>Изображение</label>
-            <input type={'file'}/>
+            <input type="file" />
             <label>Проходимость</label>
 
             <input type="checkbox" />
 
             <button>Добавить</button>
           </div>
-
 
         </Wrapper>
       </>

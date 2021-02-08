@@ -81,7 +81,7 @@ router.post('/create', [
     } catch (error) {
         res.status(500).json({massage: 'server error'});
     }
-})
+});
 
 router.get('/get', async (req, res) => {
     try {
