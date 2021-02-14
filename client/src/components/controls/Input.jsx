@@ -12,7 +12,7 @@ const Wrapper = styled.div`
 
 const Title = styled.p`
   position: absolute;
-  top: -14px;
+  top: -16px;
   left: 6px;
   margin: 0;
   font-size: 14px;

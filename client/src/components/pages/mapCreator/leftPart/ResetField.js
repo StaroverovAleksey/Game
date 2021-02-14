@@ -2,6 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 import Field from '../../../controls/Field';
 import Button from '../../../controls/Button';
+import PropTypes from "prop-types";
+import {connect} from "react-redux";
+import {deleteAllMapSells} from "../../../../redux/actions";
+import {API_DELETE_ALL_MAP_CELLS, API_GET_TERRAINS} from "../../../../tools/routing";
 
 const Title = styled.h3`
   margin: 0 0 15px 0;
@@ -24,14 +28,29 @@ class ResetField extends React.Component {
           <Button
             text="Очистить"
             width="100px"
+            onClick={this._resetField}
           />
       </Field>
     );
   }
 
-  _onSubmit = (data) => {
-    console.log(data);
+  _resetField = async () => {
+    const {resetField} = this.props;
+
+    const answer = await fetch(API_DELETE_ALL_MAP_CELLS, {method: 'DELETE'});
+    if (answer.status === 200) {
+      resetField();
+    }
   }
 }
 
-export default ResetField;
+ResetField.propTypes = {
+  resetField: PropTypes.func.isRequired,
+};
+
+export default connect(
+  undefined,
+  (mapDispatchToProps) => ({
+    resetField: (data) => mapDispatchToProps(deleteAllMapSells(data)),
+  }),
+)(ResetField);

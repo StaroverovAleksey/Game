@@ -1,7 +1,10 @@
 import { combineReducers } from 'redux';
-
-import user from './user';
+import terrain from './terrain';
+import mapCell from './mapCell';
+import setting from './setting';
 
 export default combineReducers({
-  user,
+  terrain,
+  mapCell,
+  setting,
 });

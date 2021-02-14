@@ -16,11 +16,9 @@ export default {
     error: 'Только числа',
   },
   isNum: {
-    func: (value) => {
-      return !Number.isNaN(value)
+    func: (value) => !Number.isNaN(value)
         && parseInt(Number(value), 10) == value
-        && !Number.isNaN(parseInt(value, 10));
-    },
+        && !Number.isNaN(parseInt(value, 10)),
     error: 'Только числа',
   },
   isString: {

@@ -25,11 +25,14 @@ class Button extends React.Component {
   }
 
   render() {
-    const { text, width, margin } = this.props;
+    const {
+      text, width, margin, onClick,
+    } = this.props;
     return (
       <ButtonCommon
         width={width}
         margin={margin}
+        onClick={onClick}
       >
         {text}
       </ButtonCommon>
@@ -41,12 +44,14 @@ Button.defaultProps = {
   text: '',
   width: '190px',
   margin: '0 0 0 0',
+  onClick: null,
 };
 
 Button.propTypes = {
   text: PropTypes.string,
   width: PropTypes.string,
   margin: PropTypes.string,
+  onClick: PropTypes.func,
 };
 
 export default Button;

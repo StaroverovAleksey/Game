@@ -4,6 +4,9 @@ import Form from '../../../controls/Form';
 import Input from '../../../controls/Input';
 import Field from '../../../controls/Field';
 import Button from '../../../controls/Button';
+import { connect } from 'react-redux';
+import {setSize} from "../../../../redux/actions";
+import PropTypes from "prop-types";
 
 const Title = styled.h3`
   margin: 0 0 20px 0;
@@ -48,8 +51,18 @@ class FieldSize extends React.Component {
   }
 
   _onSubmit = (data) => {
-    console.log(data);
+    const { setSize } = this.props;
+    setSize(data);
   }
 }
 
-export default FieldSize;
+FieldSize.propTypes = {
+  setSize: PropTypes.func.isRequired,
+};
+
+export default connect(
+  undefined,
+  (mapDispatchToProps) => ({
+    setSize: (data) => mapDispatchToProps(setSize(data)),
+  }),
+)(FieldSize);

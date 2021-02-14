@@ -8,7 +8,7 @@ import App from './components/App';
 import reducer from './redux/reducers/index';
 
 const store = createStore(
-  reducer, window.REDUX_DEVTOOLS_EXTENSION && window.REDUX_DEVTOOLS_EXTENSION(),
+  reducer, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
 );
 const init = () => {
   ReactDOM.render(

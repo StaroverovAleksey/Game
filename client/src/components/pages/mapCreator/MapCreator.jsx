@@ -1,45 +1,78 @@
 import React from 'react';
 import styled from 'styled-components';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import LeftPart from './leftPart/LeftPart';
 import TopPart from './topPart/TopPart';
 import MainPart from './mainPart/MainPart';
+import { setMapCells, setTerrains } from '../../../redux/actions';
+import { API_GET_MAP_CELLS, API_GET_TERRAINS } from '../../../tools/routing';
 
 const OuterWrapper = styled.div`
   display: flex;
+  justify-content: center;
 `;
 const InnerWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100vw;
 `;
+const Loading = styled.p`
+  font-size: 36px;
+`;
 
 class MapCreator extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      leftBar: false,
+      loading: true,
     };
   }
 
   async componentDidMount() {
-    const mapCells = await fetch('http://localhost/api/map-cell/get');
-    console.log(await mapCells.json());
-    const terrains = await fetch('http://localhost/api/terrain/get');
-    console.log(await terrains.json());
+    const { setTerrains, setMapCells } = this.props;
+    const terrainsJson = await fetch(API_GET_TERRAINS);
+    const terrains = await terrainsJson.json();
+    setTerrains(terrains.terrains);
+
+    const mapCellsJson = await fetch(API_GET_MAP_CELLS);
+    const mapCells = await mapCellsJson.json();
+    setMapCells(mapCells.mapCells);
+    Promise.all([terrains, mapCells]).then(() => {
+      this.setState({ loading: false });
+    });
   }
 
   render() {
-    const { leftBar } = this.state;
+    const { loading } = this.state;
     return (
       <OuterWrapper>
-        <LeftPart />
-        <InnerWrapper>
-          <TopPart />
-          <MainPart />
-        </InnerWrapper>
+        {loading
+          ? <Loading>Загрузка...</Loading>
+          : (
+            <>
+              <LeftPart />
+              <InnerWrapper>
+                <TopPart />
+                <MainPart />
+              </InnerWrapper>
+            </>
+          )}
+
       </OuterWrapper>
     );
   }
 }
 
-export default MapCreator;
+MapCreator.propTypes = {
+  setTerrains: PropTypes.func.isRequired,
+  setMapCells: PropTypes.func.isRequired,
+};
+
+export default connect(
+  undefined,
+  (mapDispatchToProps) => ({
+    setTerrains: (data) => mapDispatchToProps(setTerrains(data)),
+    setMapCells: (data) => mapDispatchToProps(setMapCells(data)),
+  }),
+)(MapCreator);

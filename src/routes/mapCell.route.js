@@ -92,4 +92,14 @@ router.get('/get', async (req, res) => {
     }
 });
 
+router.delete('/delete-all', async (req, res) => {
+    try {
+        await Cell.deleteMany();
+        res.status(200).json({});
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({massage: 'server error'});
+    }
+});
+
 module.exports = router;
