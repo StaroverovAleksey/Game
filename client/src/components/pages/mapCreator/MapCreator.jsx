@@ -7,6 +7,7 @@ import TopPart from './topPart/TopPart';
 import MainPart from './mainPart/MainPart';
 import { setMapCells, setTerrains } from '../../../redux/actions';
 import { API_GET_MAP_CELLS, API_GET_TERRAINS } from '../../../tools/routing';
+import withRequest from '../../shells/ShellRequest';
 
 const OuterWrapper = styled.div`
   display: flex;
@@ -30,6 +31,7 @@ class MapCreator extends React.Component {
   }
 
   async componentDidMount() {
+    // this._request();
     const { setTerrains, setMapCells } = this.props;
     const terrainsJson = await fetch(API_GET_TERRAINS);
     const terrains = await terrainsJson.json();
@@ -69,10 +71,10 @@ MapCreator.propTypes = {
   setMapCells: PropTypes.func.isRequired,
 };
 
-export default connect(
+export default withRequest(connect(
   undefined,
   (mapDispatchToProps) => ({
     setTerrains: (data) => mapDispatchToProps(setTerrains(data)),
     setMapCells: (data) => mapDispatchToProps(setMapCells(data)),
   }),
-)(MapCreator);
+)(MapCreator));
