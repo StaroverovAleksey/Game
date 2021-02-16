@@ -4,15 +4,16 @@ import Field from '../../../controls/Field';
 import Button from '../../../controls/Button';
 import PropTypes from "prop-types";
 import {connect} from "react-redux";
-import {deleteAllMapSells} from "../../../../redux/actions";
-import {API_DELETE_ALL_MAP_CELLS, API_GET_TERRAINS} from "../../../../tools/routing";
+import {deleteAllMapSells, setError} from "../../../../redux/actions";
+import {API_DELETE_ALL_MAP_CELLS} from "../../../../tools/routing";
+import WithRequest from "../../../shells/ShellRequest";
 
 const Title = styled.h3`
   margin: 0 0 15px 0;
   text-align: center;
 `;
 
-class ResetField extends React.Component {
+class ResetField extends WithRequest {
   constructor(props) {
     super(props);
     this.state = {
@@ -36,21 +37,20 @@ class ResetField extends React.Component {
 
   _resetField = async () => {
     const {resetField} = this.props;
-
-    const answer = await fetch(API_DELETE_ALL_MAP_CELLS, {method: 'DELETE'});
-    if (answer.status === 200) {
-      resetField();
-    }
+    await this.DELETE(API_DELETE_ALL_MAP_CELLS);
+    resetField();
   }
 }
 
 ResetField.propTypes = {
   resetField: PropTypes.func.isRequired,
+  addError: PropTypes.func.isRequired,
 };
 
 export default connect(
   undefined,
   (mapDispatchToProps) => ({
     resetField: (data) => mapDispatchToProps(deleteAllMapSells(data)),
+    addError: (data) => mapDispatchToProps(setError(data)),
   }),
 )(ResetField);

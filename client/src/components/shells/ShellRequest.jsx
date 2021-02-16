@@ -1,18 +1,41 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import Field from '../controls/Field';
 
-const withRequest = (Component) => {
-  class WrappedComponent extends React.Component {
-    constructor(props) {
-      super(props);
-    }
+class WithRequest extends React.Component {
+  render() {
+    return null;
+  }
 
-    render() {
-      return (
-        <Component props={this.props} />
-      );
+  request = async (path, method) => {
+    const {addError} = this.props;
+    try {
+      const answer = await fetch(path, {method});
+      if (answer.status === 200) {
+        return await answer.json();
+      } else {
+        addError({status: answer.status});
+      }
+    } catch (error) {
+      addError({status: 418, error: error});
     }
   }
-  return WrappedComponent;
+
+  GET = async (path) => {
+    if (typeof path === 'string') {
+      return await this.request(path, 'GET');
+    } else {
+      return await Promise.all(path.map((value) => this.request(value, 'GET')));
+    }
+  }
+
+  DELETE = async (path) => {
+    return await this.request(path, 'DELETE');
+  }
+}
+
+Field.propTypes = {
+  children: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
-export default withRequest;
+export default WithRequest;

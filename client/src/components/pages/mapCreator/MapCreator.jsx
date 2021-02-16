@@ -5,9 +5,9 @@ import PropTypes from 'prop-types';
 import LeftPart from './leftPart/LeftPart';
 import TopPart from './topPart/TopPart';
 import MainPart from './mainPart/MainPart';
-import { setMapCells, setTerrains } from '../../../redux/actions';
+import { setError, setMapCells, setTerrains } from '../../../redux/actions';
 import { API_GET_MAP_CELLS, API_GET_TERRAINS } from '../../../tools/routing';
-import withRequest from '../../shells/ShellRequest';
+import WithRequest from '../../shells/ShellRequest';
 
 const OuterWrapper = styled.div`
   display: flex;
@@ -22,7 +22,7 @@ const Loading = styled.p`
   font-size: 36px;
 `;
 
-class MapCreator extends React.Component {
+class MapCreator extends WithRequest {
   constructor(props) {
     super(props);
     this.state = {
@@ -31,18 +31,11 @@ class MapCreator extends React.Component {
   }
 
   async componentDidMount() {
-    // this._request();
-    const { setTerrains, setMapCells } = this.props;
-    const terrainsJson = await fetch(API_GET_TERRAINS);
-    const terrains = await terrainsJson.json();
-    setTerrains(terrains.terrains);
-
-    const mapCellsJson = await fetch(API_GET_MAP_CELLS);
-    const mapCells = await mapCellsJson.json();
-    setMapCells(mapCells.mapCells);
-    Promise.all([terrains, mapCells]).then(() => {
-      this.setState({ loading: false });
-    });
+    const { addTerrains, addMapCells } = this.props;
+    const [terrains, mapCells] = await this.GET([API_GET_TERRAINS, API_GET_MAP_CELLS]);
+    addTerrains(terrains.terrains);
+    addMapCells(mapCells.mapCells);
+    this.setState({ loading: false });
   }
 
   render() {
@@ -67,14 +60,16 @@ class MapCreator extends React.Component {
 }
 
 MapCreator.propTypes = {
-  setTerrains: PropTypes.func.isRequired,
-  setMapCells: PropTypes.func.isRequired,
+  addTerrains: PropTypes.func.isRequired,
+  addMapCells: PropTypes.func.isRequired,
+  addError: PropTypes.func.isRequired,
 };
 
-export default withRequest(connect(
+export default connect(
   undefined,
   (mapDispatchToProps) => ({
-    setTerrains: (data) => mapDispatchToProps(setTerrains(data)),
-    setMapCells: (data) => mapDispatchToProps(setMapCells(data)),
+    addTerrains: (data) => mapDispatchToProps(setTerrains(data)),
+    addMapCells: (data) => mapDispatchToProps(setMapCells(data)),
+    addError: (data) => mapDispatchToProps(setError(data)),
   }),
-)(MapCreator));
+)(MapCreator);
