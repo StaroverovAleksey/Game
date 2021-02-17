@@ -7,6 +7,7 @@ import Button from '../../../controls/Button';
 import { connect } from 'react-redux';
 import {setSize} from "../../../../redux/actions";
 import PropTypes from "prop-types";
+import Confirm from "../../../modal/Confirm";
 
 const Title = styled.h3`
   margin: 0 0 20px 0;
@@ -17,16 +18,18 @@ class FieldSize extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      width: '',
-      height: '',
+      formData: '',
+      modal: false,
     };
   }
 
   render() {
+    const {formData} = this.state;
+    const {modal} = this.state;
     return (
       <Field>
         <Title>Размеры поля</Title>
-        <Form onSubmit={this._onSubmit}>
+        <Form onSubmit={(formData) => this.setState({modal: true, formData})}>
           <Input
             title="Ширина"
             name="width"
@@ -46,12 +49,22 @@ class FieldSize extends React.Component {
             width="100px"
           />
         </Form>
+
+        {modal ?
+          <Confirm
+            description={'Уверен?'}
+            onSuccess={() => this._onSubmit(formData)}
+            onCancel={() => this.setState({modal: false})}
+          />
+          : null}
+
       </Field>
     );
   }
 
   _onSubmit = (data) => {
     const { setSize } = this.props;
+    this.setState({modal: false});
     setSize(data);
   }
 }

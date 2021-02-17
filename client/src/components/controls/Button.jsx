@@ -11,7 +11,7 @@ const ButtonCommon = styled.button`
   border: none;
   border-radius: 5px;
   outline: none;
-  :hover {
+  :hover, :focus {
     box-shadow: 0 1px 2px 0 rgb(32 33 36 / 28%);
   }
   :active {
@@ -22,6 +22,16 @@ const ButtonCommon = styled.button`
 class Button extends React.Component {
   constructor(props) {
     super(props);
+    this.ref = React.createRef();
+  }
+
+  componentDidUpdate(prevProps) {
+    const { focus } = this.props;
+    if (prevProps.focus !== focus) {
+      if (focus) {
+        this.ref.current.focus();
+      }
+    }
   }
 
   render() {
@@ -33,6 +43,7 @@ class Button extends React.Component {
         width={width}
         margin={margin}
         onClick={onClick}
+        ref={this.ref}
       >
         {text}
       </ButtonCommon>
@@ -45,6 +56,7 @@ Button.defaultProps = {
   width: '190px',
   margin: '0 0 0 0',
   onClick: null,
+  focus: false,
 };
 
 Button.propTypes = {
@@ -52,6 +64,7 @@ Button.propTypes = {
   width: PropTypes.string,
   margin: PropTypes.string,
   onClick: PropTypes.func,
+  focus: PropTypes.bool,
 };
 
 export default Button;

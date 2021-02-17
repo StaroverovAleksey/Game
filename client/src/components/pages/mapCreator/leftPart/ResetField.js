@@ -7,6 +7,7 @@ import {connect} from "react-redux";
 import {deleteAllMapSells, setError} from "../../../../redux/actions";
 import {API_DELETE_ALL_MAP_CELLS} from "../../../../tools/routing";
 import WithRequest from "../../../shells/ShellRequest";
+import Confirm from "../../../modal/Confirm";
 
 const Title = styled.h3`
   margin: 0 0 15px 0;
@@ -17,20 +18,29 @@ class ResetField extends WithRequest {
   constructor(props) {
     super(props);
     this.state = {
-      width: '',
-      height: '',
+      modal: false
     };
   }
 
   render() {
+    const {modal} = this.state;
     return (
       <Field>
         <Title>Очистить поле</Title>
           <Button
             text="Очистить"
             width="100px"
-            onClick={this._resetField}
+            onClick={() => this.setState({modal: true})}
           />
+
+        {modal ?
+          <Confirm
+            description={'Уверен?'}
+            onSuccess={this._resetField}
+            onCancel={() => this.setState({modal: false})}
+          />
+        : null}
+
       </Field>
     );
   }
@@ -38,6 +48,7 @@ class ResetField extends WithRequest {
   _resetField = async () => {
     const {resetField} = this.props;
     await this.DELETE(API_DELETE_ALL_MAP_CELLS);
+    this.setState({modal: false})
     resetField();
   }
 }
