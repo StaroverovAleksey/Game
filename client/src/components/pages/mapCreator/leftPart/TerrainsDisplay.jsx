@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import Field from "../../../controls/Field";
+import {pathToImage} from "../../../../tools/routing";
 
 const Error = styled.p`
   font-size: 36px;
@@ -13,6 +14,12 @@ const Title = styled.h3`
   margin: 0 0 20px 0;
   align-self: flex-start;
   text-align: left;
+`;
+
+const Image = styled.div`
+  width: 64px;
+  height: 64px;
+  background-image: ${({src}) => src};
 `;
 
 class TerrainsDisplay extends React.Component {
@@ -35,7 +42,7 @@ class TerrainsDisplay extends React.Component {
           <Title>{`${sort[0].sort}:`}</Title>
           <div>
             {sort.map((terrain) => {
-              return <img src={'../src/' + terrain.path}/>
+              return <Image src={pathToImage(terrain.path)}/>
             })}
           </div>
         </>;

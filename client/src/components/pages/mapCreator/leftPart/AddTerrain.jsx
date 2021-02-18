@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 
 const Wrapper = styled.div`
-  //flex-wrap: wrap;
   display: flex;
   width: 100%;
   justify-content: space-between;

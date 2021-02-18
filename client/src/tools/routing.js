@@ -1,6 +1,8 @@
 const address = 'http://localhost';
 // const address = 'http://3.18.225.147';
 
+export const pathToImage = (path) => `url(../src/${path})`;
+
 const pathAPI = (method) => `${address}/api${method}`;
 
 /** *TERRAIN */
