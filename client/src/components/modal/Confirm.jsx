@@ -19,7 +19,7 @@ const OuterWrapper = styled.div`
 const InnerWrapper = styled.div`
   min-width: 300px;
   display: inline-block;
-  margin: 300px auto;
+  margin: 200px auto;
   z-index: 99;
 `;
 

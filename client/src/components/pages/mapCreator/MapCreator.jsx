@@ -33,7 +33,7 @@ class MapCreator extends WithRequest {
   async componentDidMount() {
     const { addTerrains, addMapCells } = this.props;
     const [terrains, mapCells] = await this.GET([API_GET_TERRAINS, API_GET_MAP_CELLS]);
-    addTerrains(terrains.terrains);
+    addTerrains(terrains);
     addMapCells(mapCells.mapCells);
     this.setState({ loading: false });
   }

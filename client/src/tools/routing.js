@@ -1,5 +1,5 @@
-// const address = 'http://localhost';
-const address = 'http://3.18.225.147';
+const address = 'http://localhost';
+// const address = 'http://3.18.225.147';
 
 const pathAPI = (method) => `${address}/api${method}`;
 

@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import FieldSize from './FieldSize';
 import { fonBlue } from '../../../../tools/palette';
 import ResetField from './ResetField';
+import TerrainsDisplay from './TerrainsDisplay';
 
 const Wrapper = styled.aside`
   display: flex;
@@ -47,7 +48,7 @@ class LeftPart extends React.Component {
 
         <FieldSize />
         <ResetField />
-        <FieldSize />
+        <TerrainsDisplay />
 
       </Wrapper>
     );
