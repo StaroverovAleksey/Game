@@ -29,4 +29,8 @@ export default {
     func: {},
     error: 'Только емейл',
   },
+  format: {
+    func: (file, reference) => reference.includes(file.type.split('/')[1]),
+    error: 'Только емейл',
+  },
 };

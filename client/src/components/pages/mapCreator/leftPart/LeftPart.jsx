@@ -3,11 +3,12 @@ import styled from 'styled-components';
 import FieldSize from './FieldSize';
 import { fonBlue } from '../../../../tools/palette';
 import ResetField from './ResetField';
-import TerrainsDisplay from './TerrainsDisplay';
+import TerrainsDisplay from './TerrainsDisplay/TerrainsDisplay';
+import AddTerrain from "./AddTerrain";
 
 const Wrapper = styled.aside`
   display: flex;
-  padding: 20px;
+  padding: 15px;
   box-sizing: border-box;
   flex-direction: column;
   align-items: center;
@@ -16,7 +17,7 @@ const Wrapper = styled.aside`
   background-color: ${fonBlue};
   transition: 0.1s;
   >div {
-    margin-bottom: 20px;
+    margin-bottom: 15px;
   }
   >div:last-child {
     margin-bottom: 0;
@@ -48,6 +49,7 @@ class LeftPart extends React.Component {
 
         <FieldSize />
         <ResetField />
+        <AddTerrain />
         <TerrainsDisplay />
 
       </Wrapper>

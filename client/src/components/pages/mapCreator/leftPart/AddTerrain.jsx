@@ -1,73 +1,110 @@
 import React from 'react';
 import styled from 'styled-components';
+import Form from '../../../controls/Form';
+import Input from '../../../controls/Input';
+import Field from '../../../controls/Field';
+import Button from '../../../controls/Button';
+import { connect } from 'react-redux';
+import {setSize} from "../../../../redux/actions";
+import PropTypes from "prop-types";
+import File from "../../../controls/File";
+
+const Title = styled.h3`
+  margin: 0 0 20px 0;
+  text-align: center;
+`;
 
 const Wrapper = styled.div`
-  display: flex;
   width: 100%;
-  justify-content: space-between;
-  background-color: #39dda0;
-  transition: 0.1s;
-  height: ${({ open }) => (open ? '200px' : '0')};
-
-  div {
-    display: flex;
-    flex-direction: column;
-    width: 50%;
+  display: flex;
+  margin-top: 30px;
+  justify-content: ${({align}) => align || 'space-around'};
+  :first-child {
+    margin-top: 0;
   }
-  label {
-    width: 50%;
-    margin: 0;
-    padding: 0;
-    display: block;
-    height: 15px
-  ;
+  :last-child {
+    margin-top: 20px;
   }
-  /*input {
-    width: 50%;
-  }
-  button {
-    width: 50%;
-  }*/
-
 `;
 
 class AddTerrain extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      open: true,
+      formData: '',
+      modal: false,
     };
   }
 
   render() {
-    const { open } = this.state;
+    const {formData} = this.state;
+    const {modal} = this.state;
     return (
-      <>
-        <button onClick={() => this.setState({ open: !open })}>{open ? 'Скрыть' : 'Добавить'}</button>
-        <Wrapper open={open}>
+      <Field>
+        <Title>Новая местность</Title>
+        <Form onSubmit={this._onSubmit}>
 
-          <div>
-            <label>Название</label>
-            <input />
-            <label>Класс</label>
-            <input />
-            <label>Номер</label>
-            <input />
-          </div>
-          <div>
-            <label>Изображение</label>
-            <input type="file" />
-            <label>Проходимость</label>
+          <Wrapper>
+            <Input
+              title="Тип"
+              name="sort"
+              width="50%"
+              margin="0 10px 0 0"
+            />
+            <Input
+              title="Название"
+              name="name"
+              width="50%"
+            />
+          </Wrapper>
 
-            <input type="checkbox" />
+          <Wrapper>
+            <Input
+              title="Номер"
+              name="number"
+              width="30%"
+              margin="0 10px 0 0"
+              rules={{ isNum: true, minValue: 10 }}
+            />
+            <Button
+              text="Загрузить"
+              width="100px"
+            />
+            <File
+              title="Изображение"
+              name="img"
+              width="100px"
+              rules={{ format: ['jpeg', 'jpg', 'png'] }}
+            />
+          </Wrapper>
 
-            <button>Добавить</button>
-          </div>
+          <Wrapper align={'center'}>
+            <Button
+              text="Отправить"
+              width="100px"
+            />
+          </Wrapper>
 
-        </Wrapper>
-      </>
+        </Form>
+      </Field>
     );
+  }
+
+  _onSubmit = (data) => {
+    console.log(data);
+    /*const { setSize } = this.props;
+    this.setState({modal: false});
+    setSize(data);*/
   }
 }
 
-export default AddTerrain;
+AddTerrain.propTypes = {
+  setSize: PropTypes.func.isRequired,
+};
+
+export default connect(
+  undefined,
+  (mapDispatchToProps) => ({
+    setSize: (data) => mapDispatchToProps(setSize(data)),
+  }),
+)(AddTerrain);

@@ -14,6 +14,11 @@ const Title = styled.h3`
   text-align: center;
 `;
 
+const Wrapper = styled.div`
+  width: 100%;
+  display: flex;
+`;
+
 class FieldSize extends React.Component {
   constructor(props) {
     super(props);
@@ -30,24 +35,26 @@ class FieldSize extends React.Component {
       <Field>
         <Title>Размеры поля</Title>
         <Form onSubmit={(formData) => this.setState({modal: true, formData})}>
-          <Input
-            title="Ширина"
-            name="width"
-            width="100px"
-            margin="0 10px 0 0"
-            rules={{ isNum: true, minValue: 10 }}
-          />
-          <Input
-            title="Высота"
-            name="height"
-            width="100px"
-            margin="0 10px 0 0"
-            rules={{ isNum: true, minValue: 10 }}
-          />
-          <Button
-            text="Применить"
-            width="100px"
-          />
+          <Wrapper>
+            <Input
+              title="Ширина"
+              name="width"
+              width="100px"
+              margin="0 10px 0 0"
+              rules={{ isNum: true, minValue: 10 }}
+            />
+            <Input
+              title="Высота"
+              name="height"
+              width="100px"
+              margin="0 10px 0 0"
+              rules={{ isNum: true, minValue: 10 }}
+            />
+            <Button
+              text="Применить"
+              width="100px"
+            />
+          </Wrapper>
         </Form>
 
         {modal ?

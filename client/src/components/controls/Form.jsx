@@ -5,6 +5,7 @@ import {FormProvider} from '../../tools/context';
 
 const FormCommon = styled.form`
   display: flex;
+  flex-direction: column;
 `;
 
 class Form extends React.Component {
@@ -47,7 +48,10 @@ Form.defaultProps = {
 };
 
 Form.propTypes = {
-  children: PropTypes.arrayOf(PropTypes.object).isRequired,
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.object).isRequired,
+    PropTypes.node.isRequired,
+  ]),
   className: PropTypes.string,
 };
 
