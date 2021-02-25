@@ -107,11 +107,15 @@ class File extends React.Component {
   }
 
   _onChange = (event) => {
+    const { name } = this.props;
     const files = event.target.files;
     if (files.length > 1) {
       this.setState({status: 'Только 1 файл'});
     } else {
-      this.setState({status: files[0].name, file: files[0]});
+      this.setState({status: files[0].name, file: files[0]}, () => {
+        this.context.onChange(name, files[0]);
+        this._validation();
+      });
     }
   }
 

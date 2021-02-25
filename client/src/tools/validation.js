@@ -1,4 +1,8 @@
 export default {
+  required: {
+    func: (value) => value,
+    error: 'Обязательное поле',
+  },
   minValue: {
     func: (value, reference) => true,
     error: 'Только числа',
@@ -31,6 +35,6 @@ export default {
   },
   format: {
     func: (file, reference) => reference.includes(file.type.split('/')[1]),
-    error: 'Только емейл',
+    error: 'Неверный формат',
   },
 };

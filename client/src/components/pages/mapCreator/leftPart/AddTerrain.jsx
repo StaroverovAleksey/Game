@@ -50,11 +50,13 @@ class AddTerrain extends React.Component {
               name="sort"
               width="50%"
               margin="0 10px 0 0"
+              rules={{ required: true }}
             />
             <Input
               title="Название"
               name="name"
               width="50%"
+              rules={{ required: true }}
             />
           </Wrapper>
 
@@ -64,7 +66,7 @@ class AddTerrain extends React.Component {
               name="number"
               width="30%"
               margin="0 10px 0 0"
-              rules={{ isNum: true, minValue: 10 }}
+              rules={{ required: true, isNum: true, minValue: 10 }}
             />
             <Button
               text="Загрузить"
@@ -74,7 +76,7 @@ class AddTerrain extends React.Component {
               title="Изображение"
               name="img"
               width="100px"
-              rules={{ format: ['jpeg', 'jpg', 'png'] }}
+              rules={{ format: ['jpeg', 'jpg'] }}
             />
           </Wrapper>
 

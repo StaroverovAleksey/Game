@@ -41,14 +41,14 @@ class FieldSize extends React.Component {
               name="width"
               width="100px"
               margin="0 10px 0 0"
-              rules={{ isNum: true, minValue: 10 }}
+              rules={{ required: true, isNum: true, minValue: 10 }}
             />
             <Input
               title="Высота"
               name="height"
               width="100px"
               margin="0 10px 0 0"
-              rules={{ isNum: true, minValue: 10 }}
+              rules={{ required: true, isNum: true, minValue: 10 }}
             />
             <Button
               text="Применить"

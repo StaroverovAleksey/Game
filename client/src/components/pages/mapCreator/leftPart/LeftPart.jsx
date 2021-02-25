@@ -4,7 +4,7 @@ import FieldSize from './FieldSize';
 import { fonBlue } from '../../../../tools/palette';
 import ResetField from './ResetField';
 import TerrainsDisplay from './TerrainsDisplay/TerrainsDisplay';
-import AddTerrain from "./AddTerrain";
+import AddTerrain from './AddTerrain';
 
 const Wrapper = styled.aside`
   display: flex;
