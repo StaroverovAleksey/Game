@@ -7,7 +7,7 @@ class WithRequest extends React.Component {
     return null;
   }
 
-  request = async (path, method) => {
+  request = async (path, method, body) => {
     const {addError} = this.props;
     try {
       const answer = await fetch(path, {method});
@@ -24,6 +24,14 @@ class WithRequest extends React.Component {
   GET = async (path) => {
     if (typeof path === 'string') {
       return await this.request(path, 'GET');
+    } else {
+      return await Promise.all(path.map((value) => this.request(value, 'GET')));
+    }
+  }
+
+  POST = async (path, body) => {
+    if (typeof path === 'string') {
+      return await this.request(path, 'POST');
     } else {
       return await Promise.all(path.map((value) => this.request(value, 'GET')));
     }

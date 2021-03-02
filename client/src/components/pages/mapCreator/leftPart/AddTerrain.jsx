@@ -8,6 +8,8 @@ import { connect } from 'react-redux';
 import {setSize} from "../../../../redux/actions";
 import PropTypes from "prop-types";
 import File from "../../../controls/File";
+import {API_CREATE_TERRAINS, API_GET_MAP_CELLS, API_GET_TERRAINS} from "../../../../tools/routing";
+import WithRequest from "../../../shells/ShellRequest";
 
 const Title = styled.h3`
   margin: 0 0 20px 0;
@@ -27,7 +29,7 @@ const Wrapper = styled.div`
   }
 `;
 
-class AddTerrain extends React.Component {
+class AddTerrain extends WithRequest {
   constructor(props) {
     super(props);
     this.state = {
@@ -92,8 +94,12 @@ class AddTerrain extends React.Component {
     );
   }
 
-  _onSubmit = (data) => {
+  _onSubmit = async (data) => {
     console.log(data);
+    const formData = await new FormData();
+    await formData.append('img', data.img, 'qwe.jpg');
+    console.log(formData);
+    await this.POST(API_CREATE_TERRAINS);
     /*const { setSize } = this.props;
     this.setState({modal: false});
     setSize(data);*/
