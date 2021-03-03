@@ -10,6 +10,7 @@ import PropTypes from "prop-types";
 import File from "../../../controls/File";
 import {API_CREATE_TERRAINS, API_GET_MAP_CELLS, API_GET_TERRAINS} from "../../../../tools/routing";
 import WithRequest from "../../../shells/ShellRequest";
+import CheckBox from "../../../controls/CheckBox";
 
 const Title = styled.h3`
   margin: 0 0 20px 0;
@@ -65,11 +66,13 @@ class AddTerrain extends WithRequest {
               title="Номер"
               name="number"
               width="30%"
-              margin="0 10px 0 0"
+              margin="0 60px 0 0"
               rules={{ required: true, isNum: true, minValue: 10 }}
             />
-            <Button
+            <CheckBox
+              title="Пр-ть"
               text="Загрузить"
+              name="passability"
               width="100px"
             />
             <File
@@ -98,9 +101,8 @@ class AddTerrain extends WithRequest {
     Object.keys(data).map((key) => {
       formData.append(key, data[key]);
     });
-    formData.append('passability', false);
-    console.log(formData);
-    await this.POST(API_CREATE_TERRAINS, formData);
+    const answer = await this.POST(API_CREATE_TERRAINS, formData);
+    console.log(answer);
     /*const { setSize } = this.props;
     this.setState({modal: false});
     setSize(data);*/
