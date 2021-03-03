@@ -25,6 +25,8 @@ router.post('/create', multiparty, [
     body('passability')
         .isBoolean().withMessage('boolean expected')
 ], async (req, res) => {
+    console.log(req.body);
+    console.log(req.files);
     try {
         const errors = validationResult(req);
 
@@ -89,6 +91,7 @@ router.post('/create', multiparty, [
 
         res.status(200).json({});
     } catch (error) {
+        console.log(error);
         res.status(500).json({massage: 'server error'});
     }
 });

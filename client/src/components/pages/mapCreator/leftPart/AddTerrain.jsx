@@ -5,7 +5,7 @@ import Input from '../../../controls/Input';
 import Field from '../../../controls/Field';
 import Button from '../../../controls/Button';
 import { connect } from 'react-redux';
-import {setSize} from "../../../../redux/actions";
+import {setError, setSize} from "../../../../redux/actions";
 import PropTypes from "prop-types";
 import File from "../../../controls/File";
 import {API_CREATE_TERRAINS, API_GET_MAP_CELLS, API_GET_TERRAINS} from "../../../../tools/routing";
@@ -39,8 +39,6 @@ class AddTerrain extends WithRequest {
   }
 
   render() {
-    const {formData} = this.state;
-    const {modal} = this.state;
     return (
       <Field>
         <Title>Новая местность</Title>
@@ -96,10 +94,13 @@ class AddTerrain extends WithRequest {
 
   _onSubmit = async (data) => {
     console.log(data);
-    const formData = await new FormData();
-    await formData.append('img', data.img, 'qwe.jpg');
+    const formData = new FormData();
+    Object.keys(data).map((key) => {
+      formData.append(key, data[key]);
+    });
+    formData.append('passability', false);
     console.log(formData);
-    await this.POST(API_CREATE_TERRAINS);
+    await this.POST(API_CREATE_TERRAINS, formData);
     /*const { setSize } = this.props;
     this.setState({modal: false});
     setSize(data);*/
@@ -114,5 +115,6 @@ export default connect(
   undefined,
   (mapDispatchToProps) => ({
     setSize: (data) => mapDispatchToProps(setSize(data)),
+    addError: (data) => mapDispatchToProps(setError(data)),
   }),
 )(AddTerrain);
