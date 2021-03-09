@@ -12,25 +12,25 @@ const OuterWrapper = styled.div`
   left: ${({y}) => y}px;
   opacity: 1;
   z-index: 98;
-  background-color: red;
-  width: 100px;
-  height: 100px;
 `;
 
 class ModalMenu extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      focus: false
+      open: false
     };
+    this.ref = React.createRef();
   }
 
   componentDidMount() {
-    window.addEventListener('keydown', this.tabInterceptor);
+    document.addEventListener('click', this._closeModalMenu);
+    document.addEventListener('contextmenu', this._closeModalMenu);
   }
 
   componentWillUnmount() {
-    window.removeEventListener('keydown', this.tabInterceptor);
+    document.removeEventListener('click', this._closeModalMenu);
+    document.removeEventListener('contextmenu', this._closeModalMenu);
   }
 
   render() {
@@ -39,19 +39,30 @@ class ModalMenu extends React.Component {
       yCoord
     } = this.props;
     return (
-      <OuterWrapper
-        x={xCoord}
-        y={yCoord}
-        className="modalMenu">
-      </OuterWrapper>
+
+        <OuterWrapper
+          x={xCoord}
+          y={yCoord}
+          className="modalMenu"
+          ref={this.ref}>
+          <Field>
+            <Button
+              text="Изменить"
+              margin="0 0 5px 0"
+            /><Button
+              text="Удалить"
+            />
+          </Field>
+        </OuterWrapper>
+
     );
   }
 
-  tabInterceptor = (event) => {
-    const {focus} = this.state;
-    if (event.key === 'Tab') {
-      event.preventDefault();
-      this.setState({focus: focus === 'buttonNo' ? 'buttonYes' : 'buttonNo'});
+  _closeModalMenu = (event) => {
+    if (!this.ref.current.contains(event.target) && this.state.open) {
+      this.props.closeCallback();
+    } else {
+      this.setState({open: true});
     }
   }
 }
@@ -59,6 +70,7 @@ class ModalMenu extends React.Component {
 ModalMenu.propTypes = {
   xCoord: PropTypes.number.isRequired,
   yCoord: PropTypes.number.isRequired,
+  closeCallback: PropTypes.func.isRequired,
 };
 
 export default ModalMenu;

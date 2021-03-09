@@ -38,8 +38,6 @@ class TerrainsDisplay extends React.Component {
   }
 
   componentDidMount() {
-    document.addEventListener('click', this._closeModalMenu);
-    document.addEventListener('contextmenu', this._closeModalMenu);
     this.sortingData();
   }
 
@@ -47,11 +45,6 @@ class TerrainsDisplay extends React.Component {
     if (prevProps !== this.props) {
       this.sortingData();
     }
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener('click', this._closeModalMenu);
-    document.removeEventListener('contextmenu', this._closeModalMenu);
   }
 
   render() {
@@ -78,7 +71,10 @@ class TerrainsDisplay extends React.Component {
       </div>
 
       {modalMenuCoord.length
-        ? <ModalMenu xCoord={modalMenuCoord[0]} yCoord={modalMenuCoord[1]}/>
+        ? <ModalMenu
+          xCoord={modalMenuCoord[0]}
+          yCoord={modalMenuCoord[1]}
+          closeCallback={this._closeModalMenu}/>
         : null}
 
     </Field>;
@@ -112,17 +108,8 @@ class TerrainsDisplay extends React.Component {
     }
   }
 
-  _closeModalMenu = (event) => {
-    if (
-      event.target.classList.contains('modalMenuWithin')
-      || event.target.classList.contains('modalMenu')
-    ) {
-      if (event.type === 'click' && !event.target.classList.contains('modalMenu')) {
-        this.setState({modalMenuCoord: [], modalMenuNumber: null});
-      }
-    } else {
-      this.setState({modalMenuCoord: [], modalMenuNumber: null});
-    }
+  _closeModalMenu = () => {
+    this.setState({modalMenuCoord: [], modalMenuNumber: null});
   }
 }
 
