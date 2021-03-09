@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { pathToImage } from '../../../../../tools/routing';
+import ModalMenu from '../../../../modal/ModalMenu';
 
 const Wrapper = styled.div`
   position: relative;
@@ -91,7 +92,11 @@ class TerrainItem extends React.Component {
       terrain, remainder, callBack, active,
     } = this.props;
     return (
-      <Wrapper remainder={remainder} active={active} onClick={() => callBack(terrain)}>
+      <Wrapper
+        remainder={remainder}
+        active={active}
+        onClick={() => callBack(terrain)}
+      >
         <Image
           path={pathToImage(terrain.path)}
           onClick={() => callBack(terrain)}
@@ -101,6 +106,8 @@ class TerrainItem extends React.Component {
         <Number>{terrain.number}</Number>
         <Choice
           active={active}
+          className="modalMenuWithin"
+          id={terrain.number}
         />
       </Wrapper>
     );

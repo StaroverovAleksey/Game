@@ -5,10 +5,10 @@ import Input from '../../../controls/Input';
 import Field from '../../../controls/Field';
 import Button from '../../../controls/Button';
 import { connect } from 'react-redux';
-import {setError, setSize} from "../../../../redux/actions";
+import {setError, setSize, setTerrain, setTerrains} from "../../../../redux/actions";
 import PropTypes from "prop-types";
 import File from "../../../controls/File";
-import {API_CREATE_TERRAINS, API_GET_MAP_CELLS, API_GET_TERRAINS} from "../../../../tools/routing";
+import {API_CREATE_TERRAINS, API_GET_MAP_CELLS, API_GET_TERRAINS, getPAthToImage} from "../../../../tools/routing";
 import WithRequest from "../../../shells/ShellRequest";
 import CheckBox from "../../../controls/CheckBox";
 
@@ -36,6 +36,8 @@ class AddTerrain extends WithRequest {
     this.state = {
       formData: '',
       modal: false,
+      errors: [],
+      reset: false
     };
   }
 
@@ -43,7 +45,7 @@ class AddTerrain extends WithRequest {
     return (
       <Field>
         <Title>Новая местность</Title>
-        <Form onSubmit={this._onSubmit}>
+        <Form onSubmit={this._onSubmit} errors={this.state.errors} reset={this.state.reset}>
 
           <Wrapper>
             <Input
@@ -51,13 +53,13 @@ class AddTerrain extends WithRequest {
               name="sort"
               width="50%"
               margin="0 10px 0 0"
-              rules={{ required: true }}
+              rules={{ required: true, spaceForbidden: true }}
             />
             <Input
               title="Название"
               name="name"
               width="50%"
-              rules={{ required: true }}
+              rules={{ required: true, spaceForbidden: true }}
             />
           </Wrapper>
 
@@ -96,27 +98,36 @@ class AddTerrain extends WithRequest {
   }
 
   _onSubmit = async (data) => {
-    console.log(data);
+    this.setState({errors: [], reset: false});
     const formData = new FormData();
     Object.keys(data).map((key) => {
       formData.append(key, data[key]);
     });
     const answer = await this.POST(API_CREATE_TERRAINS, formData);
-    console.log(answer);
-    /*const { setSize } = this.props;
-    this.setState({modal: false});
-    setSize(data);*/
+    if(answer.errors) {
+      this.setState({errors: answer.errors});
+    } else {
+      const dataToAction = {};
+      dataToAction.sort = data.sort.toString().trim().toUpperCase()[0] + data.sort.toString().trim().toLowerCase().slice(1);
+      dataToAction.name = data.name.toString().trim();
+      dataToAction.path = getPAthToImage(dataToAction.sort, dataToAction.name, data.img.name.split('.')[1]);
+      dataToAction.number = parseInt(data.number);
+      dataToAction.passability = data.passability;
+      this.props.addTerrain(dataToAction);
+      this.setState({reset: true});
+    }
   }
 }
 
 AddTerrain.propTypes = {
-  setSize: PropTypes.func.isRequired,
+  addTerrain: PropTypes.func.isRequired,
+  addError: PropTypes.func.isRequired,
 };
 
 export default connect(
   undefined,
   (mapDispatchToProps) => ({
-    setSize: (data) => mapDispatchToProps(setSize(data)),
+    addTerrain: (data) => mapDispatchToProps(setTerrain(data)),
     addError: (data) => mapDispatchToProps(setError(data)),
   }),
 )(AddTerrain);

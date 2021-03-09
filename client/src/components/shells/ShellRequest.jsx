@@ -11,7 +11,7 @@ class WithRequest extends React.Component {
     const {addError} = this.props;
     try {
       const answer = await fetch(path, {method, body});
-      if (answer.status === 200) {
+      if (answer.status === 200 || answer.status === 400) {
         return await answer.json();
       } else {
         addError({status: answer.status});

@@ -12,11 +12,26 @@ class Form extends React.Component {
   constructor(props, context) {
     super(props, context);
     this.observeList = [];
+    this.state = {
+      errors: [],
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if(prevProps.errors !== this.props.errors) {
+      this.setState({errors: this.props.errors});
+    }
+    if(prevState !== this.state && prevState.errors === this.state.errors) {
+      this.setState({errors: []});
+    }
+    if(prevProps.reset !== this.props.reset && this.props.reset) {
+      this._resetAll();
+    }
   }
 
   render() {
     const { children, className } = this.props;
-    return <FormProvider value={{subscribe: this._subscribe, onChange: this._onChange}}>
+    return <FormProvider value={{subscribe: this._subscribe, onChange: this._onChange, errors: this.state.errors}}>
       <FormCommon className={className}
       onSubmit={this._submit}>
         {children}
@@ -25,18 +40,22 @@ class Form extends React.Component {
 
   }
 
-  _subscribe = (func) => {
-    this.observeList.push(func);
+  _subscribe = (object) => {
+    this.observeList.push(object);
   }
 
   _onChange = (name, value) => {
     this.setState({[name]: value});
   }
 
+  _resetAll = () => {
+    this.observeList.map(({reset}) => reset());
+  }
+
   _submit = (event) => {
     event.preventDefault();
     Promise.all(
-      this.observeList.map((func) => func())
+      this.observeList.map(({validation}) => validation())
     )
       .then(() => this.props.onSubmit(this.state))
       .catch(() => null);
@@ -45,6 +64,7 @@ class Form extends React.Component {
 
 Form.defaultProps = {
   className: '',
+  errors: []
 };
 
 Form.propTypes = {
@@ -52,6 +72,7 @@ Form.propTypes = {
     PropTypes.arrayOf(PropTypes.object).isRequired,
     PropTypes.node.isRequired,
   ]),
+  errors: PropTypes.arrayOf(PropTypes.object),
   className: PropTypes.string,
 };
 

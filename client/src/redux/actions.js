@@ -1,5 +1,7 @@
-export const SET_TERRAIN = 'SET_TERRAIN';
-export const setTerrains = (terrains) => ({ type: SET_TERRAIN, payload: terrains });
+export const SET_TERRAINS = 'SET_TERRAINS';
+export const setTerrains = (terrains) => ({ type: SET_TERRAINS, payload: terrains });
+export const SET_ONE_TERRAIN = 'SET_ONE_TERRAIN';
+export const setTerrain = (terrains) => ({ type: SET_ONE_TERRAIN, payload: terrains });
 
 export const SET_MAP_CELLS = 'SET_MAP_CELLS';
 export const setMapCells = (mapCells) => ({ type: SET_MAP_CELLS, payload: mapCells });

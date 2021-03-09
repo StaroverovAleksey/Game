@@ -23,11 +23,15 @@ const Field = (props) => {
 };
 
 Field.defaultProps = {
+  children: [],
   className: '',
 };
 
 Field.propTypes = {
-  children: PropTypes.arrayOf(PropTypes.object).isRequired,
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.object).isRequired,
+    PropTypes.node.isRequired,
+  ]),
   className: PropTypes.string,
 };
 

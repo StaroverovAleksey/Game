@@ -60,13 +60,15 @@ class Input extends React.Component {
 
   componentDidMount() {
     if (typeof this.context.subscribe === 'function') {
-      this.context.subscribe(this._validation);
+      this.context.subscribe(this);
     }
   }
 
   render() {
     const { value, error } = this.state;
-    const { title, width, margin } = this.props;
+    const { name, title, width, margin } = this.props;
+    const index = this.context.errors.findIndex((value) => value.param === name);
+    const errorMsg = index > -1 ? this.context.errors[index].msg : '';
     return (
       <Wrapper
         width={width}
@@ -75,9 +77,9 @@ class Input extends React.Component {
         <Title>{title}</Title>
         <InputCommon
           value={value}
-          error={error}
+          error={error || errorMsg}
           onChange={this._onChange}/>
-        <Error>{error}</Error>
+        <Error>{error || errorMsg}</Error>
       </Wrapper>
     );
   }
@@ -85,13 +87,14 @@ class Input extends React.Component {
   _onChange = (event) => {
     const { value } = event.target;
     const { name } = this.props;
+    this.context.errors = [];
     this.setState({
       value: value,
       error: ''
     }, () => this.context.onChange(name, value));
   }
 
-  _validation = async () => {
+  validation = async () => {
     const {value} = this.state;
     const {rules} = this.props;
     let flag = true;
@@ -107,6 +110,10 @@ class Input extends React.Component {
     return new Promise((resolve, reject) => {
       flag ? resolve() : reject()
     });
+  }
+
+  reset = () => {
+    this.setState({value: '', error: ''});
   }
 }
 

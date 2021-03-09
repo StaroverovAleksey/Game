@@ -19,6 +19,10 @@ export default {
     func: (value, reference) => typeof value === 'number',
     error: 'Только числа',
   },
+  spaceForbidden: {
+    func: (value) => value.toString().trim().split('').findIndex((v) => v === ' ') === -1,
+    error: 'Пробелы запрещены',
+  },
   isNum: {
     func: (value) => !Number.isNaN(value)
         && parseInt(Number(value), 10) == value

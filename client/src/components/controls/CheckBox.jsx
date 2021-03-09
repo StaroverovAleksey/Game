@@ -46,6 +46,9 @@ class CheckBox extends React.Component {
   componentDidMount() {
     const { checked } = this.state;
     const { name } = this.props;
+    if (typeof this.context.subscribe === 'function') {
+      this.context.subscribe(this);
+    }
     this.context.onChange(name, checked);
   }
 
@@ -67,12 +70,20 @@ class CheckBox extends React.Component {
     );
   }
 
+  validation = () => {
+
+  }
+
   _onChange = (event) => {
     const { checked } = event.target;
     const { name } = this.props;
     this.setState({
       checked
     }, () => this.context.onChange(name, checked));
+  }
+
+  reset = () => {
+    this.setState({checked: false});
   }
 }
 

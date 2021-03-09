@@ -6,6 +6,7 @@ import Field from "../../../../controls/Field";
 import {pathToImage} from "../../../../../tools/routing";
 import TerrainItem from "./TerrainItem";
 import {choiceTerrain} from "../../../../../redux/actions";
+import ModalMenu from "../../../../modal/ModalMenu";
 
 const Title = styled.h3`
   align-self: flex-start;
@@ -31,33 +32,55 @@ class TerrainsDisplay extends React.Component {
     this.state = {
       sortingData: [],
       activeTerrain: false,
+      modalMenuCoord: [],
+      modalMenuNumber: null,
     }
   }
 
   componentDidMount() {
+    document.addEventListener('click', this._closeModalMenu);
+    document.addEventListener('contextmenu', this._closeModalMenu);
     this.sortingData();
   }
 
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (prevProps !== this.props) {
+      this.sortingData();
+    }
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('click', this._closeModalMenu);
+    document.removeEventListener('contextmenu', this._closeModalMenu);
+  }
+
   render() {
-    const {sortingData, activeTerrain} = this.state;
+    const {sortingData, activeTerrain, modalMenuCoord} = this.state;
     return <Field>
-      {sortingData.map((sort, i) => {
-        const remainder = sort.length % 5 || 5;
-        return <React.Fragment key={i}>
-          <Title>{`${sort[0].sort}:`}</Title>
-          <InnerWrapper>
-            {sort.map((terrain, index) => {
-              return <TerrainItem
-                terrain={terrain}
-                path={pathToImage(terrain.path)}
-                remainder={remainder}
-                key={`terrain_item_${index}`}
-                callBack={this.choiceTerrain}
-                active={terrain === activeTerrain}/>
-            })}
-          </InnerWrapper>
-        </React.Fragment>;
-      })}
+      <div onContextMenu={this._contextMenu}>
+        {sortingData.map((sort, i) => {
+          const remainder = sort.length % 5 || 5;
+          return <React.Fragment key={i}>
+            <Title>{`${sort[0].sort}:`}</Title>
+            <InnerWrapper>
+              {sort.map((terrain, index) => {
+                return <TerrainItem
+                  terrain={terrain}
+                  path={pathToImage(terrain.path)}
+                  remainder={remainder}
+                  key={`terrain_item_${index}`}
+                  callBack={this.choiceTerrain}
+                  active={terrain === activeTerrain}/>
+              })}
+            </InnerWrapper>
+          </React.Fragment>;
+        })}
+      </div>
+
+      {modalMenuCoord.length
+        ? <ModalMenu xCoord={modalMenuCoord[0]} yCoord={modalMenuCoord[1]}/>
+        : null}
+
     </Field>;
   }
 
@@ -80,6 +103,26 @@ class TerrainsDisplay extends React.Component {
     const newChoice = activeTerrain !== object ? object : false;
     this.setState({activeTerrain: newChoice });
     addChoice(newChoice);
+  }
+
+  _contextMenu = (event) => {
+    if (event.target.classList.contains('modalMenuWithin')) {
+      event.preventDefault();
+      this.setState({modalMenuCoord: [event.pageY, event.pageX], modalMenuNumber: parseInt(event.target.id)});
+    }
+  }
+
+  _closeModalMenu = (event) => {
+    if (
+      event.target.classList.contains('modalMenuWithin')
+      || event.target.classList.contains('modalMenu')
+    ) {
+      if (event.type === 'click' && !event.target.classList.contains('modalMenu')) {
+        this.setState({modalMenuCoord: [], modalMenuNumber: null});
+      }
+    } else {
+      this.setState({modalMenuCoord: [], modalMenuNumber: null});
+    }
   }
 }
 

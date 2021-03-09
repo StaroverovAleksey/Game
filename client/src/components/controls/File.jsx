@@ -67,21 +67,15 @@ class File extends React.Component {
 
   componentDidMount() {
     if (typeof this.context.subscribe === 'function') {
-      this.context.subscribe(this._validation);
-    }
-  }
-
-  componentDidUpdate(prevProps) {
-    const { focus } = this.props;
-    if (prevProps.focus !== focus) {
-      if (focus) {
-        this.ref.current.focus();
-      }
+      this.context.subscribe(this);
     }
   }
 
   render() {
     const { status } = this.state;
+    const { name } = this.props;
+    const index = this.context.errors.findIndex((value) => value.param === name);
+    const errorMsg = index > -1 ? this.context.errors[index].msg : '';
     const {
       title, width, margin, onClick,
     } = this.props;
@@ -93,15 +87,15 @@ class File extends React.Component {
         <Title>{title}</Title>
         <Label
           onClick={onClick}
-          ref={this.ref}
         >
           Загрузить
           <Input
             type="file"
             onChange={this._onChange}
+            ref={this.ref}
           />
         </Label>
-        <Status>{status}</Status>
+        <Status>{errorMsg || status}</Status>
       </Wrapper>
     );
   }
@@ -114,12 +108,12 @@ class File extends React.Component {
     } else {
       this.setState({status: files[0].name, file: files[0]}, () => {
         this.context.onChange(name, files[0]);
-        this._validation();
+        this.validation();
       });
     }
   }
 
-  _validation = async () => {
+  validation = async () => {
     const {file} = this.state;
     const {rules} = this.props;
     let flag = true;
@@ -135,6 +129,10 @@ class File extends React.Component {
     return new Promise((resolve, reject) => {
       flag ? resolve() : reject()
     });
+  }
+
+  reset = () => {
+    this.setState({file: {}, status: '',}, () => this.ref.current.value = '');
   }
 }
 

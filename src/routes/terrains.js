@@ -15,18 +15,33 @@ const multiparty = formParser();
 router.post('/create', multiparty, [
     check('number')
         .isNumeric().withMessage('number expected')
-        .isLength({ max: 3 }).withMessage('max length expected 3'),
+        .isLength({ max: 3 }).withMessage('max length expected 3')
+        .trim(),
     body('name')
         .isString().withMessage('string expected')
-        .isLength({ max: 32 }).withMessage('max length expected 32'),
+        .isLength({ max: 32 }).withMessage('max length expected 32')
+        .trim()
+        .custom((value) => {
+            if (value.split('').some((v) => v === ' ')) {
+                throw new Error('space forbidden')
+            } else {
+                return true;
+            }
+        }),
     body('sort')
         .isString().withMessage('string expected')
-        .isLength({ max: 32 }).withMessage('max length expected 32'),
+        .isLength({ max: 32 }).withMessage('max length expected 32')
+        .trim()
+        .custom((value) => {
+            if (value.split('').some((v) => v === ' ')) {
+                throw new Error('space forbidden')
+            } else {
+                return true;
+            }
+        }),
     body('passability')
         .isBoolean().withMessage('boolean expected')
 ], async (req, res) => {
-    console.log(req.body);
-    console.log(req.files);
     try {
         const errors = validationResult(req);
 
@@ -68,7 +83,7 @@ router.post('/create', multiparty, [
 
         const number = req.body.number;
         const name = req.body.name;
-        const sort = req.body.sort;
+        const sort = req.body.sort.toString().toUpperCase()[0] + req.body.sort.toString().toLowerCase().slice(1);
         const passability = req.body.passability;
         const file = await fs.readFileSync(req.files.img.path);
         const pathToDirectory = `./client/src/assets/images/terrains/${sort}`;
@@ -91,7 +106,6 @@ router.post('/create', multiparty, [
 
         res.status(200).json({});
     } catch (error) {
-        console.log(error);
         res.status(500).json({massage: 'server error'});
     }
 });

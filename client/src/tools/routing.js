@@ -2,6 +2,7 @@ const address = 'http://localhost';
 //const address = 'http://3.18.225.147';
 
 export const pathToImage = (path) => `url(../src/${path})`;
+export const getPAthToImage = (sort, name, extension) => `assets/images/terrains/${sort}/${name}.${extension}`;
 
 const pathAPI = (method) => `${address}/api${method}`;
 
