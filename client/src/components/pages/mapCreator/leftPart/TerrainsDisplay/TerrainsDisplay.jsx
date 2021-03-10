@@ -74,7 +74,12 @@ class TerrainsDisplay extends React.Component {
         ? <ModalMenu
           xCoord={modalMenuCoord[0]}
           yCoord={modalMenuCoord[1]}
-          closeCallback={this._closeModalMenu}/>
+          closeCallback={this._closeModalMenu}
+          data={[
+            {title: 'Изменить', callback: this._updateTerrain},
+            {title: 'Удалить', callback: this._deleteTerrain}
+            ]}
+        />
         : null}
 
     </Field>;
@@ -110,6 +115,14 @@ class TerrainsDisplay extends React.Component {
 
   _closeModalMenu = () => {
     this.setState({modalMenuCoord: [], modalMenuNumber: null});
+  }
+
+  _deleteTerrain = () => {
+    console.log(1111);
+  }
+
+  _updateTerrain = () => {
+    console.log(22222);
   }
 }
 

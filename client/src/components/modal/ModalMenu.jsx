@@ -36,7 +36,8 @@ class ModalMenu extends React.Component {
   render() {
     const {
       xCoord,
-      yCoord
+      yCoord,
+      data
     } = this.props;
     return (
 
@@ -46,12 +47,14 @@ class ModalMenu extends React.Component {
           className="modalMenu"
           ref={this.ref}>
           <Field>
-            <Button
-              text="Изменить"
-              margin="0 0 5px 0"
-            /><Button
-              text="Удалить"
-            />
+            {data.map((value, index) => {
+              return <Button
+                text={value.title}
+                margin={index < data.length - 1 ? '0 0 5px 0' : ''}
+                key={`button_${index}`}
+                onClick={value.callback}
+              />;
+            })}
           </Field>
         </OuterWrapper>
 
@@ -71,6 +74,7 @@ ModalMenu.propTypes = {
   xCoord: PropTypes.number.isRequired,
   yCoord: PropTypes.number.isRequired,
   closeCallback: PropTypes.func.isRequired,
+  data: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
 export default ModalMenu;
