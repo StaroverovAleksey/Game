@@ -103,15 +103,15 @@ class AddTerrain extends WithRequest {
     Object.keys(data).map((key) => {
       formData.append(key, data[key]);
     });
-    const answer = await this.POST(API_CREATE_TERRAINS, formData);
+    const answer = await this.POST_FORM(API_CREATE_TERRAINS, formData);
     if(answer.errors) {
       this.setState({errors: answer.errors});
     } else {
       const dataToAction = {};
       dataToAction.sort = data.sort.toString().trim().toUpperCase()[0] + data.sort.toString().trim().toLowerCase().slice(1);
       dataToAction.name = data.name.toString().trim();
-      dataToAction.path = getPAthToImage(dataToAction.sort, dataToAction.name, data.img.name.split('.')[1]);
       dataToAction.number = parseInt(data.number);
+      dataToAction.path = getPAthToImage(dataToAction.sort, dataToAction.number, data.img.name.split('.')[1]);
       dataToAction.passability = data.passability;
       this.props.addTerrain(dataToAction);
       this.setState({reset: true});

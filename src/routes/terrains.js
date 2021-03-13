@@ -87,8 +87,8 @@ router.post('/create', multiparty, [
         const passability = req.body.passability;
         const file = await fs.readFileSync(req.files.img.path);
         const pathToDirectory = `./client/src/assets/images/terrains/${sort}`;
-        const pathToFile = `./client/src/assets/images/terrains/${sort}/${name}.jpg`;
-        const path = `assets/images/terrains/${sort}/${name}.jpg`;
+        const pathToFile = `./client/src/assets/images/terrains/${sort}/${number}.jpg`;
+        const path = `assets/images/terrains/${sort}/${number}.jpg`;
 
         try {
             await fs.statSync(pathToDirectory);
@@ -114,6 +114,38 @@ router.get('/get', async (req, res) => {
     try {
         const terrains = await Terrain.find().exec();
         res.status(200).json({terrains});
+    } catch (error) {
+        res.status(500).json({massage: 'server error'});
+    }
+});
+
+router.delete('/delete', [
+    check('number')
+        .isNumeric().withMessage('number expected')
+        .isLength({ max: 3 }).withMessage('max length expected 3')
+        .trim(),
+], async (req, res) => {
+    try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(418).json({
+                errors: errors.array(),
+                message: 'bad request'
+            });
+        }
+
+        const terrainForDelete = await Terrain.findOne({ number: req.body.number }).exec();
+        const path = `./client/src/assets/images/terrains/${terrainForDelete.sort}/${terrainForDelete.number}.jpg`;
+        const pathToDirectory = `./client/src/assets/images/terrains/${terrainForDelete.sort}`;
+
+        await fs.rmSync(path);
+        try {
+            await fs.rmdirSync(pathToDirectory);
+        } catch (e) {
+        }
+
+        await Terrain.deleteOne({ number: req.body.number });
+        res.status(200).json({});
     } catch (error) {
         res.status(500).json({massage: 'server error'});
     }

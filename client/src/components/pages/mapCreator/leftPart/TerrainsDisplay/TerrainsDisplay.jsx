@@ -3,10 +3,11 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import Field from "../../../../controls/Field";
-import {pathToImage} from "../../../../../tools/routing";
+import {API_DELETE_TERRAINS, pathToImage} from "../../../../../tools/routing";
 import TerrainItem from "./TerrainItem";
-import {choiceTerrain} from "../../../../../redux/actions";
+import {choiceTerrain, deleteTerrain, setError} from "../../../../../redux/actions";
 import ModalMenu from "../../../../modal/ModalMenu";
+import WithRequest from "../../../../shells/ShellRequest";
 
 const Title = styled.h3`
   align-self: flex-start;
@@ -26,7 +27,7 @@ const InnerWrapper = styled.div`
   }
 `;
 
-class TerrainsDisplay extends React.Component {
+class TerrainsDisplay extends WithRequest {
   constructor(props) {
     super(props);
     this.state = {
@@ -117,8 +118,12 @@ class TerrainsDisplay extends React.Component {
     this.setState({modalMenuCoord: [], modalMenuNumber: null});
   }
 
-  _deleteTerrain = () => {
-    console.log(1111);
+  _deleteTerrain = async () => {
+    const {modalMenuNumber} = this.state;
+    const {removeTerrain} = this.props;
+    await this.DELETE(API_DELETE_TERRAINS, JSON.stringify({number: modalMenuNumber}));
+    removeTerrain(modalMenuNumber);
+    this._closeModalMenu();
   }
 
   _updateTerrain = () => {
@@ -129,6 +134,8 @@ class TerrainsDisplay extends React.Component {
 TerrainsDisplay.propTypes = {
   terrain: PropTypes.arrayOf(PropTypes.object).isRequired,
   addChoice: PropTypes.func.isRequired,
+  removeTerrain: PropTypes.func.isRequired,
+  addError: PropTypes.func.isRequired,
 };
 
 export default connect(
@@ -137,5 +144,7 @@ export default connect(
   ),
   (mapDispatchToProps) => ({
     addChoice: (terrain) => mapDispatchToProps(choiceTerrain(terrain)),
+    removeTerrain: (number) => mapDispatchToProps(deleteTerrain(number)),
+    addError: (data) => mapDispatchToProps(setError(data)),
   })
 )(TerrainsDisplay);

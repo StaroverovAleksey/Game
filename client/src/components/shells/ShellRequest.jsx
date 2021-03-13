@@ -7,10 +7,14 @@ class WithRequest extends React.Component {
     return null;
   }
 
-  request = async (path, method, body) => {
+  request = async (path, method, body, type='application/json') => {
     const {addError} = this.props;
     try {
-      const answer = await fetch(path, {method, body});
+      const answer = await fetch(path, {
+        method,
+        headers: type === 'form' ? {} : {
+          'Content-Type': type
+        }, body});
       if (answer.status === 200 || answer.status === 400) {
         return await answer.json();
       } else {
@@ -33,8 +37,12 @@ class WithRequest extends React.Component {
       return await this.request(path, 'POST', body);
   }
 
-  DELETE = async (path) => {
-    return await this.request(path, 'DELETE');
+  POST_FORM = async (path, body) => {
+      return await this.request(path, 'POST', body, 'form');
+  }
+
+  DELETE = async (path, body) => {
+    return await this.request(path, 'DELETE', body);
   }
 }
 
