@@ -17,12 +17,12 @@ app.use((req, res, next) => {
 
 app.use('/api/terrain', require('./src/routes/terrains'));
 app.use('/api/map-cell', require('./src/routes/mapCell.route'));
-
+console.log(path.join(__dirname, 'client', 'dist'));
 if (process.env.NODE_ENV === 'production') {
     app.use('/', express.static(path.join(__dirname, 'client', 'dist')));
     //app.use('/', express.static(path.join(__dirname, 'client', 'src')));
 
-    app.get('*', (req, res) => {
+    app.get('', (req, res) => {
         res.sendFile(path.resolve(__dirname, 'client', 'dist', 'index.html'));
     });
 }
