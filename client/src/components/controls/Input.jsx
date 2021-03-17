@@ -51,7 +51,7 @@ class Input extends React.Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      value: '',
+      value: props.value,
       error: ''
     }
   }
@@ -118,6 +118,7 @@ class Input extends React.Component {
 }
 
 Input.defaultProps = {
+  value: '',
   title: '',
   width: '190px',
   margin: '0 0 0 0',
@@ -125,6 +126,10 @@ Input.defaultProps = {
 };
 
 Input.propTypes = {
+  value: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ]),
   title: PropTypes.string,
   name: PropTypes.string,
   width: PropTypes.string,

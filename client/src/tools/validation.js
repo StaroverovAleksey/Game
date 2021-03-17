@@ -38,7 +38,12 @@ export default {
     error: 'Только емейл',
   },
   format: {
-    func: (file, reference) => reference.includes(file.type.split('/')[1]),
+    func: (file, reference) => {
+      if (!file.type) {
+        return false;
+      }
+      return reference.includes(file.type.split('/')[1]);
+    },
     error: 'Неверный формат',
   },
 };

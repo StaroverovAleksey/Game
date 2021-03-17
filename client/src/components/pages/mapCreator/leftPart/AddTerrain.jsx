@@ -21,12 +21,9 @@ const Wrapper = styled.div`
   width: 100%;
   display: flex;
   margin-top: 30px;
-  justify-content: ${({align}) => align || 'space-around'};
+  justify-content: ${({align}) => align || 'space-between'};
   :first-child {
     margin-top: 0;
-  }
-  :last-child {
-    margin-top: 20px;
   }
 `;
 
@@ -67,28 +64,31 @@ class AddTerrain extends WithRequest {
             <Input
               title="Номер"
               name="number"
-              width="30%"
-              margin="0 60px 0 0"
+              width="50%"
+              margin="0 10px 0 0"
               rules={{ required: true, isNum: true, minValue: 10 }}
             />
             <CheckBox
-              title="Пр-ть"
+              title="Проходимость"
               text="Загрузить"
               name="passability"
-              width="100px"
+              width="50%"
+              margin="0 0 0 auto"
             />
+
+          </Wrapper>
+
+          <Wrapper>
             <File
               title="Изображение"
               name="img"
               width="100px"
               rules={{ format: ['jpeg', 'jpg'] }}
             />
-          </Wrapper>
-
-          <Wrapper align={'center'}>
             <Button
               text="Отправить"
               width="100px"
+              margin="auto 0 0 0"
             />
           </Wrapper>
 

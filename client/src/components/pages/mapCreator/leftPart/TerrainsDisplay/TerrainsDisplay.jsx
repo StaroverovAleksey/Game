@@ -8,6 +8,9 @@ import TerrainItem from "./TerrainItem";
 import {choiceTerrain, deleteTerrain, setError} from "../../../../../redux/actions";
 import ModalMenu from "../../../../modal/ModalMenu";
 import WithRequest from "../../../../shells/ShellRequest";
+import Confirm from "../../../../modal/Confirm";
+import UpdateTerrain from "../../../../modal/UpdateTerrain";
+import AddTerrain from "../AddTerrain";
 
 const Title = styled.h3`
   align-self: flex-start;
@@ -34,7 +37,9 @@ class TerrainsDisplay extends WithRequest {
       sortingData: [],
       activeTerrain: false,
       modalMenuCoord: [],
+      modalConfirm: false,
       modalMenuNumber: null,
+      updateTerrain: false,
     }
   }
 
@@ -49,7 +54,14 @@ class TerrainsDisplay extends WithRequest {
   }
 
   render() {
-    const {sortingData, activeTerrain, modalMenuCoord} = this.state;
+    const {
+      sortingData,
+      activeTerrain,
+      modalConfirm,
+      modalMenuCoord,
+      updateTerrain,
+      modalMenuNumber
+    } = this.state;
     return <Field>
       <div onContextMenu={this._contextMenu}>
         {sortingData.map((sort, i) => {
@@ -71,6 +83,14 @@ class TerrainsDisplay extends WithRequest {
         })}
       </div>
 
+      {modalConfirm ?
+        <Confirm
+          description={'Уверен?'}
+          onSuccess={this._deleteTerrain}
+          onCancel={() => this.setState({modalConfirm: false})}
+        />
+        : null}
+
       {modalMenuCoord.length
         ? <ModalMenu
           xCoord={modalMenuCoord[0]}
@@ -78,12 +98,29 @@ class TerrainsDisplay extends WithRequest {
           closeCallback={this._closeModalMenu}
           data={[
             {title: 'Изменить', callback: this._updateTerrain},
-            {title: 'Удалить', callback: this._deleteTerrain}
+            {title: 'Удалить', callback: this._deleteTerrainConfirm}
             ]}
         />
         : null}
 
+      {updateTerrain ?
+        <UpdateTerrain
+          data={this._getData(modalMenuNumber)}
+          onCancel={() => this.setState({updateTerrain: false})}
+        />
+      : null}
+
     </Field>;
+  }
+
+  _getData = (number) => {
+    const {sortingData} = this.state;
+    for (let i = 0; i < sortingData.length; i++) {
+      const index = sortingData[i].findIndex((value) => value.number === number);
+      if (index > -1) {
+        return sortingData[i][index];
+      }
+    }
   }
 
   sortingData = () => {
@@ -115,19 +152,23 @@ class TerrainsDisplay extends WithRequest {
   }
 
   _closeModalMenu = () => {
-    this.setState({modalMenuCoord: [], modalMenuNumber: null});
+    this.setState({modalMenuCoord: [], modalMenuNumber: null, modalConfirm: false});
+  }
+
+  _deleteTerrainConfirm = async () => {
+    this.setState({modalConfirm: true, modalMenuCoord: []});
   }
 
   _deleteTerrain = async () => {
     const {modalMenuNumber} = this.state;
     const {removeTerrain} = this.props;
     await this.DELETE(API_DELETE_TERRAINS, JSON.stringify({number: modalMenuNumber}));
-    removeTerrain(modalMenuNumber);
     this._closeModalMenu();
+    removeTerrain(modalMenuNumber);
   }
 
   _updateTerrain = () => {
-    console.log(22222);
+    this.setState({updateTerrain: true, modalMenuCoord: []});
   }
 }
 

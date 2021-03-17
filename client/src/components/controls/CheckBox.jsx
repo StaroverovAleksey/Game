@@ -37,7 +37,7 @@ class CheckBox extends React.Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      checked: false
+      checked: props.checked
     }
   }
 
@@ -88,6 +88,7 @@ class CheckBox extends React.Component {
 }
 
 CheckBox.defaultProps = {
+  checked: false,
   title: '',
   width: '190px',
   margin: '0 0 0 0',
@@ -95,6 +96,7 @@ CheckBox.defaultProps = {
 };
 
 CheckBox.propTypes = {
+  checked: PropTypes.bool,
   title: PropTypes.string,
   name: PropTypes.string,
   width: PropTypes.string,

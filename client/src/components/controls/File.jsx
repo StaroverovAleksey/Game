@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import validation from "../../tools/validation";
 import {FormContext} from "../../tools/context";
+import {pathToImage} from "../../tools/routing";
 
 const Wrapper = styled.div`
   width: ${({ width }) => width};
@@ -12,8 +13,8 @@ const Wrapper = styled.div`
 
 const Title = styled.p`
   position: absolute;
-  top: -16px;
   left: 6px;
+  top: -16px;
   margin: 0;
   font-size: 14px;
   color: #999;
@@ -22,30 +23,27 @@ const Title = styled.p`
 const Status = styled.p`
   position: absolute;
   bottom: -15px;
-  left: 6px;
   margin: 0;
+  left: 6px;
   font-size: 14px;
   color: #ef9898;
   white-space: nowrap;
 `;
 
-const Label = styled.label`
+const Image = styled.label`
+  position: relative;
+  overflow: hidden;
   display: block;
-  width: 100%;
-  height: 28px;
-  cursor: pointer;
+  width: 64px;
+  height: 64px;
   box-sizing: border-box;
-  padding-top: 5px;
-  background-color: #dde5ff;
-  border: none;
-  border-radius: 5px;
-  outline: none;
-  text-align: center;
-  :hover, :focus {
-    box-shadow: 0 1px 2px 0 rgb(32 33 36 / 28%);
-  }
-  :active {
-    box-shadow: inset 0 1px 2px 0 rgb(32 33 36 / 28%);
+  cursor: pointer;
+  border: 2px #dde5ff solid;
+  background-image: ${({ path }) => path};
+  opacity: ${({ active }) => (active ? '0.4' : '1')};
+  :hover {
+    opacity: ${({ active }) => (active ? '0.4' : '0.7')};
+    z-index: 1;
   }
 `;
 
@@ -59,8 +57,10 @@ class File extends React.Component {
     this.state = {
       file: {},
       status: '',
+      path: props.path,
     };
     this.ref = React.createRef();
+    this.refImg = React.createRef();
   }
 
   static contextType = FormContext;
@@ -69,10 +69,13 @@ class File extends React.Component {
     if (typeof this.context.subscribe === 'function') {
       this.context.subscribe(this);
     }
+    if (this.props.path) {
+      console.log(this.props.path);
+    }
   }
 
   render() {
-    const { status } = this.state;
+    const { status, path } = this.state;
     const { name } = this.props;
     const index = this.context.errors.findIndex((value) => value.param === name);
     const errorMsg = index > -1 ? this.context.errors[index].msg : '';
@@ -85,22 +88,38 @@ class File extends React.Component {
         margin={margin}
       >
         <Title>{title}</Title>
-        <Label
+        <Image
           onClick={onClick}
+          path={path}
         >
-          Загрузить
           <Input
             type="file"
             onChange={this._onChange}
             ref={this.ref}
           />
-        </Label>
+          <img ref={this.refImg} src={path}/>
+        </Image>
         <Status>{errorMsg || status}</Status>
       </Wrapper>
     );
   }
 
   _onChange = (event) => {
+
+    const preview = this.refImg.current;
+    const file    = event.target.files[0];
+    const reader  = new FileReader();
+
+    reader.onloadend = function () {
+      preview.src = reader.result;
+    }
+
+    if (file) {
+      reader.readAsDataURL(file);
+    } else {
+      preview.src = "";
+    }
+
     const { name } = this.props;
     const files = event.target.files;
     if (files.length > 1) {
@@ -132,11 +151,15 @@ class File extends React.Component {
   }
 
   reset = () => {
-    this.setState({file: {}, status: '',}, () => this.ref.current.value = '');
+    this.setState({file: {}, status: '',}, () => {
+      this.ref.current.value = '';
+      this.refImg.current.src = '';
+    });
   }
 }
 
 File.defaultProps = {
+  path: '',
   title: '',
   width: '190px',
   margin: '0 0 0 0',
@@ -145,6 +168,7 @@ File.defaultProps = {
 };
 
 File.propTypes = {
+  path: PropTypes.string,
   title: PropTypes.string,
   width: PropTypes.string,
   margin: PropTypes.string,
