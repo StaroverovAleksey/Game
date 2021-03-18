@@ -83,7 +83,7 @@ router.post('/create', [
     }
 });
 
-router.get('/get', async (req, res) => {
+router.get('/read', async (req, res) => {
     try {
         const mapCells = await Cell.find().populate('type');
         res.status(200).json({mapCells});

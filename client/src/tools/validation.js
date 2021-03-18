@@ -40,7 +40,7 @@ export default {
   format: {
     func: (file, reference) => {
       if (!file.type) {
-        return false;
+        return true;
       }
       return reference.includes(file.type.split('/')[1]);
     },

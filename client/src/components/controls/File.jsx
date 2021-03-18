@@ -69,9 +69,6 @@ class File extends React.Component {
     if (typeof this.context.subscribe === 'function') {
       this.context.subscribe(this);
     }
-    if (this.props.path) {
-      console.log(this.props.path);
-    }
   }
 
   render() {

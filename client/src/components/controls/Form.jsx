@@ -45,7 +45,11 @@ class Form extends React.Component {
   }
 
   _onChange = (name, value) => {
-    this.setState({[name]: value});
+    this.setState({[name]: value}, () => {
+      const data = Object.assign({}, this.state);
+      delete data.errors;
+      this.props.onChange(data);
+    });
   }
 
   _resetAll = () => {
@@ -57,14 +61,19 @@ class Form extends React.Component {
     Promise.all(
       this.observeList.map(({validation}) => validation())
     )
-      .then(() => this.props.onSubmit(this.state))
+      .then(() => {
+        const data = Object.assign({}, this.state);
+        delete data.errors;
+        this.props.onSubmit(data);
+      })
       .catch(() => null);
   }
 }
 
 Form.defaultProps = {
   className: '',
-  errors: []
+  errors: [],
+  onChange: () => undefined,
 };
 
 Form.propTypes = {
@@ -74,6 +83,7 @@ Form.propTypes = {
   ]),
   errors: PropTypes.arrayOf(PropTypes.object),
   className: PropTypes.string,
+  onChange: PropTypes.func,
 };
 
 export default Form;

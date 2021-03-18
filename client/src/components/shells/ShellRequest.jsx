@@ -41,6 +41,10 @@ class WithRequest extends React.Component {
       return await this.request(path, 'POST', body, 'form');
   }
 
+  PATCH_FORM = async (path, body) => {
+      return await this.request(path, 'PATCH', body, 'form');
+  }
+
   DELETE = async (path, body) => {
     return await this.request(path, 'DELETE', body);
   }

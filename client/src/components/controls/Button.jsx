@@ -7,12 +7,12 @@ const ButtonCommon = styled.button`
   margin: ${({ margin }) => margin};
   height: 28px;
   cursor: pointer;
-  background-color: #dde5ff;
+  background-color: ${({ disabled }) => (disabled ? 'rgb(230, 230, 230)' : '#dde5ff')};
   border: none;
   border-radius: 5px;
   outline: none;
   :hover, :focus {
-    box-shadow: 0 1px 2px 0 rgb(32 33 36 / 28%);
+    box-shadow: ${({ disabled }) => (disabled ? 'none' : '0 1px 2px 0 rgb(32 33 36 / 28%)')};;
   }
   :active {
     box-shadow: inset 0 1px 2px 0 rgb(32 33 36 / 28%);
@@ -36,13 +36,14 @@ class Button extends React.Component {
 
   render() {
     const {
-      text, width, margin, onClick,
+      text, width, margin, onClick, disabled,
     } = this.props;
     return (
       <ButtonCommon
         width={width}
         margin={margin}
         onClick={onClick}
+        disabled={disabled}
         ref={this.ref}
       >
         {text}
@@ -57,6 +58,7 @@ Button.defaultProps = {
   margin: '0 0 0 0',
   onClick: null,
   focus: false,
+  disabled: false,
 };
 
 Button.propTypes = {
@@ -65,6 +67,7 @@ Button.propTypes = {
   margin: PropTypes.string,
   onClick: PropTypes.func,
   focus: PropTypes.bool,
+  disabled: PropTypes.bool,
 };
 
 export default Button;

@@ -1,14 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
 import WithRequest from '../shells/ShellRequest';
-import AddTerrain from '../pages/mapCreator/leftPart/AddTerrain';
 import Form from "../controls/Form";
 import Input from "../controls/Input";
 import CheckBox from "../controls/CheckBox";
 import File from "../controls/File";
 import Button from "../controls/Button";
 import Field from "../controls/Field";
-import {API_CREATE_TERRAINS, getPAthToImage, pathToImage} from "../../tools/routing";
+import {API_CREATE_TERRAINS, API_UPDATE_TERRAINS, getPAthToImage} from "../../tools/routing";
 import {connect} from "react-redux";
 import {setError, setTerrain} from "../../redux/actions";
 import PropTypes from "prop-types";
@@ -55,18 +54,26 @@ class UpdateTerrain extends WithRequest {
       modal: false,
       errors: [],
       reset: false,
+      disabled: true,
+      update: false,
     };
   }
 
   render() {
     const {onCancel} = this.props;
     const {sort, name, number, passability, path} = this.props.data;
+    const {disabled} = this.state;
     return (
       <OuterWrapper>
         <InnerWrapper>
           <Field>
             <Title>{`Изменение ${sort}/${name}`}</Title>
-            <Form onSubmit={this._onSubmit} errors={this.state.errors} reset={this.state.reset}>
+            <Form
+              onSubmit={this._onSubmit}
+              errors={this.state.errors}
+              reset={this.state.reset}
+              onChange={this._onChange}
+            >
 
               <Wrapper>
                 <Input
@@ -125,6 +132,7 @@ class UpdateTerrain extends WithRequest {
                   text="Применить"
                   width="100px"
                   margin="auto 0 0 0"
+                  disabled={disabled}
                 />
               </Wrapper>
 
@@ -135,14 +143,28 @@ class UpdateTerrain extends WithRequest {
     );
   }
 
+  _onChange = () => {
+    const {update} = this.state;
+    if (update) {
+      this.setState({disabled: false});
+    }
+    this.setState({update: true});
+  }
+
   _onSubmit = async (data) => {
-    console.log(data);
     this.setState({errors: [], reset: false});
     const formData = new FormData();
     Object.keys(data).map((key) => {
-      formData.append(key, data[key]);
-    });
-    const answer = await this.POST_FORM(API_CREATE_TERRAINS, formData);
+      if (data[key] !== this.props.data[key]) {
+        formData.append(key, data[key]);
+      }
+    })
+
+
+    const answer = await this.PATCH_FORM(API_UPDATE_TERRAINS, formData);
+
+
+
     if(answer.errors) {
       this.setState({errors: answer.errors});
     } else {

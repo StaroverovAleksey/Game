@@ -110,7 +110,7 @@ router.post('/create', multiparty, [
     }
 });
 
-router.get('/get', async (req, res) => {
+router.get('/read', async (req, res) => {
     try {
         const terrains = await Terrain.find().exec();
         res.status(200).json({terrains});
@@ -118,6 +118,94 @@ router.get('/get', async (req, res) => {
         res.status(500).json({massage: 'server error'});
     }
 });
+
+
+
+router.patch('/update', multiparty, [
+    check('number')
+        .if(body('number').exists())
+        .isNumeric().withMessage('number expected')
+        .isLength({ max: 3 }).withMessage('max length expected 3')
+        .trim(),
+    body('name')
+        .if(body('name').exists())
+        .isString().withMessage('string expected')
+        .isLength({ max: 32 }).withMessage('max length expected 32')
+        .trim()
+        .custom((value) => {
+            if (value.split('').some((v) => v === ' ')) {
+                throw new Error('space forbidden')
+            } else {
+                return true;
+            }
+        }),
+    body('sort')
+        .if(body('sort').exists())
+        .isString().withMessage('string expected')
+        .isLength({ max: 32 }).withMessage('max length expected 32')
+        .trim()
+        .custom((value) => {
+            if (value.split('').some((v) => v === ' ')) {
+                throw new Error('space forbidden')
+            } else {
+                return true;
+            }
+        }),
+    body('passability')
+        .if(body('passability').exists())
+        .isBoolean().withMessage('boolean expected')
+], async (req, res) => {
+    try {
+        const errors = validationResult(req);
+
+        if (req.files.img && req.files.img.type === 'image/jpeg') {
+
+            const dimensions = await sizeOf(req.files.img.path);
+
+            if (dimensions.width !== CELL_SIZE.WIDTH || dimensions.height !== CELL_SIZE.HEIGHT) {
+                errors.errors.push({
+                    'msg': "size image 64/64 px expected",
+                    'param': "img",
+                    'location': "body"
+                });
+            }
+        }
+
+        if (req.body.number) {
+            console.log(1111);
+            let result = !isNaN(req.body.number) ? await Terrain.findOne({ number: req.body.number }).exec() : null;
+            if (result) {
+                errors.errors.push({
+                    'msg': "number is exist",
+                    'param': "number",
+                    'location': "body"
+                });
+            }
+        }
+
+        if (!errors.isEmpty()) {
+            return res.status(400).json({
+                errors: errors.array(),
+                message: 'bad request'
+            });
+        }
+
+
+        console.log(typeof req.body.passability);
+        //const terrains = await Terrain.find().exec();
+        res.status(200).json({as: req.body});
+    } catch (error) {
+        res.status(500).json({massage: 'server error'});
+    }
+});
+
+
+
+
+
+
+
+
 
 router.delete('/delete', [
     check('number')
