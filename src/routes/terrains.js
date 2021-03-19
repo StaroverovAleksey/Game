@@ -7,6 +7,7 @@ const {promisify} = require('util');
 const sizeOf = promisify(require('image-size'));
 const {body} = require("express-validator");
 const Terrain = require('../models/Terrains');
+const mongoose = require("express");
 const {check} = require("express-validator");
 const router = Router();
 
@@ -19,7 +20,7 @@ router.post('/create', multiparty, [
         .trim(),
     body('name')
         .isString().withMessage('string expected')
-        .isLength({ max: 32 }).withMessage('max length expected 32')
+        .isLength({ min: 3, max: 32 }).withMessage('length between 3 and 32')
         .trim()
         .custom((value) => {
             if (value.split('').some((v) => v === ' ')) {
@@ -30,7 +31,7 @@ router.post('/create', multiparty, [
         }),
     body('sort')
         .isString().withMessage('string expected')
-        .isLength({ max: 32 }).withMessage('max length expected 32')
+        .isLength({ min: 3, max: 32 }).withMessage('length between 3 and 32')
         .trim()
         .custom((value) => {
             if (value.split('').some((v) => v === ' ')) {
@@ -43,6 +44,7 @@ router.post('/create', multiparty, [
         .isBoolean().withMessage('boolean expected')
 ], async (req, res) => {
     try {
+        console.log(req.body);
         const errors = validationResult(req);
 
         if (req.files.img && req.files.img.type === 'image/jpeg') {
@@ -122,6 +124,10 @@ router.get('/read', async (req, res) => {
 
 
 router.patch('/update', multiparty, [
+    check('oldNumber')
+        .isNumeric().withMessage('number expected')
+        .isLength({ max: 3 }).withMessage('max length expected 3')
+        .trim(),
     check('number')
         .if(body('number').exists())
         .isNumeric().withMessage('number expected')
@@ -130,7 +136,7 @@ router.patch('/update', multiparty, [
     body('name')
         .if(body('name').exists())
         .isString().withMessage('string expected')
-        .isLength({ max: 32 }).withMessage('max length expected 32')
+        .isLength({ min: 3, max: 32 }).withMessage('length between 3 and 32')
         .trim()
         .custom((value) => {
             if (value.split('').some((v) => v === ' ')) {
@@ -142,7 +148,7 @@ router.patch('/update', multiparty, [
     body('sort')
         .if(body('sort').exists())
         .isString().withMessage('string expected')
-        .isLength({ max: 32 }).withMessage('max length expected 32')
+        .isLength({ min: 3, max: 32 }).withMessage('length between 3 and 32')
         .trim()
         .custom((value) => {
             if (value.split('').some((v) => v === ' ')) {
@@ -172,11 +178,21 @@ router.patch('/update', multiparty, [
         }
 
         if (req.body.number) {
-            console.log(1111);
             let result = !isNaN(req.body.number) ? await Terrain.findOne({ number: req.body.number }).exec() : null;
             if (result) {
                 errors.errors.push({
                     'msg': "number is exist",
+                    'param': "number",
+                    'location': "body"
+                });
+            }
+        }
+
+        if (req.body.number) {
+            let result = !isNaN(req.body.oldNumber) ? await Terrain.findOne({ number: req.body.oldNumber }).exec() : null;
+            if (!result) {
+                errors.errors.push({
+                    'msg': "oldNumber not found",
                     'param': "number",
                     'location': "body"
                 });
@@ -190,8 +206,35 @@ router.patch('/update', multiparty, [
             });
         }
 
+        console.log(1111);
+        const oldData = await Terrain.findOne({ number: req.body.oldNumber }).exec();
+        await Terrain.findOneAndUpdate({number: req.body.oldNumber}, req.body).exec();
+        console.log(2222);
 
-        console.log(typeof req.body.passability);
+        if (req.body.sort || req.body.number) {
+            const sort = req.body.sort.toString().toUpperCase()[0] + req.body.sort.toString().toLowerCase().slice(1);
+            console.log(333, req.body.oldNumber);
+            const pathToFileOld = `./client/src/assets/images/terrains/${oldData.sort}/${oldData.number}.jpg`;
+            const pathToFile = `./client/src/assets/images/terrains/${sort || oldData.sort}/${req.body.number || oldData.number}.jpg`;
+            const pathDir = `./client/src/assets/images/terrains/${sort || oldData.sort}`;
+            const pathDirOld = `./client/src/assets/images/terrains/${oldData.sort}`;
+            const path = `assets/images/terrains/${sort || oldData.sort}/${req.body.number || oldData.number}.jpg`;
+            console.log(pathToFileOld, pathToFile, path);
+            await Terrain.findOneAndUpdate({number: req.body.number || req.body.oldNumber}, {path: path}).exec();
+            console.log(pathToFileOld, pathToFile);
+            try {
+                console.log(await fs.statSync(pathToFileOld));
+                await fs.mkdirSync(pathDir);
+                await fs.renameSync(pathToFileOld, pathToFile);
+                await fs.rmdirSync(pathDirOld);
+            } catch (e) {
+                console.log(e);
+            }
+            console.log(888);
+        }
+
+        console.log(req.body);
+        console.log(req.files);
         //const terrains = await Terrain.find().exec();
         res.status(200).json({as: req.body});
     } catch (error) {

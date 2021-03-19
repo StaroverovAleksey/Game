@@ -152,6 +152,7 @@ class UpdateTerrain extends WithRequest {
   }
 
   _onSubmit = async (data) => {
+    const {number} = this.props.data;
     this.setState({errors: [], reset: false});
     const formData = new FormData();
     Object.keys(data).map((key) => {
@@ -159,6 +160,7 @@ class UpdateTerrain extends WithRequest {
         formData.append(key, data[key]);
       }
     })
+    formData.append('oldNumber', number);
 
 
     const answer = await this.PATCH_FORM(API_UPDATE_TERRAINS, formData);
