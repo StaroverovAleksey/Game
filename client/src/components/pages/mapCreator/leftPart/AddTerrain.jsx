@@ -5,10 +5,10 @@ import Input from '../../../controls/Input';
 import Field from '../../../controls/Field';
 import Button from '../../../controls/Button';
 import { connect } from 'react-redux';
-import {setError, setSize, setTerrain, setTerrains} from "../../../../redux/actions";
+import {setError, setTerrain} from "../../../../redux/actions";
 import PropTypes from "prop-types";
 import File from "../../../controls/File";
-import {API_CREATE_TERRAINS, API_GET_MAP_CELLS, API_GET_TERRAINS, getPAthToImage} from "../../../../tools/routing";
+import {API_CREATE_TERRAINS} from "../../../../tools/routing";
 import WithRequest from "../../../shells/ShellRequest";
 import CheckBox from "../../../controls/CheckBox";
 
@@ -111,7 +111,7 @@ class AddTerrain extends WithRequest {
       dataToAction.sort = data.sort.toString().trim().toUpperCase()[0] + data.sort.toString().trim().toLowerCase().slice(1);
       dataToAction.name = data.name.toString().trim();
       dataToAction.number = parseInt(data.number);
-      dataToAction.path = getPAthToImage(dataToAction.sort, dataToAction.number, data.img.name.split('.')[1]);
+      dataToAction.fileName = answer.fileName;
       dataToAction.passability = data.passability;
       this.props.addTerrain(dataToAction);
       this.setState({reset: true});

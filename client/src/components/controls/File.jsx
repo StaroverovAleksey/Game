@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import validation from "../../tools/validation";
 import {FormContext} from "../../tools/context";
-import {pathToImage} from "../../tools/routing";
 
 const Wrapper = styled.div`
   width: ${({ width }) => width};
@@ -94,7 +93,7 @@ class File extends React.Component {
             onChange={this._onChange}
             ref={this.ref}
           />
-          <img ref={this.refImg} src={path}/>
+          <img ref={this.refImg}/>
         </Image>
         <Status>{errorMsg || status}</Status>
       </Wrapper>

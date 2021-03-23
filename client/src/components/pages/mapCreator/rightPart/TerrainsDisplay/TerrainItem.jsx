@@ -1,8 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { pathToImage } from '../../../../../tools/routing';
-import ModalMenu from '../../../../modal/ModalMenu';
+import {atrTerrainsPath, atrUtilsPath} from '../../../../../tools/routing';
 
 const Wrapper = styled.div`
   position: relative;
@@ -49,7 +48,7 @@ const Choice = styled.span`
   left: 0;
   z-index: 2;
   box-sizing: border-box;
-  background-image: ${({ active }) => (active ? 'url(../src/assets/images/icons/qwerty.png)' : '')};
+  background-image: ${({ active }) => (active ? atrUtilsPath('active.png') : '')};
   background-position: top;
   background-size: cover;
   opacity: 1;
@@ -98,7 +97,7 @@ class TerrainItem extends React.Component {
         onClick={() => callBack(terrain)}
       >
         <Image
-          path={pathToImage(terrain.path)}
+          path={atrTerrainsPath(terrain.fileName)}
           onClick={() => callBack(terrain)}
           active={active}
         />
@@ -116,7 +115,7 @@ class TerrainItem extends React.Component {
 
 TerrainItem.propTypes = {
   terrain: PropTypes.shape({
-    path: PropTypes.string.isRequired,
+    fileName: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     number: PropTypes.number.isRequired,
   }).isRequired,

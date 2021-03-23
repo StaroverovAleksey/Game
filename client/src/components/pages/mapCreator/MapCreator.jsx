@@ -8,9 +8,11 @@ import MainPart from './mainPart/MainPart';
 import { setError, setMapCells, setTerrains } from '../../../redux/actions';
 import { API_GET_MAP_CELLS, API_GET_TERRAINS } from '../../../tools/routing';
 import WithRequest from '../../shells/ShellRequest';
+import RightPart from './rightPart/RightPart';
 
 const OuterWrapper = styled.div`
   display: flex;
+  height: 100vh;
   justify-content: center;
 `;
 const InnerWrapper = styled.div`
@@ -51,6 +53,7 @@ class MapCreator extends WithRequest {
                 <TopPart />
                 <MainPart />
               </InnerWrapper>
+              <RightPart />
             </>
           )}
 

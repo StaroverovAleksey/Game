@@ -1,10 +1,9 @@
-const address = 'http://localhost';
-//const address = 'http://3.18.225.147';
+import config from '../../config.json';
 
-export const pathToImage = (path) => `url(../src/${path})`;
-export const getPAthToImage = (sort, number, extension) => `assets/images/terrains/${sort}/${number}.${extension}`;
+export const atrTerrainsPath = (name) => `url(${config.pathToArts}terrains/${name})`;
+export const atrUtilsPath = (name) => `url(${config.pathToArts}utils/${name})`;
 
-const pathAPI = (method) => `${address}/api${method}`;
+const pathAPI = (method) => `${config.serverAddress}/api${method}`;
 
 /** *TERRAIN */
 export const API_CREATE_TERRAINS = pathAPI('/terrain/create');
