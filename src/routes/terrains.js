@@ -44,7 +44,6 @@ router.post('/create', multiparty, [
         .isBoolean().withMessage('boolean expected')
 ], async (req, res) => {
     try {
-        console.log(req.files.img);
         const errors = validationResult(req);
 
         if (req.files.img && req.files.img.type === 'image/jpeg') {
@@ -206,36 +205,25 @@ router.patch('/update', multiparty, [
             });
         }
 
-        console.log(1111);
-        const oldData = await Terrain.findOne({ number: req.body.oldNumber }).exec();
-        await Terrain.findOneAndUpdate({number: req.body.oldNumber}, req.body).exec();
-        console.log(2222);
-
-        if (req.body.sort || req.body.number) {
-            const sort = req.body.sort.toString().toUpperCase()[0] + req.body.sort.toString().toLowerCase().slice(1);
-            console.log(333, req.body.oldNumber);
-            const pathToFileOld = `./client/src/assets/images/terrains/${oldData.sort}/${oldData.number}.jpg`;
-            const pathToFile = `./client/src/assets/images/terrains/${sort || oldData.sort}/${req.body.number || oldData.number}.jpg`;
-            const pathDir = `./client/src/assets/images/terrains/${sort || oldData.sort}`;
-            const pathDirOld = `./client/src/assets/images/terrains/${oldData.sort}`;
-            const path = `assets/images/terrains/${sort || oldData.sort}/${req.body.number || oldData.number}.jpg`;
-            console.log(pathToFileOld, pathToFile, path);
-            await Terrain.findOneAndUpdate({number: req.body.number || req.body.oldNumber}, {path: path}).exec();
-            console.log(pathToFileOld, pathToFile);
-            try {
-                console.log(await fs.statSync(pathToFileOld));
-                await fs.mkdirSync(pathDir);
-                await fs.renameSync(pathToFileOld, pathToFile);
-                await fs.rmdirSync(pathDirOld);
-            } catch (e) {
-                console.log(e);
-            }
-            console.log(888);
+        if (req.body.sort) {
+            req.body.sort = req.body.sort.toString().toUpperCase()[0] + req.body.sort.toString().toLowerCase().slice(1);
         }
 
-        console.log(req.body);
-        console.log(req.files);
-        //const terrains = await Terrain.find().exec();
+        if (req.files.img) {
+            const oldData = await Terrain.findOne({ number: req.body.oldNumber }).exec();
+            const path = `./client/arts/terrains/${oldData.fileName}`;
+            await fs.rmSync(path);
+
+            const fileName = `${getFileName()}.${req.files.img.name.split('.').reverse()[0]}`;
+            const pathToFile = `./client/arts/terrains/${fileName}`;
+            const file = await fs.readFileSync(req.files.img.path);
+
+            await fs.writeFileSync(pathToFile, file);
+            req.body.fileName = fileName;
+        }
+
+        await Terrain.findOneAndUpdate({number: req.body.oldNumber}, req.body).exec();
+
         res.status(200).json({as: req.body});
     } catch (error) {
         res.status(500).json({massage: 'server error'});
