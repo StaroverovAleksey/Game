@@ -3,5 +3,4 @@
 package-lock.json
 
 /client/dist
-/client/config.json
 /client/node_modules
