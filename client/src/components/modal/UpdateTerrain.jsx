@@ -7,7 +7,7 @@ import CheckBox from "../controls/CheckBox";
 import File from "../controls/File";
 import Button from "../controls/Button";
 import Field from "../controls/Field";
-import {API_UPDATE_TERRAINS, qwerty} from "../../tools/routing";
+import {API_UPDATE_TERRAINS, atrTerrainsPath} from "../../tools/routing";
 import {connect} from "react-redux";
 import {setError, setTerrain} from "../../redux/actions";
 import PropTypes from "prop-types";
@@ -61,7 +61,7 @@ class UpdateTerrain extends WithRequest {
 
   render() {
     const {onCancel} = this.props;
-    const {sort, name, number, passability, path} = this.props.data;
+    const {sort, name, number, passability, fileName} = this.props.data;
     const {disabled} = this.state;
     return (
       <OuterWrapper>
@@ -116,7 +116,7 @@ class UpdateTerrain extends WithRequest {
               <Wrapper>
                 <File
                   title="Изображение"
-                  path={`src/${path}`}
+                  path={atrTerrainsPath(fileName)}
                   name="img"
                   width="100px"
                   rules={{ format: ['jpeg', 'jpg'] }}

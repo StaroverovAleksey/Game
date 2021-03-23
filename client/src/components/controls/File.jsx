@@ -93,7 +93,7 @@ class File extends React.Component {
             onChange={this._onChange}
             ref={this.ref}
           />
-          <img ref={this.refImg} src={path}/>
+          <img ref={this.refImg}/>
         </Image>
         <Status>{errorMsg || status}</Status>
       </Wrapper>

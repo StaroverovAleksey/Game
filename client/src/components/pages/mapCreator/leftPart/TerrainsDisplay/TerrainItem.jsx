@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { atrTerrainsPath } from '../../../../../tools/routing';
+import {atrTerrainsPath, atrUtilsPath} from '../../../../../tools/routing';
 
 const Wrapper = styled.div`
   position: relative;
@@ -48,7 +48,7 @@ const Choice = styled.span`
   left: 0;
   z-index: 2;
   box-sizing: border-box;
-  background-image: ${({ active }) => (active ? 'url(../src/assets/images/icons/qwerty.png)' : '')};
+  background-image: ${({ active }) => (active ? atrUtilsPath('active.png') : '')};
   background-position: top;
   background-size: cover;
   opacity: 1;
