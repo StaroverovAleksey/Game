@@ -1,7 +1,6 @@
 import config from '../../config.json';
 
-export const pathToImage = (path) => `url(../src/assets/images/terrains/${path})`;
-export const atrTerrainsPath = (path) => `url(${config.pathToArts}/terrains/${path})`;
+export const atrTerrainsPath = (path) => `url(${config.pathToArts}terrains/${path})`;
 
 const pathAPI = (method) => `${config.serverAddress}/api${method}`;
 
