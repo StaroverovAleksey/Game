@@ -2,6 +2,7 @@ import config from '../../config.json';
 
 //const address = 'http://localhost';
 const address = 'http://3.18.225.147';
+//const address = 'http://3.18.225.147';
 
 export const qwerty = () => console.log(config);
 
