@@ -33,6 +33,7 @@ jobs:
 
       # Deploy
       - run: scp -i $HOME/.ssh/key -o StrictHostKeyChecking=no -r client/dist/ ${{ env.USER }}@${{ env.HOST }}:game/client
+      - run: scp -i $HOME/.ssh/key -r client/arts/ ${{ env.USER }}@${{ env.HOST }}:game/
       - run: scp -i $HOME/.ssh/key -r src/ ${{ env.USER }}@${{ env.HOST }}:game/
       - run: scp -i $HOME/.ssh/key index.js ${{ env.USER }}@${{ env.HOST }}:game/
       - run: scp -i $HOME/.ssh/key package.json ${{ env.USER }}@${{ env.HOST }}:game/
