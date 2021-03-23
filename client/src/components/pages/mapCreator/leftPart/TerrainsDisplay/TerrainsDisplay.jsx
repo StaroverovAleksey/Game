@@ -3,14 +3,13 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import Field from "../../../../controls/Field";
-import {API_DELETE_TERRAINS, pathToImage} from "../../../../../tools/routing";
+import {API_DELETE_TERRAINS} from "../../../../../tools/routing";
 import TerrainItem from "./TerrainItem";
 import {choiceTerrain, deleteTerrain, setError} from "../../../../../redux/actions";
 import ModalMenu from "../../../../modal/ModalMenu";
 import WithRequest from "../../../../shells/ShellRequest";
 import Confirm from "../../../../modal/Confirm";
 import UpdateTerrain from "../../../../modal/UpdateTerrain";
-import AddTerrain from "../AddTerrain";
 
 const Title = styled.h3`
   align-self: flex-start;
@@ -72,7 +71,6 @@ class TerrainsDisplay extends WithRequest {
               {sort.map((terrain, index) => {
                 return <TerrainItem
                   terrain={terrain}
-                  path={pathToImage(terrain.path)}
                   remainder={remainder}
                   key={`terrain_item_${index}`}
                   callBack={this.choiceTerrain}

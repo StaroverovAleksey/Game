@@ -88,9 +88,9 @@ router.post('/create', multiparty, [
         const sort = req.body.sort.toString().toUpperCase()[0] + req.body.sort.toString().toLowerCase().slice(1);
         const passability = req.body.passability;
         const file = await fs.readFileSync(req.files.img.path);
-        const pathToDirectory = `./client/src/assets/images/terrains`;
+        const pathToDirectory = `./client/arts/terrains`;
         const fileName = `${getFileName()}.${req.files.img.name.split('.').reverse()[0]}`;
-        const pathToFile = `./client/src/assets/images/terrains/${fileName}`;
+        const pathToFile = `${pathToDirectory}/${fileName}`;
 
         try {
             await fs.statSync(pathToDirectory);

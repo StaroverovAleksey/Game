@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import validation from "../../tools/validation";
 import {FormContext} from "../../tools/context";
-import {pathToImage} from "../../tools/routing";
 
 const Wrapper = styled.div`
   width: ${({ width }) => width};

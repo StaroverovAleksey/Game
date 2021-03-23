@@ -1,8 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { pathToImage } from '../../../../../tools/routing';
-import ModalMenu from '../../../../modal/ModalMenu';
+import { atrTerrainsPath } from '../../../../../tools/routing';
 
 const Wrapper = styled.div`
   position: relative;
@@ -98,7 +97,7 @@ class TerrainItem extends React.Component {
         onClick={() => callBack(terrain)}
       >
         <Image
-          path={pathToImage(terrain.fileName)}
+          path={atrTerrainsPath(terrain.fileName)}
           onClick={() => callBack(terrain)}
           active={active}
         />
