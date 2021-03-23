@@ -6,10 +6,10 @@ import Field from "../../../../controls/Field";
 import {API_DELETE_TERRAINS} from "../../../../../tools/routing";
 import TerrainItem from "./TerrainItem";
 import {choiceTerrain, deleteTerrain, setError} from "../../../../../redux/actions";
-import ModalMenu from "../../../../modal/ModalMenu";
 import WithRequest from "../../../../shells/ShellRequest";
 import Confirm from "../../../../modal/Confirm";
 import UpdateTerrain from "../../../../modal/UpdateTerrain";
+import ModalMenu from "../../../../modal/ModalMenu";
 
 const Title = styled.h3`
   align-self: flex-start;

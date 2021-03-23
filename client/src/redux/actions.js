@@ -3,6 +3,8 @@ export const SET_TERRAINS = 'SET_TERRAINS';
 export const setTerrains = (terrains) => ({ type: SET_TERRAINS, payload: terrains });
 export const SET_ONE_TERRAIN = 'SET_ONE_TERRAIN';
 export const setTerrain = (terrains) => ({ type: SET_ONE_TERRAIN, payload: terrains });
+export const UPDATE_TERRAIN = 'UPDATE_TERRAIN';
+export const updateTerrain = (terrain) => ({ type: UPDATE_TERRAIN, payload: terrain });
 export const DELETE_TERRAIN = 'DELETE_TERRAIN';
 export const deleteTerrain = (number) => ({ type: DELETE_TERRAIN, payload: number });
 

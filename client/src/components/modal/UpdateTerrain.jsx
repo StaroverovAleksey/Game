@@ -9,7 +9,7 @@ import Button from "../controls/Button";
 import Field from "../controls/Field";
 import {API_UPDATE_TERRAINS, atrTerrainsPath} from "../../tools/routing";
 import {connect} from "react-redux";
-import {setError, setTerrain} from "../../redux/actions";
+import {setError, setTerrain, updateTerrain} from "../../redux/actions";
 import PropTypes from "prop-types";
 
 const OuterWrapper = styled.div`
@@ -153,6 +153,7 @@ class UpdateTerrain extends WithRequest {
 
   _onSubmit = async (data) => {
     const {number} = this.props.data;
+    const {onCancel, changeTerrain} = this.props;
     this.setState({errors: [], reset: false});
     const formData = new FormData();
     Object.keys(data).map((key) => {
@@ -170,11 +171,34 @@ class UpdateTerrain extends WithRequest {
     if(answer.errors) {
       this.setState({errors: answer.errors});
     } else {
+      data.oldNumber = number;
+
+      if (data.number) {
+        data.number = parseInt(data.number);
+      }
+
+      if (data.sort) {
+        data.sort = data.sort.toString().toUpperCase()[0] + data.sort.toString().toLowerCase().slice(1);
+      }
+
+      if (answer.fileName) {
+        delete data.img;
+        data.fileName = answer.fileName;
+      }
+      onCancel();
+      changeTerrain(data);
     }
   }
 }
 
 UpdateTerrain.propTypes = {
+  data: PropTypes.shape({
+    fileName: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    number: PropTypes.number.isRequired,
+    sort: PropTypes.string.isRequired,
+    passability: PropTypes.bool.isRequired,
+  }).isRequired,
   addTerrain: PropTypes.func.isRequired,
   addError: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired,
@@ -184,6 +208,7 @@ export default connect(
   undefined,
   (mapDispatchToProps) => ({
     addTerrain: (data) => mapDispatchToProps(setTerrain(data)),
+    changeTerrain: (data) => mapDispatchToProps(updateTerrain(data)),
     addError: (data) => mapDispatchToProps(setError(data)),
   }),
 )(UpdateTerrain);

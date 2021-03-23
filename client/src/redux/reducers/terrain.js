@@ -1,7 +1,10 @@
-import { SET_TERRAINS, SET_ONE_TERRAIN, DELETE_TERRAIN } from '../actions';
+import {
+  SET_TERRAINS, SET_ONE_TERRAIN, DELETE_TERRAIN, UPDATE_TERRAIN,
+} from '../actions';
 
 export default function reducer(state = { }, action) {
   const newState = JSON.parse(JSON.stringify(state));
+  let index;
   switch (action.type) {
     case SET_TERRAINS: return { ...state, ...action.payload };
 
@@ -9,8 +12,18 @@ export default function reducer(state = { }, action) {
       newState.terrains.push(action.payload);
       return newState;
 
+    case UPDATE_TERRAIN:
+      index = newState.terrains.findIndex((value) => value.number === action.payload.oldNumber);
+      Object.keys(action.payload).forEach((key) => {
+        if (newState.terrains[index][key]) {
+          newState.terrains[index][key] = action.payload[key];
+        }
+      });
+      console.log(newState);
+      return newState;
+
     case DELETE_TERRAIN:
-      const index = newState.terrains.findIndex((value) => value.number === action.payload);
+      index = newState.terrains.findIndex((value) => value.number === action.payload);
       if (index > -1) {
         newState.terrains.splice(index, 1);
       }

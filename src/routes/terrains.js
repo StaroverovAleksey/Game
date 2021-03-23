@@ -111,6 +111,9 @@ router.post('/create', multiparty, [
     }
 });
 
+
+
+
 router.get('/read', async (req, res) => {
     try {
         const terrains = await Terrain.find().exec();
@@ -119,6 +122,9 @@ router.get('/read', async (req, res) => {
         res.status(500).json({massage: 'server error'});
     }
 });
+
+
+
 
 
 
@@ -209,12 +215,13 @@ router.patch('/update', multiparty, [
             req.body.sort = req.body.sort.toString().toUpperCase()[0] + req.body.sort.toString().toLowerCase().slice(1);
         }
 
+        let fileName;
         if (req.files.img) {
             const oldData = await Terrain.findOne({ number: req.body.oldNumber }).exec();
             const path = `./client/arts/terrains/${oldData.fileName}`;
             await fs.rmSync(path);
 
-            const fileName = `${getFileName()}.${req.files.img.name.split('.').reverse()[0]}`;
+            fileName = `${getFileName()}.${req.files.img.name.split('.').reverse()[0]}`;
             const pathToFile = `./client/arts/terrains/${fileName}`;
             const file = await fs.readFileSync(req.files.img.path);
 
@@ -224,7 +231,7 @@ router.patch('/update', multiparty, [
 
         await Terrain.findOneAndUpdate({number: req.body.oldNumber}, req.body).exec();
 
-        res.status(200).json({as: req.body});
+        res.status(200).json(fileName ? {fileName} : {});
     } catch (error) {
         res.status(500).json({massage: 'server error'});
     }
@@ -254,14 +261,9 @@ router.delete('/delete', [
         }
 
         const terrainForDelete = await Terrain.findOne({ number: req.body.number }).exec();
-        const path = `./client/src/assets/images/terrains/${terrainForDelete.sort}/${terrainForDelete.number}.jpg`;
-        const pathToDirectory = `./client/src/assets/images/terrains/${terrainForDelete.sort}`;
+        const path = `./client/arts/terrains/${terrainForDelete.fileName}`;
 
         await fs.rmSync(path);
-        try {
-            await fs.rmdirSync(pathToDirectory);
-        } catch (e) {
-        }
 
         await Terrain.deleteOne({ number: req.body.number });
         res.status(200).json({});
