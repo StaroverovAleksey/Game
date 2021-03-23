@@ -7,7 +7,7 @@ import CheckBox from "../controls/CheckBox";
 import File from "../controls/File";
 import Button from "../controls/Button";
 import Field from "../controls/Field";
-import {API_CREATE_TERRAINS, API_UPDATE_TERRAINS, getPAthToImage} from "../../tools/routing";
+import {API_UPDATE_TERRAINS, qwerty} from "../../tools/routing";
 import {connect} from "react-redux";
 import {setError, setTerrain} from "../../redux/actions";
 import PropTypes from "prop-types";
@@ -170,14 +170,6 @@ class UpdateTerrain extends WithRequest {
     if(answer.errors) {
       this.setState({errors: answer.errors});
     } else {
-      const dataToAction = {};
-      dataToAction.sort = data.sort.toString().trim().toUpperCase()[0] + data.sort.toString().trim().toLowerCase().slice(1);
-      dataToAction.name = data.name.toString().trim();
-      dataToAction.number = parseInt(data.number);
-      dataToAction.path = getPAthToImage(dataToAction.sort, dataToAction.number, data.img.name.split('.')[1]);
-      dataToAction.passability = data.passability;
-      this.props.addTerrain(dataToAction);
-      this.setState({reset: true});
     }
   }
 }

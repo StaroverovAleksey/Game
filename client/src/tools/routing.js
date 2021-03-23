@@ -1,8 +1,11 @@
-const address = 'http://localhost';
-//const address = 'http://3.18.225.147';
+import config from '../../config.json';
 
-export const pathToImage = (path) => `url(../src/${path})`;
-export const getPAthToImage = (sort, number, extension) => `assets/images/terrains/${sort}/${number}.${extension}`;
+//const address = 'http://localhost';
+const address = 'http://3.18.225.147';
+
+export const qwerty = () => console.log(config);
+
+export const pathToImage = (path) => `url(../src/assets/images/terrains/${path})`;
 
 const pathAPI = (method) => `${address}/api${method}`;
 

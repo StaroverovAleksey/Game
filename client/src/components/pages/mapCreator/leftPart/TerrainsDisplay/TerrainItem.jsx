@@ -98,7 +98,7 @@ class TerrainItem extends React.Component {
         onClick={() => callBack(terrain)}
       >
         <Image
-          path={pathToImage(terrain.path)}
+          path={pathToImage(terrain.fileName)}
           onClick={() => callBack(terrain)}
           active={active}
         />
@@ -116,7 +116,7 @@ class TerrainItem extends React.Component {
 
 TerrainItem.propTypes = {
   terrain: PropTypes.shape({
-    path: PropTypes.string.isRequired,
+    fileName: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     number: PropTypes.number.isRequired,
   }).isRequired,

@@ -7,7 +7,7 @@ const {promisify} = require('util');
 const sizeOf = promisify(require('image-size'));
 const {body} = require("express-validator");
 const Terrain = require('../models/Terrains');
-const mongoose = require("express");
+const {getFileName} = require("../utils/utils");
 const {check} = require("express-validator");
 const router = Router();
 
@@ -44,7 +44,7 @@ router.post('/create', multiparty, [
         .isBoolean().withMessage('boolean expected')
 ], async (req, res) => {
     try {
-        console.log(req.body);
+        console.log(req.files.img);
         const errors = validationResult(req);
 
         if (req.files.img && req.files.img.type === 'image/jpeg') {
@@ -88,9 +88,9 @@ router.post('/create', multiparty, [
         const sort = req.body.sort.toString().toUpperCase()[0] + req.body.sort.toString().toLowerCase().slice(1);
         const passability = req.body.passability;
         const file = await fs.readFileSync(req.files.img.path);
-        const pathToDirectory = `./client/src/assets/images/terrains/${sort}`;
-        const pathToFile = `./client/src/assets/images/terrains/${sort}/${number}.jpg`;
-        const path = `assets/images/terrains/${sort}/${number}.jpg`;
+        const pathToDirectory = `./client/src/assets/images/terrains`;
+        const fileName = `${getFileName()}.${req.files.img.name.split('.').reverse()[0]}`;
+        const pathToFile = `./client/src/assets/images/terrains/${fileName}`;
 
         try {
             await fs.statSync(pathToDirectory);
@@ -102,11 +102,11 @@ router.post('/create', multiparty, [
         await fs.writeFileSync(pathToFile, file);
 
         const cellType = new Terrain({
-            number, name, sort, path, passability
+            number, name, sort, fileName, passability
         });
         await cellType.save();
 
-        res.status(200).json({});
+        res.status(200).json({fileName});
     } catch (error) {
         res.status(500).json({massage: 'server error'});
     }
