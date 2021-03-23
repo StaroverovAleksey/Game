@@ -1,13 +1,8 @@
 import config from '../../config.json';
 
-//const address = 'http://localhost';
-const address = 'http://3.18.225.147';
-
-export const qwerty = () => console.log(config);
-
 export const pathToImage = (path) => `url(../src/assets/images/terrains/${path})`;
 
-const pathAPI = (method) => `${address}/api${method}`;
+const pathAPI = (method) => `${config.serverAddress}/api${method}`;
 
 /** *TERRAIN */
 export const API_CREATE_TERRAINS = pathAPI('/terrain/create');
