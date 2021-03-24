@@ -219,7 +219,7 @@ router.patch('/update', multiparty, [
         if (req.files.img) {
             const oldData = await Terrain.findOne({ number: req.body.oldNumber }).exec();
             const path = `./client/arts/terrains/${oldData.fileName}`;
-            await fs.rmSync(path);
+            await fs.unlinkSync(path);
 
             fileName = `${getFileName()}.${req.files.img.name.split('.').reverse()[0]}`;
             const pathToFile = `./client/arts/terrains/${fileName}`;
@@ -265,7 +265,7 @@ router.delete('/delete', [
 
         console.log(path);
         try {
-            await fs.rmSync(path);
+            await fs.unlinkSync(path);
         } catch (e) {
             console.log(e);
         }
