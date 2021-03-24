@@ -263,7 +263,13 @@ router.delete('/delete', [
         const terrainForDelete = await Terrain.findOne({ number: req.body.number }).exec();
         const path = `./client/arts/terrains/${terrainForDelete.fileName}`;
 
-        await fs.rmSync(path);
+        console.log(path);
+        try {
+            await fs.rmSync(path);
+        } catch (e) {
+            console.log(e);
+        }
+
 
         await Terrain.deleteOne({ number: req.body.number });
         res.status(200).json({});

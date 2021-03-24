@@ -21,3 +21,5 @@ export const CHOICE_TERRAIN = 'CHOICE_TERRAIN';
 export const choiceTerrain = (terrain) => ({ type: CHOICE_TERRAIN, payload: terrain });
 export const SET_ERROR = 'SET_ERROR';
 export const setError = (error) => ({ type: SET_ERROR, payload: error });
+export const LEFT_MENU_STATE = 'LEFT_MENU_STATE';
+export const changeStateLeftMenu = (state) => ({ type: LEFT_MENU_STATE, payload: state });

@@ -6,13 +6,13 @@ import TerrainsDisplay from './TerrainsDisplay/TerrainsDisplay';
 const Wrapper = styled.aside`
   display: flex;
   padding: 15px;
+  min-width: 390px;
   box-sizing: border-box;
   flex-direction: column;
   align-items: center;
   background-color: ${fonBlue};
   transition: 0.1s;
-  //overflow-y: auto;
-  //overflow-x: hidden;
+  overflow-y: scroll;
   >div {
     margin-bottom: 15px;
   }
@@ -28,7 +28,6 @@ class RightPart extends React.Component {
 
   render() {
     return (
-
       <Wrapper>
 
         <TerrainsDisplay />

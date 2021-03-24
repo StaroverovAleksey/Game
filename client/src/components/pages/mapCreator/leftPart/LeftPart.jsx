@@ -1,20 +1,22 @@
 import React from 'react';
 import styled from 'styled-components';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import FieldSize from './FieldSize';
 import { fonBlue } from '../../../../tools/palette';
 import ResetField from './ResetField';
 import AddTerrain from './AddTerrain';
 
 const Wrapper = styled.aside`
-  display: flex;
+  display: ${({ open }) => (open ? 'flex' : 'none')};
   padding: 15px;
+  min-width: 390px;
   box-sizing: border-box;
   flex-direction: column;
   align-items: center;
-  position: relative;
-  width: ${({ open }) => (open ? 'auto' : '0')};
   background-color: ${fonBlue};
   transition: 0.1s;
+  overflow-y: auto;
   >div {
     margin-bottom: 15px;
   }
@@ -22,29 +24,17 @@ const Wrapper = styled.aside`
     margin-bottom: 0;
   }
 `;
-const CloseButton = styled.button`
-  position: absolute;
-  top: 20px;
-  right: -30px;
-  width: 30px;
-  height: 60px;
-  cursor: pointer;
-`;
 
 class LeftPart extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      open: true,
-    };
   }
 
   render() {
-    const { open } = this.state;
+    const { menuState } = this.props;
     return (
 
-      <Wrapper open={open}>
-        <CloseButton onClick={() => this.setState({ open: !open })} />
+      <Wrapper open={menuState}>
 
         <FieldSize />
         <ResetField />
@@ -55,4 +45,12 @@ class LeftPart extends React.Component {
   }
 }
 
-export default LeftPart;
+LeftPart.propTypes = {
+  menuState: PropTypes.bool.isRequired,
+};
+
+export default connect(
+  (mapStateToProps) => (
+    { menuState: mapStateToProps.setting.leftMenuState }
+  ),
+)(LeftPart);
