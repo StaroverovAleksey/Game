@@ -14,6 +14,7 @@ const OuterWrapper = styled.div`
   display: flex;
   height: 100vh;
   justify-content: center;
+overflow: hidden;
 `;
 const InnerWrapper = styled.div`
   display: flex;
@@ -36,7 +37,7 @@ class MapCreator extends WithRequest {
     const { addTerrains, addMapCells } = this.props;
     const [terrains, mapCells] = await this.GET([API_GET_TERRAINS, API_GET_MAP_CELLS]);
     addTerrains(terrains);
-    addMapCells(mapCells.mapCells);
+    addMapCells(mapCells);
     this.setState({ loading: false });
   }
 
