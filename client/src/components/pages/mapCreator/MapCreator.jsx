@@ -14,7 +14,7 @@ const OuterWrapper = styled.div`
   display: flex;
   height: 100vh;
   justify-content: center;
-overflow: hidden;
+  overflow: hidden;
 `;
 const InnerWrapper = styled.div`
   display: flex;

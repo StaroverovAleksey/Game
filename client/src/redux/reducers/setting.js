@@ -6,7 +6,7 @@ const defaultState = {
   size: { width: 20, height: 20 },
   choiceTerrain: false,
   error: false,
-  leftMenuState: false,
+  leftMenuState: true,
 };
 
 export default function reducer(state = defaultState, action) {
