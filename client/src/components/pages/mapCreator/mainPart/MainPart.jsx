@@ -31,16 +31,25 @@ class MainPart extends React.Component {
   }
 
   render() {
+    const { fieldX, fieldY } = this.state;
     const { size } = this.props;
     return (
       <OuterWrapper>
         <InnerWrapper>
 
-          <TileField size={size} />
+          <TileField size={size}
+                     fieldX={fieldX}
+                     fieldY={fieldY}
+                     onMouseMove={this._onMouseMove}
+          />
 
         </InnerWrapper>
       </OuterWrapper>
     );
+  }
+
+  _onMouseMove = () => {
+
   }
 }
 
