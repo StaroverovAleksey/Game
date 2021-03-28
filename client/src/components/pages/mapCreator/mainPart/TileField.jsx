@@ -48,8 +48,8 @@ class TileField extends React.Component {
   }
 
   render() {
-    const { size, choiceTerrain } = this.props;
-    const { qwerty, data, fieldX, fieldY } = this.state;
+    const { choiceTerrain } = this.props;
+    const { qwerty, fieldX, fieldY } = this.state;
     return qwerty ?
           <Wrapper
             choiceTerrain={choiceTerrain}
@@ -76,7 +76,7 @@ class TileField extends React.Component {
               return <Tile
                 fileName={data[name] ? atrTerrainsPath(data[name].fileName) : atrUtilsPath('emptyTile.png')}
                 key={`tile_${x}${y}`}
-              >{(y+1) * (x+1)}</Tile>;
+              ></Tile>;
             })}
           </Row>
         ))}
@@ -96,7 +96,7 @@ class TileField extends React.Component {
 
   _onMouseMove = (event) => {
     const {fieldX, fieldY, mouseX, mouseY} = this.state;
-    const { wrapperWidth, wrapperHeight } = this.props;
+    const { wrapperWidth, wrapperHeight, onMouseMove } = this.props;
     const { width, height } = this.props.size;
 
     const newFieldY = fieldY - (mouseY - event.pageY);
@@ -107,6 +107,7 @@ class TileField extends React.Component {
       , fieldX: newFieldX > 0 || newFieldX < -(width * 64 - wrapperWidth)  ? fieldX : newFieldX
       , fieldY: newFieldY > 0 || newFieldY < -(height * 64 - wrapperHeight) ? fieldY : newFieldY
     })
+    onMouseMove(newFieldX > 0 || newFieldX < -(width * 64 - wrapperWidth)  ? fieldX : newFieldX);
   }
 
   formatData = async () => {
