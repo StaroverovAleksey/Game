@@ -5,7 +5,7 @@ import { atrTerrainsPath, atrUtilsPath } from '../../../../tools/routing';
 import {connect} from "react-redux";
 import {MapCell, Size, Terrain} from "../../../../tools/types";
 
-const Qwerty = styled.div`
+const Wrapper = styled.div`
   position: absolute;
   cursor: ${({ choiceTerrain }) => (choiceTerrain ? `${atrUtilsPath('pencilCursor.png')}, pointer` : 'grab')};
   :active {
@@ -32,6 +32,7 @@ class TileField extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      qwerty: undefined,
       data: '',
       fieldX: 0,
       fieldY: 0,
@@ -41,65 +42,74 @@ class TileField extends React.Component {
     this.fieldRef = React.createRef();
   }
 
-  componentDidMount() {
-    this.formatData();
+  async componentDidMount () {
+    await this.formatData();
+    await this._preRender()
   }
 
   render() {
     const { size, choiceTerrain } = this.props;
-    const { data, fieldX, fieldY } = this.state;
-    return (
+    const { qwerty, data, fieldX, fieldY } = this.state;
+    return qwerty ?
+          <Wrapper
+            choiceTerrain={choiceTerrain}
+            onMouseDown={this._moveStart}
+            onMouseUp={this._onMouseUp}
+            ref={this.fieldRef}
+            style={{top: `${fieldY}px`, left: `${fieldX}px`}}
+          >
+            {this.state.qwerty}
 
-      <Qwerty
-        choiceTerrain={choiceTerrain}
-        onMouseDown={this._moveStart}
-        onMouseUp={this._onMouseUp}
-        ref={this.fieldRef}
-        style={{top: `${fieldY}px`, left: `${fieldX}px`}}
-      >
+          </Wrapper>
+      : null;
+  }
+
+  _preRender = async () => {
+    const { size } = this.props;
+    const { data } = this.state;
+    this.setState({
+      qwerty: <div>
         {new Array(size.width).fill('').map((value, y) => (
           <Row key={`tile_row_${y}`}>
             {new Array(size.height).fill('').map((value1, x) => {
-              console.log(345456);
               const name = `x${x + 1}y${y + 1}`;
               return <Tile
                 fileName={data[name] ? atrTerrainsPath(data[name].fileName) : atrUtilsPath('emptyTile.png')}
                 key={`tile_${x}${y}`}
-              />;
+              >{(y+1) * (x+1)}</Tile>;
             })}
           </Row>
         ))}
-      </Qwerty>
-    );
+      </div>
+    })
   }
 
   _moveStart = (event) => {
     this.fieldRef.current.addEventListener('mousemove', this._onMouseMove );
     this.setState({mouseX: event.pageX, mouseY: event.pageY})
-    console.log(1111);
   }
 
   _onMouseUp = () => {
     this.fieldRef.current.removeEventListener('mousemove', this._onMouseMove );
     this.setState({mouseX: null, mouseY: null})
-    console.log(22222);
   }
 
   _onMouseMove = (event) => {
     const {fieldX, fieldY, mouseX, mouseY} = this.state;
+    const { wrapperWidth, wrapperHeight } = this.props;
+    const { width, height } = this.props.size;
+
     const newFieldY = fieldY - (mouseY - event.pageY);
     const newFieldX = fieldX + (event.pageX - mouseX);
-    //console.log(newFieldY, newFieldX);
     this.setState({
       mouseX: event.pageX
       , mouseY: event.pageY
-      , fieldX: newFieldX
-      , fieldY: newFieldY
+      , fieldX: newFieldX > 0 || newFieldX < -(width * 64 - wrapperWidth)  ? fieldX : newFieldX
+      , fieldY: newFieldY > 0 || newFieldY < -(height * 64 - wrapperHeight) ? fieldY : newFieldY
     })
-    //console.log(event);
   }
 
-  formatData = () => {
+  formatData = async () => {
     const { mapCells } = this.props;
     const data = {};
     mapCells.map((value) => {
@@ -120,6 +130,14 @@ TileField.propTypes = {
     PropTypes.shape(MapCell).isRequired,
     ),
   onMouseMove: PropTypes.func.isRequired,
+  wrapperWidth: PropTypes.oneOfType([
+    PropTypes.oneOf([undefined]),
+    PropTypes.PropTypes.number.isRequired,
+  ]),
+  wrapperHeight: PropTypes.oneOfType([
+    PropTypes.oneOf([undefined]),
+    PropTypes.PropTypes.number.isRequired,
+  ]),
 };
 
 export default connect(

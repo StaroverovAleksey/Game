@@ -28,18 +28,26 @@ class MainPart extends React.Component {
     super(props);
     this.state = {
     };
+    this.wrapRef = React.createRef();
+  }
+
+  componentDidMount() {
+    this.setState({
+      wrapperWidth: this.wrapRef.current.offsetWidth,
+      wrapperHeight: this.wrapRef.current.offsetHeight,
+    })
   }
 
   render() {
-    const { fieldX, fieldY } = this.state;
+    const { wrapperWidth, wrapperHeight } = this.state;
     const { size } = this.props;
     return (
       <OuterWrapper>
-        <InnerWrapper>
+        <InnerWrapper ref={this.wrapRef}>
 
           <TileField size={size}
-                     fieldX={fieldX}
-                     fieldY={fieldY}
+                     wrapperWidth={wrapperWidth}
+                     wrapperHeight={wrapperHeight}
                      onMouseMove={this._onMouseMove}
           />
 
