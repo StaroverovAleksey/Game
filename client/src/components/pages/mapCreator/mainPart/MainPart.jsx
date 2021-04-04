@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import TileField from './TileField';
 import {Size} from "../../../../tools/types";
+import TopScroll from "./TopScroll";
+import SideScroll from "./SideScroll";
 
 const OuterWrapper = styled.div`
   display: flex;
@@ -11,35 +13,16 @@ const OuterWrapper = styled.div`
   justify-content: center;
   width: 100%;
   height: 100%;
-  padding: 0 20px 0 20px;
+  padding: 0 20px 20px 0;
   box-sizing: border-box;
 `;
 
 const InnerWrapper = styled.div`
-  background-color: white;
-  position: relative;
+  display: flex;
   width: 100%;
   height: 100%;
   box-sizing: border-box;
-  overflow: hidden;
-`;
-
-const Qwerty = styled.div`
-  display: flex;
-  position: absolute;
-`;
-
-const Asd = styled.div`
-  position: relative;
-  height: 30px;
-  overflow: hidden;
-`;
-
-const Qaz = styled.div`
-  text-align: center;
-  padding-top: 5px;
-  width: 64px;
-  height: 30px;
+  justify-content: center;
 `;
 
 class MainPart extends React.Component {
@@ -49,14 +32,6 @@ class MainPart extends React.Component {
       fieldX: 0,
       fieldY: 0,
     };
-    this.wrapRef = React.createRef();
-  }
-
-  componentDidMount() {
-    this.setState({
-      wrapperWidth: this.wrapRef.current.offsetWidth,
-      wrapperHeight: this.wrapRef.current.offsetHeight,
-    })
   }
 
   render() {
@@ -65,15 +40,10 @@ class MainPart extends React.Component {
     return (
       <OuterWrapper>
 
-        <Asd>
-          <Qwerty style={{top: `${fieldY}px`, left: `${fieldX}px`}}>
-            {new Array(size.width).fill('').map((value, index) => {
-              return <Qaz>{index + 1}</Qaz>;
-            })}
-          </Qwerty>
-        </Asd>
+        <TopScroll left={fieldX}/>
 
-        <InnerWrapper ref={this.wrapRef}>
+        <InnerWrapper>
+          <SideScroll top={fieldY}/>
           <TileField size={size}
                      wrapperWidth={wrapperWidth}
                      wrapperHeight={wrapperHeight}
@@ -81,21 +51,12 @@ class MainPart extends React.Component {
           />
         </InnerWrapper>
 
-        <Asd>
-          <Qwerty style={{top: `${fieldY}px`, left: `${fieldX}px`}}>
-            {new Array(size.width).fill('').map((value, index) => {
-              return <Qaz>{index + 1}</Qaz>;
-            })}
-          </Qwerty>
-        </Asd>
-
       </OuterWrapper>
     );
   }
 
-  _onMouseMove = (e) => {
-    const { fieldX } = this.state;
-    this.setState({fieldX: e});
+  _onMouseMove = (fieldX, fieldY) => {
+    this.setState({fieldX, fieldY});
   }
 }
 

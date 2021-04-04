@@ -5,7 +5,16 @@ import { atrTerrainsPath, atrUtilsPath } from '../../../../tools/routing';
 import {connect} from "react-redux";
 import {MapCell, Size, Terrain} from "../../../../tools/types";
 
-const Wrapper = styled.div`
+const OuterWrapper = styled.div`
+  background-color: white;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+`;
+
+const InnerWrapper = styled.div`
   position: absolute;
   cursor: ${({ choiceTerrain }) => (choiceTerrain ? `${atrUtilsPath('pencilCursor.png')}, pointer` : 'grab')};
   :active {
@@ -39,28 +48,36 @@ class TileField extends React.Component {
       mouseX: null,
       mouseY: null,
     };
+    this.wrapRef = React.createRef();
     this.fieldRef = React.createRef();
   }
 
   async componentDidMount () {
     await this.formatData();
-    await this._preRender()
+    await this._preRender();
+    this.setState({
+      wrapperWidth: this.wrapRef.current.offsetWidth,
+      wrapperHeight: this.wrapRef.current.offsetHeight,
+    })
   }
 
   render() {
     const { choiceTerrain } = this.props;
     const { qwerty, fieldX, fieldY } = this.state;
     return qwerty ?
-          <Wrapper
-            choiceTerrain={choiceTerrain}
-            onMouseDown={this._moveStart}
-            onMouseUp={this._onMouseUp}
-            ref={this.fieldRef}
-            style={{top: `${fieldY}px`, left: `${fieldX}px`}}
-          >
-            {this.state.qwerty}
+      <OuterWrapper ref={this.wrapRef}>
+        <InnerWrapper
+          choiceTerrain={choiceTerrain}
+          onMouseDown={this._moveStart}
+          onMouseUp={this._onMouseUp}
+          ref={this.fieldRef}
+          style={{top: `${fieldY}px`, left: `${fieldX}px`}}
+        >
 
-          </Wrapper>
+          {this.state.qwerty}
+
+        </InnerWrapper>
+      </OuterWrapper>
       : null;
   }
 
@@ -76,7 +93,7 @@ class TileField extends React.Component {
               return <Tile
                 fileName={data[name] ? atrTerrainsPath(data[name].fileName) : atrUtilsPath('emptyTile.png')}
                 key={`tile_${x}${y}`}
-              ></Tile>;
+              />;
             })}
           </Row>
         ))}
@@ -95,19 +112,21 @@ class TileField extends React.Component {
   }
 
   _onMouseMove = (event) => {
-    const {fieldX, fieldY, mouseX, mouseY} = this.state;
-    const { wrapperWidth, wrapperHeight, onMouseMove } = this.props;
+    let {fieldX, fieldY, mouseX, mouseY, wrapperWidth, wrapperHeight} = this.state;
+    const { onMouseMove } = this.props;
     const { width, height } = this.props.size;
 
     const newFieldY = fieldY - (mouseY - event.pageY);
     const newFieldX = fieldX + (event.pageX - mouseX);
+    fieldX = newFieldX > 0 || newFieldX < -(width * 64 - wrapperWidth)  ? fieldX : newFieldX;
+    fieldY = newFieldY > 0 || newFieldY < -(height * 64 - wrapperHeight) ? fieldY : newFieldY;
     this.setState({
       mouseX: event.pageX
       , mouseY: event.pageY
-      , fieldX: newFieldX > 0 || newFieldX < -(width * 64 - wrapperWidth)  ? fieldX : newFieldX
-      , fieldY: newFieldY > 0 || newFieldY < -(height * 64 - wrapperHeight) ? fieldY : newFieldY
+      , fieldX
+      , fieldY
     })
-    onMouseMove(newFieldX > 0 || newFieldX < -(width * 64 - wrapperWidth)  ? fieldX : newFieldX);
+    onMouseMove(fieldX, fieldY);
   }
 
   formatData = async () => {
