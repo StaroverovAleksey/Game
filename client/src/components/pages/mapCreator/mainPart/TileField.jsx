@@ -1,9 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { atrTerrainsPath, atrUtilsPath } from '../../../../tools/routing';
+import {API_CREATE_MAP_CELLS, atrTerrainsPath, atrUtilsPath} from '../../../../tools/routing';
 import {connect} from "react-redux";
 import {MapCell, Size, Terrain} from "../../../../tools/types";
+import WithRequest from "../../../shells/ShellRequest";
 
 const OuterWrapper = styled.div`
   background-color: white;
@@ -16,10 +17,7 @@ const OuterWrapper = styled.div`
 
 const InnerWrapper = styled.div`
   position: absolute;
-  cursor: ${({ choiceTerrain }) => (choiceTerrain ? `${atrUtilsPath('pencilCursor.png')}, pointer` : 'grab')};
-  :active {
-    cursor: ${({ choiceTerrain }) => (choiceTerrain ? `${atrUtilsPath('pencilCursor.png')}, pointer` : 'grabbing')};
-  }
+  cursor: ${({ choiceTerrain }) => choiceTerrain ? `${atrUtilsPath('pencilCursor.png')}, pointer` : 'pointer'};
 `;
 
 const Row = styled.div`
@@ -37,44 +35,48 @@ const Tile = styled.div`
   }
 `;
 
-class TileField extends React.Component {
+class TileField extends WithRequest {
   constructor(props) {
     super(props);
     this.state = {
-      qwerty: undefined,
+      preparedData: undefined,
       data: '',
       fieldX: 0,
       fieldY: 0,
       mouseX: null,
       mouseY: null,
+      createCellData: [],
     };
     this.wrapRef = React.createRef();
     this.fieldRef = React.createRef();
   }
 
   async componentDidMount () {
-    await this.formatData();
+    await this._formatData();
     await this._preRender();
-    this.setState({
-      wrapperWidth: this.wrapRef.current.offsetWidth,
-      wrapperHeight: this.wrapRef.current.offsetHeight,
-    })
+    this._sizing();
+    window.addEventListener('resize', this._sizing);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this._sizing);
   }
 
   render() {
     const { choiceTerrain } = this.props;
-    const { qwerty, fieldX, fieldY } = this.state;
-    return qwerty ?
+    const { preparedData, fieldX, fieldY } = this.state;
+    return preparedData ?
       <OuterWrapper ref={this.wrapRef}>
         <InnerWrapper
           choiceTerrain={choiceTerrain}
           onMouseDown={this._moveStart}
           onMouseUp={this._onMouseUp}
+          onContextMenu={(event) => event.preventDefault()}
           ref={this.fieldRef}
           style={{top: `${fieldY}px`, left: `${fieldX}px`}}
         >
 
-          {this.state.qwerty}
+          {this.state.preparedData}
 
         </InnerWrapper>
       </OuterWrapper>
@@ -85,12 +87,13 @@ class TileField extends React.Component {
     const { size } = this.props;
     const { data } = this.state;
     this.setState({
-      qwerty: <div>
+      preparedData: <div>
         {new Array(size.width).fill('').map((value, y) => (
           <Row key={`tile_row_${y}`}>
             {new Array(size.height).fill('').map((value1, x) => {
               const name = `x${x + 1}y${y + 1}`;
               return <Tile
+                id={name}
                 fileName={data[name] ? atrTerrainsPath(data[name].fileName) : atrUtilsPath('emptyTile.png')}
                 key={`tile_${x}${y}`}
               />;
@@ -102,13 +105,27 @@ class TileField extends React.Component {
   }
 
   _moveStart = (event) => {
-    this.fieldRef.current.addEventListener('mousemove', this._onMouseMove );
-    this.setState({mouseX: event.pageX, mouseY: event.pageY})
+    const { choiceTerrain } = this.props;
+    event.preventDefault();
+    if (event.button === 2) {
+      this.fieldRef.current.addEventListener('mousemove', this._onMouseMove );
+      this.setState({mouseX: event.pageX, mouseY: event.pageY});
+    } else if (event.button === 0 && choiceTerrain) {
+      this._painting(event);
+      this.fieldRef.current.addEventListener('mouseover', this._painting);
+    }
   }
 
-  _onMouseUp = () => {
+  _onMouseUp = async (event) => {
+    const { createCellData } = this.state;
+    event.preventDefault();
     this.fieldRef.current.removeEventListener('mousemove', this._onMouseMove );
-    this.setState({mouseX: null, mouseY: null})
+    this.fieldRef.current.removeEventListener('mouseover', this._painting );
+    console.log(createCellData);
+    if (createCellData.length) {
+      const answer = await this.POST(API_CREATE_MAP_CELLS, JSON.stringify(createCellData));
+    }
+    this.setState({mouseX: null, mouseY: null});
   }
 
   _onMouseMove = (event) => {
@@ -129,7 +146,26 @@ class TileField extends React.Component {
     onMouseMove(fieldX, fieldY);
   }
 
-  formatData = async () => {
+  _painting = async (event) => {
+    const { createCellData } = this.state;
+    const { choiceTerrain } = this.props;
+    const x = parseInt(event.target.id.split('y')[0].split('x')[1]);
+    const y = parseInt(event.target.id.split('y')[1]);
+    //console.log(choiceTerrain);
+    //console.log(x, y);
+    event.target.style.backgroundImage = atrTerrainsPath(choiceTerrain.fileName);
+
+    createCellData.push({x, y, type: choiceTerrain.number});
+    this.setState({...createCellData});
+
+
+
+
+
+    //const answer = await this.POST(API_CREATE_MAP_CELLS, JSON.stringify([{x: 2, y: 2, type: 2}]));
+  }
+
+  _formatData = async () => {
     const { mapCells } = this.props;
     const data = {};
     mapCells.map((value) => {
@@ -137,6 +173,20 @@ class TileField extends React.Component {
       data[name] = value.type;
     });
     this.setState({ data });
+  }
+
+  _sizing = () => {
+    let { fieldX, fieldY } = this.state;
+    const { width, height } = this.props.size;
+    const { onMouseMove } = this.props;
+    fieldX = fieldX < -(width * 64 - this.wrapRef.current.offsetWidth)  ? -(width * 64 - this.wrapRef.current.offsetWidth) : fieldX;
+    fieldY = fieldY < -(height * 64 - this.wrapRef.current.offsetHeight)  ? -(height * 64 - this.wrapRef.current.offsetHeight) : fieldY;
+    this.setState({
+      wrapperWidth: this.wrapRef.current.offsetWidth,
+      wrapperHeight: this.wrapRef.current.offsetHeight,
+      fieldX,
+      fieldY,
+    }, () => onMouseMove(fieldX, fieldY));
   }
 }
 
@@ -150,14 +200,6 @@ TileField.propTypes = {
     PropTypes.shape(MapCell).isRequired,
     ),
   onMouseMove: PropTypes.func.isRequired,
-  wrapperWidth: PropTypes.oneOfType([
-    PropTypes.oneOf([undefined]),
-    PropTypes.PropTypes.number.isRequired,
-  ]),
-  wrapperHeight: PropTypes.oneOfType([
-    PropTypes.oneOf([undefined]),
-    PropTypes.PropTypes.number.isRequired,
-  ]),
 };
 
 export default connect(

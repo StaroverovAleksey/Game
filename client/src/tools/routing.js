@@ -12,5 +12,6 @@ export const API_UPDATE_TERRAINS = pathAPI('/terrain/update');
 export const API_DELETE_TERRAINS = pathAPI('/terrain/delete');
 
 /** *MAP_CELL */
+export const API_CREATE_MAP_CELLS = pathAPI('/map-cell/create');
 export const API_GET_MAP_CELLS = pathAPI('/map-cell/read');
 export const API_DELETE_ALL_MAP_CELLS = pathAPI('/map-cell/delete-all');

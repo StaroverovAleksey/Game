@@ -3,7 +3,7 @@ import {
 } from '../actions';
 
 const defaultState = {
-  size: { width: 20, height: 20 },
+  size: { width: 30, height: 30 },
   choiceTerrain: false,
   error: false,
   leftMenuState: true,

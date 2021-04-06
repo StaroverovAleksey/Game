@@ -35,7 +35,7 @@ class MainPart extends React.Component {
   }
 
   render() {
-    const { wrapperWidth, wrapperHeight, fieldX, fieldY } = this.state;
+    const { fieldX, fieldY } = this.state;
     const { size } = this.props;
     return (
       <OuterWrapper>
@@ -45,8 +45,6 @@ class MainPart extends React.Component {
         <InnerWrapper>
           <SideScroll top={fieldY}/>
           <TileField size={size}
-                     wrapperWidth={wrapperWidth}
-                     wrapperHeight={wrapperHeight}
                      onMouseMove={this._onMouseMove}
           />
         </InnerWrapper>
