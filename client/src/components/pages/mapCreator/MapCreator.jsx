@@ -6,7 +6,7 @@ import LeftPart from './leftPart/LeftPart';
 import TopPart from './topPart/TopPart';
 import MainPart from './mainPart/MainPart';
 import { setError, setMapCells, setTerrains } from '../../../redux/actions';
-import { API_GET_MAP_CELLS, API_GET_TERRAINS } from '../../../tools/routing';
+import { API_GET_MAP, API_GET_TERRAIN } from '../../../tools/routing';
 import WithRequest from '../../shells/ShellRequest';
 import RightPart from './rightPart/RightPart';
 
@@ -35,7 +35,7 @@ class MapCreator extends WithRequest {
 
   async componentDidMount() {
     const { addTerrains, addMapCells } = this.props;
-    const [terrains, mapCells] = await this.GET([API_GET_TERRAINS, API_GET_MAP_CELLS]);
+    const [terrains, mapCells] = await this.GET([API_GET_TERRAIN, API_GET_MAP]);
     addTerrains(terrains);
     addMapCells(mapCells);
     this.setState({ loading: false });

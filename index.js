@@ -15,8 +15,8 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use('/api/terrain', require('./src/routes/terrains'));
-app.use('/api/map-cell', require('./src/routes/mapCell.route'));
+app.use('/api/terrains', require('./src/routes/terrains'));
+app.use('/api/maps', require('./src/routes/maps'));
 
 if (process.env.NODE_ENV === 'production') {
     app.use('/', express.static(path.join(__dirname, 'client', 'dist')));

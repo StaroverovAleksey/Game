@@ -1,4 +1,4 @@
-import { DELETE_ALL_MAP_SELLS, SET_MAP_CELLS } from '../actions';
+﻿import { DELETE_ALL_MAP_SELLS, SET_MAP_CELLS } from '../actions';
 
 export default function reducer(state = { }, action) {
   switch (action.type) {

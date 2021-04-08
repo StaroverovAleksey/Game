@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import {setError, setTerrain} from "../../../../redux/actions";
 import PropTypes from "prop-types";
 import File from "../../../controls/File";
-import {API_CREATE_TERRAINS} from "../../../../tools/routing";
+import {API_CREATE_TERRAIN} from "../../../../tools/routing";
 import WithRequest from "../../../shells/ShellRequest";
 import CheckBox from "../../../controls/CheckBox";
 
@@ -103,7 +103,7 @@ class AddTerrain extends WithRequest {
     Object.keys(data).map((key) => {
       formData.append(key, data[key]);
     });
-    const answer = await this.POST_FORM(API_CREATE_TERRAINS, formData);
+    const answer = await this.POST_FORM(API_CREATE_TERRAIN, formData);
     if(answer.errors) {
       this.setState({errors: answer.errors});
     } else {

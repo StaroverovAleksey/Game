@@ -5,7 +5,7 @@ import Button from '../../../controls/Button';
 import PropTypes from "prop-types";
 import {connect} from "react-redux";
 import {deleteAllMapSells, setError} from "../../../../redux/actions";
-import {API_DELETE_ALL_MAP_CELLS} from "../../../../tools/routing";
+import {API_DELETE_MAP} from "../../../../tools/routing";
 import WithRequest from "../../../shells/ShellRequest";
 import Confirm from "../../../modal/Confirm";
 
@@ -47,7 +47,7 @@ class ResetField extends WithRequest {
 
   _resetField = async () => {
     const {resetField} = this.props;
-    await this.DELETE(API_DELETE_ALL_MAP_CELLS);
+    await this.DELETE(API_DELETE_MAP);
     this.setState({modal: false})
     resetField();
   }

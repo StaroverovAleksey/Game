@@ -7,7 +7,7 @@ import CheckBox from "../controls/CheckBox";
 import File from "../controls/File";
 import Button from "../controls/Button";
 import Field from "../controls/Field";
-import {API_UPDATE_TERRAINS, atrTerrainsPath} from "../../tools/routing";
+import {API_UPDATE_TERRAIN, atrTerrainsPath} from "../../tools/routing";
 import {connect} from "react-redux";
 import {setError, setTerrain, updateTerrain} from "../../redux/actions";
 import PropTypes from "prop-types";
@@ -164,7 +164,7 @@ class UpdateTerrain extends WithRequest {
     formData.append('oldNumber', number);
 
 
-    const answer = await this.PATCH_FORM(API_UPDATE_TERRAINS, formData);
+    const answer = await this.PATCH_FORM(API_UPDATE_TERRAIN, formData);
 
 
 

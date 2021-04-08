@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import {API_CREATE_MAP_CELLS, atrTerrainsPath, atrUtilsPath} from '../../../../tools/routing';
+import {API_CREATE_MAP, atrTerrainsPath, atrUtilsPath} from '../../../../tools/routing';
 import {connect} from "react-redux";
 import {MapCell, Size, Terrain} from "../../../../tools/types";
 import WithRequest from "../../../shells/ShellRequest";
@@ -40,19 +40,18 @@ class TileField extends WithRequest {
     super(props);
     this.state = {
       preparedData: undefined,
-      data: '',
       fieldX: 0,
       fieldY: 0,
       mouseX: null,
       mouseY: null,
-      createCellData: [],
+      createMapData: [],
+      serverRequest: false,
     };
     this.wrapRef = React.createRef();
     this.fieldRef = React.createRef();
   }
 
   async componentDidMount () {
-    await this._formatData();
     await this._preRender();
     this._sizing();
     window.addEventListener('resize', this._sizing);
@@ -64,11 +63,11 @@ class TileField extends WithRequest {
 
   render() {
     const { choiceTerrain } = this.props;
-    const { preparedData, fieldX, fieldY } = this.state;
+    const { preparedData, fieldX, fieldY, serverRequest } = this.state;
     return preparedData ?
       <OuterWrapper ref={this.wrapRef}>
         <InnerWrapper
-          choiceTerrain={choiceTerrain}
+          choiceTerrain={choiceTerrain && !serverRequest}
           onMouseDown={this._moveStart}
           onMouseUp={this._onMouseUp}
           onContextMenu={(event) => event.preventDefault()}
@@ -84,17 +83,16 @@ class TileField extends WithRequest {
   }
 
   _preRender = async () => {
-    const { size } = this.props;
-    const { data } = this.state;
+    const { size, mapCells } = this.props;
     this.setState({
       preparedData: <div>
         {new Array(size.width).fill('').map((value, y) => (
           <Row key={`tile_row_${y}`}>
             {new Array(size.height).fill('').map((value1, x) => {
-              const name = `x${x + 1}y${y + 1}`;
+              const name = `${x + 1}_${y + 1}`;
               return <Tile
                 id={name}
-                fileName={data[name] ? atrTerrainsPath(data[name].fileName) : atrUtilsPath('emptyTile.png')}
+                fileName={mapCells[name] ? atrTerrainsPath(mapCells[name].terrain.fileName) : atrUtilsPath('emptyTile.png')}
                 key={`tile_${x}${y}`}
               />;
             })}
@@ -105,27 +103,45 @@ class TileField extends WithRequest {
   }
 
   _moveStart = (event) => {
+    const { serverRequest } = this.state;
     const { choiceTerrain } = this.props;
     event.preventDefault();
     if (event.button === 2) {
       this.fieldRef.current.addEventListener('mousemove', this._onMouseMove );
       this.setState({mouseX: event.pageX, mouseY: event.pageY});
-    } else if (event.button === 0 && choiceTerrain) {
+    } else if (event.button === 0 && choiceTerrain && !serverRequest) {
       this._painting(event);
       this.fieldRef.current.addEventListener('mouseover', this._painting);
     }
   }
 
   _onMouseUp = async (event) => {
-    const { createCellData } = this.state;
+    const { createMapData } = this.state;
+    const { choiceTerrain } = this.props;
     event.preventDefault();
     this.fieldRef.current.removeEventListener('mousemove', this._onMouseMove );
     this.fieldRef.current.removeEventListener('mouseover', this._painting );
-    console.log(createCellData);
-    if (createCellData.length) {
-      const answer = await this.POST(API_CREATE_MAP_CELLS, JSON.stringify(createCellData));
+
+    if (createMapData.length) {
+      const data = []
+      for (let item of createMapData) {
+        const x = parseInt(item.id.split('_')[0]);
+        const y = parseInt(item.id.split('_')[1]);
+        data.push({x, y, type: choiceTerrain.number});
+      }
+      this.setState({serverRequest: true});
+      const answer = await this.POST(API_CREATE_MAP, JSON.stringify(data));
+      for (let item of createMapData) {
+        item.style.opacity = 1;
+      }
     }
-    this.setState({mouseX: null, mouseY: null});
+
+    this.setState({
+      mouseX: null,
+      mouseY: null,
+      createMapData: [],
+      serverRequest: false
+    });
   }
 
   _onMouseMove = (event) => {
@@ -147,32 +163,12 @@ class TileField extends WithRequest {
   }
 
   _painting = async (event) => {
-    const { createCellData } = this.state;
+    const { createMapData } = this.state;
     const { choiceTerrain } = this.props;
-    const x = parseInt(event.target.id.split('y')[0].split('x')[1]);
-    const y = parseInt(event.target.id.split('y')[1]);
-    //console.log(choiceTerrain);
-    //console.log(x, y);
     event.target.style.backgroundImage = atrTerrainsPath(choiceTerrain.fileName);
-
-    createCellData.push({x, y, type: choiceTerrain.number});
-    this.setState({...createCellData});
-
-
-
-
-
-    //const answer = await this.POST(API_CREATE_MAP_CELLS, JSON.stringify([{x: 2, y: 2, type: 2}]));
-  }
-
-  _formatData = async () => {
-    const { mapCells } = this.props;
-    const data = {};
-    mapCells.map((value) => {
-      const name = `x${value.x}y${value.y}`;
-      data[name] = value.type;
-    });
-    this.setState({ data });
+    event.target.style.opacity = 0.3;
+    createMapData.push(event.target);
+    this.setState({...createMapData});
   }
 
   _sizing = () => {
@@ -196,7 +192,7 @@ TileField.propTypes = {
     PropTypes.oneOf([false]),
     PropTypes.shape(Terrain),
   ]),
-  mapCells: PropTypes.arrayOf(
+  mapCells: PropTypes.shape(
     PropTypes.shape(MapCell).isRequired,
     ),
   onMouseMove: PropTypes.func.isRequired,
@@ -205,6 +201,6 @@ TileField.propTypes = {
 export default connect(
   (mapStateToProps) => ({
     choiceTerrain: mapStateToProps.setting.choiceTerrain,
-    mapCells: mapStateToProps.mapCell.mapCells,
+    mapCells: mapStateToProps.mapCell,
   }),
 )(TileField);

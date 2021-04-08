@@ -6,12 +6,12 @@ export const atrUtilsPath = (name) => `url(${config.pathToArts}utils/${name})`;
 const pathAPI = (method) => `${config.serverAddress}/api${method}`;
 
 /** *TERRAIN */
-export const API_CREATE_TERRAINS = pathAPI('/terrain/create');
-export const API_GET_TERRAINS = pathAPI('/terrain/read');
-export const API_UPDATE_TERRAINS = pathAPI('/terrain/update');
-export const API_DELETE_TERRAINS = pathAPI('/terrain/delete');
+export const API_CREATE_TERRAIN = pathAPI('/terrains/create');
+export const API_GET_TERRAIN = pathAPI('/terrains/read');
+export const API_UPDATE_TERRAIN = pathAPI('/terrains/update');
+export const API_DELETE_TERRAIN = pathAPI('/terrains/delete');
 
-/** *MAP_CELL */
-export const API_CREATE_MAP_CELLS = pathAPI('/map-cell/create');
-export const API_GET_MAP_CELLS = pathAPI('/map-cell/read');
-export const API_DELETE_ALL_MAP_CELLS = pathAPI('/map-cell/delete-all');
+/** *MAP */
+export const API_CREATE_MAP = pathAPI('/maps/create');
+export const API_GET_MAP = pathAPI('/maps/read');
+export const API_DELETE_MAP = pathAPI('/maps/delete');

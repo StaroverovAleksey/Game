@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import Field from "../../../../controls/Field";
-import {API_DELETE_TERRAINS} from "../../../../../tools/routing";
+import {API_DELETE_TERRAIN} from "../../../../../tools/routing";
 import TerrainItem from "./TerrainItem";
 import {choiceTerrain, deleteTerrain, setError} from "../../../../../redux/actions";
 import WithRequest from "../../../../shells/ShellRequest";
@@ -160,7 +160,7 @@ class TerrainsDisplay extends WithRequest {
   _deleteTerrain = async () => {
     const {modalMenuNumber} = this.state;
     const {removeTerrain} = this.props;
-    await this.DELETE(API_DELETE_TERRAINS, JSON.stringify({number: modalMenuNumber}));
+    await this.DELETE(API_DELETE_TERRAIN, JSON.stringify({number: modalMenuNumber}));
     this._closeModalMenu();
     removeTerrain(modalMenuNumber);
   }
