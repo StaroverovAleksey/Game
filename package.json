@@ -30,7 +30,7 @@
     "connect-multiparty": "^2.2.0",
     "cross-env": "^7.0.3",
     "express": "^4.17.1",
-    "express-validator": "^6.9.2",
+    "express-validator": "^6.10.0",
     "image-size": "^0.9.3",
     "mongoose": "^5.11.6"
   }

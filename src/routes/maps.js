@@ -6,54 +6,53 @@ const {body} = require("express-validator");
 const router = Router();
 
 router.post('/create', [
-    body()
-        .isArray().withMessage('array of objects expected'),
-    body('*.x')
-        .isNumeric().withMessage('number expected')
-        .isLength({ max: 3 }).withMessage('max length expected 3'),
-    body('*.y')
-        .isNumeric().withMessage('number expected')
-        .isLength({ max: 3 }).withMessage('max length expected 3'),
-    body('*.type')
+    body('name')
+        .isString().withMessage('string expected')
+        .isLength({ min: 3 }).withMessage('min length expected 3')
+        .trim(),
+    body('size')
+        .isObject().withMessage('object expected'),
+    body('size.x')
         .isNumeric().withMessage('number expected')
         .isLength({ max: 3 }).withMessage('max length expected 3')
+        .trim(),
+    body('size.y')
+        .isNumeric().withMessage('number expected')
+        .isLength({ max: 3 }).withMessage('max length expected 3')
+        .trim()
 ], async (req, res) => {
     try {
         const errors = validationResult(req);
 
         if (!errors.isEmpty()) {
-            const index = errors.errors.findIndex((value) => value.msg === 'array of objects expected');
-            if (index > -1) {
-                errors.errors = [errors.errors[0]];
-            }
             return res.status(400).json({
                 errors: errors.array(),
                 message: 'bad request'
             });
         }
 
-        const terrain = await Terrain.findOne({ number: req.body[0].type }).exec();
-        if (!terrain) {
+        let repeat = await Map.findOne({name: req.body.name}).exec();
+        if (repeat) {
             return res.status(400).json({
                 errors: [{
-                    'msg': "type is not exist",
-                    'param': "type",
+                    'msg': "name is exist",
+                    'param': "name",
                     'location': "body"
                 }],
                 massage: 'bad request'
             });
         }
 
-        let map = await Map.findOne({}).exec();
-        if (!map) {
-            map = await new Map({cells: {}});
+        const data = {
+            name: req.body.name,
+            size: {
+                x: req.body.size.x,
+                y: req.body.size.y,
+            },
+            cells: {}
         }
 
-        for (let i = 0; i < req.body.length; i++) {
-            const name = `${req.body[i].x}_${req.body[i].y}`;
-            map.cells.set(name, {terrain: terrain._id});
-        }
-
+        const map = await new Map(data);
         await map.save();
 
         res.status(200).json({});
@@ -64,16 +63,20 @@ router.post('/create', [
 
 router.get('/read', async (req, res) => {
     try {
-        const map = await Map.find().populate('cells.$*.terrain');
-        res.status(200).json(map.length ? map[0].cells : {});
+        const maps = await Map.find({}, 'name').exec();
+        res.status(200).json({maps});
     } catch (error) {
         res.status(500).json({massage: 'server error'});
     }
 });
 
-router.delete('/delete', async (req, res) => {
+router.delete('/delete', [
+    body('_id')
+        .isString().withMessage('string expected')
+        .trim()
+], async (req, res) => {
     try {
-        await Map.deleteMany();
+        await Map.deleteOne({_id: req.body._id});
         res.status(200).json({});
     } catch (error) {
         console.log(error);

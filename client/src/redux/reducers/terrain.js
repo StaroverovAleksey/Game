@@ -19,7 +19,6 @@ export default function reducer(state = { }, action) {
           newState.terrains[index][key] = action.payload[key];
         }
       });
-      console.log(newState);
       return newState;
 
     case DELETE_TERRAIN:

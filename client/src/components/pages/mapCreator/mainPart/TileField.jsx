@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import {API_CREATE_MAP, atrTerrainsPath, atrUtilsPath} from '../../../../tools/routing';
+import {API_CREATE_MAP_CELL, atrTerrainsPath, atrUtilsPath} from '../../../../tools/routing';
 import {connect} from "react-redux";
 import {MapCell, Size, Terrain} from "../../../../tools/types";
 import WithRequest from "../../../shells/ShellRequest";
@@ -130,7 +130,7 @@ class TileField extends WithRequest {
         data.push({x, y, type: choiceTerrain.number});
       }
       this.setState({serverRequest: true});
-      const answer = await this.POST(API_CREATE_MAP, JSON.stringify(data));
+      const answer = await this.POST(API_CREATE_MAP_CELL, JSON.stringify(data));
       for (let item of createMapData) {
         item.style.opacity = 1;
       }

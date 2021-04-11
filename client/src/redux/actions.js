@@ -8,6 +8,12 @@ export const updateTerrain = (terrain) => ({ type: UPDATE_TERRAIN, payload: terr
 export const DELETE_TERRAIN = 'DELETE_TERRAIN';
 export const deleteTerrain = (number) => ({ type: DELETE_TERRAIN, payload: number });
 
+/** **********************************************      MAPS      */
+export const SET_MAPS = 'SET_MAPS';
+export const setMaps = (maps) => ({ type: SET_MAPS, payload: maps });
+export const DELETE_MAP = 'DELETE_MAP';
+export const deleteMap = () => ({ type: DELETE_MAP });
+
 /** **********************************************      CELLS      */
 export const SET_MAP_CELLS = 'SET_MAP_CELLS';
 export const setMapCells = (mapCells) => ({ type: SET_MAP_CELLS, payload: mapCells });
@@ -17,6 +23,8 @@ export const deleteAllMapSells = () => ({ type: DELETE_ALL_MAP_SELLS });
 /** **********************************************      SETTINGS      */
 export const SET_SIZE = 'SET_SIZE';
 export const setSize = (size) => ({ type: SET_SIZE, payload: size });
+export const SET_SELECTED_MAP = 'SET_SELECTED_MAP';
+export const setSelectedMap = (map) => ({ type: SET_SELECTED_MAP, payload: map });
 export const CHOICE_TERRAIN = 'CHOICE_TERRAIN';
 export const choiceTerrain = (terrain) => ({ type: CHOICE_TERRAIN, payload: terrain });
 export const SET_ERROR = 'SET_ERROR';
