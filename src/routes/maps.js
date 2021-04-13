@@ -8,7 +8,7 @@ const router = Router();
 router.post('/create', [
     body('name')
         .isString().withMessage('string expected')
-        .isLength({ min: 3 }).withMessage('min length expected 3')
+        .isLength({ min: 3, max: 32 }).withMessage('length between 3 and 32')
         .trim(),
     body('size')
         .isObject().withMessage('object expected'),
@@ -53,9 +53,9 @@ router.post('/create', [
         }
 
         const map = await new Map(data);
-        await map.save();
+        const saveMap = await map.save();
 
-        res.status(200).json({});
+        res.status(200).json({_id: saveMap._id, name: saveMap.name});
     } catch (error) {
         res.status(500).json({massage: 'server error'});
     }

@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import {API_CREATE_MAP_CELL, atrTerrainsPath, atrUtilsPath} from '../../../../tools/routing';
@@ -117,17 +117,21 @@ class TileField extends WithRequest {
 
   _onMouseUp = async (event) => {
     const { createMapData } = this.state;
-    const { choiceTerrain } = this.props;
+    const { choiceTerrain, selectedMap } = this.props;
     event.preventDefault();
     this.fieldRef.current.removeEventListener('mousemove', this._onMouseMove );
     this.fieldRef.current.removeEventListener('mouseover', this._painting );
 
     if (createMapData.length) {
-      const data = []
+      const data = {
+        terrain_id: choiceTerrain._id,
+        map_id: selectedMap._id,
+        cells: []
+      }
       for (let item of createMapData) {
         const x = parseInt(item.id.split('_')[0]);
         const y = parseInt(item.id.split('_')[1]);
-        data.push({x, y, type: choiceTerrain.number});
+        data.cells.push({x, y});
       }
       this.setState({serverRequest: true});
       const answer = await this.POST(API_CREATE_MAP_CELL, JSON.stringify(data));
@@ -193,8 +197,12 @@ TileField.propTypes = {
     PropTypes.shape(Terrain),
   ]),
   mapCells: PropTypes.shape(
-    PropTypes.shape(MapCell).isRequired,
+    PropTypes.shape(Terrain).isRequired,
     ),
+  selectedMap: PropTypes.shape({
+      _id: PropTypes.string,
+      name: PropTypes.string,
+    }),
   onMouseMove: PropTypes.func.isRequired,
 };
 
@@ -202,5 +210,6 @@ export default connect(
   (mapStateToProps) => ({
     choiceTerrain: mapStateToProps.setting.choiceTerrain,
     mapCells: mapStateToProps.mapCell,
+    selectedMap: mapStateToProps.setting.selectedMap,
   }),
 )(TileField);

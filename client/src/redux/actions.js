@@ -11,6 +11,8 @@ export const deleteTerrain = (number) => ({ type: DELETE_TERRAIN, payload: numbe
 /** **********************************************      MAPS      */
 export const SET_MAPS = 'SET_MAPS';
 export const setMaps = (maps) => ({ type: SET_MAPS, payload: maps });
+export const SET_ONE_MAP = 'SET_ONE_MAP';
+export const setMap = (map) => ({ type: SET_ONE_MAP, payload: map });
 export const DELETE_MAP = 'DELETE_MAP';
 export const deleteMap = () => ({ type: DELETE_MAP });
 

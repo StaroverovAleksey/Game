@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import FieldSize from './FieldSize';
+import FieldSize from './AddMap';
 import { fonBlue } from '../../../../tools/palette';
 import ResetField from './ResetField';
 import AddTerrain from './AddTerrain';

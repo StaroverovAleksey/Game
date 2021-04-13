@@ -103,7 +103,7 @@ class Input extends React.Component {
         flag = await validation[key].func(value, rules[key]);
       }
       if (!flag) {
-        this.setState({error: validation[key].error})
+        this.setState({error: validation[key].error(rules[key])});
         break;
       }
     }

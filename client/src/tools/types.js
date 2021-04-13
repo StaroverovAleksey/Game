@@ -16,5 +16,5 @@ export const Terrain = {
 export const MapCell = {
   x: PropTypes.number.isRequired,
   y: PropTypes.number.isRequired,
-  type: PropTypes.shape(Terrain).isRequired,
+  terrain: PropTypes.shape(Terrain).isRequired,
 };

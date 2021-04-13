@@ -137,7 +137,7 @@ class File extends React.Component {
         flag = await validation[key].func(file, rules[key]);
       }
       if (!flag) {
-        this.setState({status: validation[key].error})
+        this.setState({status: validation[key].error(rules[key])})
         break;
       }
     }

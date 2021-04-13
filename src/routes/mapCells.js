@@ -7,20 +7,23 @@ const {body} = require("express-validator");
 const router = Router();
 
 router.post('/create', [
-    body()
-        .isArray().withMessage('array of objects expected'),
-    body('*.x')
+    body('terrain_id')
+        .isString().withMessage('string expected')
+        .trim(),
+    body('map_id')
+        .isString().withMessage('string expected')
+        .trim(),
+    body('cells')
+        .isArray().withMessage('array of objects expected')
+        .notEmpty().withMessage('should not be empty'),
+    body('cells.*.x')
         .isNumeric().withMessage('number expected')
         .isLength({ max: 3 }).withMessage('max length expected 3')
         .trim(),
-    body('*.y')
+    body('cells.*.y')
         .isNumeric().withMessage('number expected')
         .isLength({ max: 3 }).withMessage('max length expected 3')
         .trim(),
-    body('*.type')
-        .isNumeric().withMessage('number expected')
-        .isLength({ max: 3 }).withMessage('max length expected 3')
-        .trim()
 ], async (req, res) => {
     try {
         const errors = validationResult(req);
@@ -36,25 +39,36 @@ router.post('/create', [
             });
         }
 
-        const terrain = await Terrain.findOne({ number: req.body[0].type }).exec();
+        try {
+            var terrain = await Terrain.findOne({ _id: req.body.terrain_id }).exec();
+        } catch (e) {}
         if (!terrain) {
             return res.status(400).json({
                 errors: [{
-                    'msg': "type is not exist",
-                    'param': "type",
+                    'msg': "terrain's _id is not exist",
+                    'param': "_id",
                     'location': "body"
                 }],
                 massage: 'bad request'
             });
         }
 
-        let map = await Map.findOne({name: 'Map number 2'}).exec();
+        try {
+            var map = await Map.findOne({_id: req.body.map_id}).exec();
+        } catch (e) {}
         if (!map) {
-            map = await new Map({cells: {}});
+            return res.status(400).json({
+                errors: [{
+                    'msg': "map's _id is not exist",
+                    'param': "_id",
+                    'location': "body"
+                }],
+                massage: 'bad request'
+            });
         }
 
-        for (let i = 0; i < req.body.length; i++) {
-            const name = `${req.body[i].x}_${req.body[i].y}`;
+        for (let i = 0; i < req.body.cells.length; i++) {
+            const name = `${req.body.cells[i].x}_${req.body.cells[i].y}`;
             map.cells.set(name, {terrain: terrain._id});
         }
 

@@ -1,41 +1,37 @@
-export default {
+﻿export default {
   required: {
-    func: (value) => value,
-    error: 'Обязательное поле',
+    func: (value) => value.trim(),
+    error: () => 'Обязательное поле',
   },
   minValue: {
-    func: (value, reference) => true,
-    error: 'Только числа',
+    func: (value, reference) => parseInt(value, 10) >= reference,
+    error: (reference) => `мин. знач. ${reference}`,
   },
   maxValue: {
-    func: (value, reference) => typeof value === 'number',
-    error: 'Только числа',
+    func: (value, reference) => parseInt(value, 10) <= reference,
+    error: (reference) => `макс. знач. ${reference}`,
   },
   minLength: {
-    func: (value, reference) => typeof value === 'number',
-    error: 'Только числа',
+    func: (value, reference) => value.toString().trim().length >= reference,
+    error: (reference) => `мин. длина ${reference}`,
   },
   maxLength: {
-    func: (value, reference) => typeof value === 'number',
-    error: 'Только числа',
+    func: (value, reference) => value.toString().trim().length <= reference,
+    error: (reference) => `макс. длина ${reference}`,
   },
   spaceForbidden: {
     func: (value) => value.toString().trim().split('').findIndex((v) => v === ' ') === -1,
-    error: 'Пробелы запрещены',
+    error: () => 'Пробелы запрещены',
   },
   isNum: {
     func: (value) => !Number.isNaN(value)
         && parseInt(Number(value), 10) == value
         && !Number.isNaN(parseInt(value, 10)),
-    error: 'Только числа',
-  },
-  isString: {
-    func: (value) => typeof value === 'string',
-    error: 'Только строка',
+    error: () => 'Только числа',
   },
   isEmail: {
     func: {},
-    error: 'Только емейл',
+    error: () => 'Только емейл',
   },
   format: {
     func: (file, reference) => {
@@ -44,6 +40,6 @@ export default {
       }
       return reference.includes(file.type.split('/')[1]);
     },
-    error: 'Неверный формат',
+    error: () => 'Неверный формат',
   },
 };
