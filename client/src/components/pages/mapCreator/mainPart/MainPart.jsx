@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -6,6 +6,7 @@ import TileField from './TileField';
 import {Size} from "../../../../tools/types";
 import TopScroll from "./TopScroll";
 import SideScroll from "./SideScroll";
+import {isEmpty} from "../../../../tools/tools";
 
 const OuterWrapper = styled.div`
   display: flex;
@@ -25,6 +26,14 @@ const InnerWrapper = styled.div`
   justify-content: center;
 `;
 
+const EmptyMapsList = styled.div`
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  user-select: none;
+  color: #ef9898;
+`;
+
 class MainPart extends React.Component {
   constructor(props) {
     super(props);
@@ -36,18 +45,24 @@ class MainPart extends React.Component {
 
   render() {
     const { fieldX, fieldY } = this.state;
-    const { size } = this.props;
+    const { selectedMap } = this.props;
     return (
       <OuterWrapper>
 
-        <TopScroll left={fieldX}/>
+        {isEmpty(selectedMap) ?
+          <EmptyMapsList>Список карт пуст.<br/>Создайте карту</EmptyMapsList>
+        : <React.Fragment>
 
-        <InnerWrapper>
-          <SideScroll top={fieldY}/>
-          <TileField size={size}
-                     onMouseMove={this._onMouseMove}
-          />
-        </InnerWrapper>
+            <TopScroll left={fieldX}/>
+
+            <InnerWrapper>
+              <SideScroll top={fieldY}/>
+              <TileField size={selectedMap.size}
+                         onMouseMove={this._onMouseMove}
+              />
+            </InnerWrapper>
+
+          </React.Fragment>}
 
       </OuterWrapper>
     );
@@ -59,11 +74,14 @@ class MainPart extends React.Component {
 }
 
 MainPart.propTypes = {
-  size: PropTypes.shape(Size).isRequired,
+  selectedMap: PropTypes.shape({
+    _id: PropTypes.string,
+    name: PropTypes.string,
+  }),
 };
 
 export default connect(
   (mapStateToProps) => ({
-    size: mapStateToProps.setting.size,
+    selectedMap: mapStateToProps.setting.selectedMap,
   }),
 )(MainPart);

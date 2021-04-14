@@ -23,8 +23,6 @@ export const DELETE_ALL_MAP_SELLS = 'DELETE_ALL_MAP_SELLS';
 export const deleteAllMapSells = () => ({ type: DELETE_ALL_MAP_SELLS });
 
 /** **********************************************      SETTINGS      */
-export const SET_SIZE = 'SET_SIZE';
-export const setSize = (size) => ({ type: SET_SIZE, payload: size });
 export const SET_SELECTED_MAP = 'SET_SELECTED_MAP';
 export const setSelectedMap = (map) => ({ type: SET_SELECTED_MAP, payload: map });
 export const CHOICE_TERRAIN = 'CHOICE_TERRAIN';

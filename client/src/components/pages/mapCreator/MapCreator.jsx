@@ -40,12 +40,16 @@ class MapCreator extends WithRequest {
       addTerrains, addMaps, addSelectedMap, addMapCells,
     } = this.props;
     const [terrains, maps] = await this.GET([API_GET_TERRAIN, API_GET_MAPS]);
-    const selectedMap = maps.maps[1];
-    const [mapCells] = await this.GET([`${API_GET_MAP_CELL}/?_id=${selectedMap._id}`]);
     addTerrains(terrains);
     addMaps(maps);
-    addSelectedMap(selectedMap);
-    addMapCells(mapCells);
+
+    if (maps.maps.length > 0) {
+      const selectedMap = maps.maps[0];
+      const [mapCells] = await this.GET([`${API_GET_MAP_CELL}/?_id=${selectedMap._id}`]);
+      addSelectedMap(selectedMap);
+      addMapCells(mapCells);
+    }
+
     this.setState({ loading: false });
   }
 
@@ -73,6 +77,8 @@ class MapCreator extends WithRequest {
 
 MapCreator.propTypes = {
   addTerrains: PropTypes.func.isRequired,
+  addMaps: PropTypes.func.isRequired,
+  addSelectedMap: PropTypes.func.isRequired,
   addMapCells: PropTypes.func.isRequired,
   addError: PropTypes.func.isRequired,
 };

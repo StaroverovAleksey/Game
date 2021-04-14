@@ -10,6 +10,10 @@ router.post('/create', [
         .isString().withMessage('string expected')
         .isLength({ min: 3, max: 32 }).withMessage('length between 3 and 32')
         .trim(),
+    body('group')
+        .isString().withMessage('string expected')
+        .isLength({ min: 3, max: 32 }).withMessage('length between 3 and 32')
+        .trim(),
     body('size')
         .isObject().withMessage('object expected'),
     body('size.x')
@@ -45,6 +49,7 @@ router.post('/create', [
 
         const data = {
             name: req.body.name,
+            group: req.body.group,
             size: {
                 x: req.body.size.x,
                 y: req.body.size.y,
@@ -55,7 +60,7 @@ router.post('/create', [
         const map = await new Map(data);
         const saveMap = await map.save();
 
-        res.status(200).json({_id: saveMap._id, name: saveMap.name});
+        res.status(200).json({_id: saveMap._id, name: saveMap.name, group: saveMap.group, size: saveMap.size});
     } catch (error) {
         res.status(500).json({massage: 'server error'});
     }
@@ -63,7 +68,7 @@ router.post('/create', [
 
 router.get('/read', async (req, res) => {
     try {
-        const maps = await Map.find({}, 'name').exec();
+        const maps = await Map.find({}, 'name size group').exec();
         res.status(200).json({maps});
     } catch (error) {
         res.status(500).json({massage: 'server error'});

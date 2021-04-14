@@ -86,9 +86,9 @@ class TileField extends WithRequest {
     const { size, mapCells } = this.props;
     this.setState({
       preparedData: <div>
-        {new Array(size.width).fill('').map((value, y) => (
+        {new Array(size.y).fill('').map((value, y) => (
           <Row key={`tile_row_${y}`}>
-            {new Array(size.height).fill('').map((value1, x) => {
+            {new Array(size.x).fill('').map((value1, x) => {
               const name = `${x + 1}_${y + 1}`;
               return <Tile
                 id={name}
@@ -151,12 +151,12 @@ class TileField extends WithRequest {
   _onMouseMove = (event) => {
     let {fieldX, fieldY, mouseX, mouseY, wrapperWidth, wrapperHeight} = this.state;
     const { onMouseMove } = this.props;
-    const { width, height } = this.props.size;
+    const { x, y } = this.props.size;
 
     const newFieldY = fieldY - (mouseY - event.pageY);
     const newFieldX = fieldX + (event.pageX - mouseX);
-    fieldX = newFieldX > 0 || newFieldX < -(width * 64 - wrapperWidth)  ? fieldX : newFieldX;
-    fieldY = newFieldY > 0 || newFieldY < -(height * 64 - wrapperHeight) ? fieldY : newFieldY;
+    fieldX = newFieldX > 0 || newFieldX < -(x * 64 - wrapperWidth)  ? fieldX : newFieldX;
+    fieldY = newFieldY > 0 || newFieldY < -(y * 64 - wrapperHeight) ? fieldY : newFieldY;
     this.setState({
       mouseX: event.pageX
       , mouseY: event.pageY
@@ -177,10 +177,23 @@ class TileField extends WithRequest {
 
   _sizing = () => {
     let { fieldX, fieldY } = this.state;
-    const { width, height } = this.props.size;
+    const { x, y } = this.props.size;
     const { onMouseMove } = this.props;
-    fieldX = fieldX < -(width * 64 - this.wrapRef.current.offsetWidth)  ? -(width * 64 - this.wrapRef.current.offsetWidth) : fieldX;
-    fieldY = fieldY < -(height * 64 - this.wrapRef.current.offsetHeight)  ? -(height * 64 - this.wrapRef.current.offsetHeight) : fieldY;
+    const xDifferent = x * 64 - this.wrapRef.current.offsetWidth;
+    const yDifferent = y * 64 - this.wrapRef.current.offsetHeight;
+
+    if (xDifferent > 0) {
+      fieldX = fieldX < -(xDifferent) ? -(xDifferent) : fieldX;
+    } else {
+      fieldX = 0;
+    }
+
+    if (yDifferent > 0) {
+      fieldY = fieldY < -(yDifferent) ? -(yDifferent) : fieldY;
+    } else {
+      fieldY = 0;
+    }
+
     this.setState({
       wrapperWidth: this.wrapRef.current.offsetWidth,
       wrapperHeight: this.wrapRef.current.offsetHeight,
@@ -191,7 +204,6 @@ class TileField extends WithRequest {
 }
 
 TileField.propTypes = {
-  size: PropTypes.shape(Size).isRequired,
   choiceTerrain: PropTypes.oneOfType([
     PropTypes.oneOf([false]),
     PropTypes.shape(Terrain),

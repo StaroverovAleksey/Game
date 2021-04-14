@@ -32,11 +32,11 @@ class TopScroll extends React.Component {
   }
 
   render() {
-    const { size, top } = this.props;
+    const { selectedMap, top } = this.props;
     return (
       <Wrapper>
         <Scroll style={{ top: `${top}px` }}>
-          {new Array(size.width).fill('').map((value, index) => <Cell key={`side_scroll_cell_${index}`}>{index + 1}</Cell>)}
+          {new Array(selectedMap.size.y).fill('').map((value, index) => <Cell key={`side_scroll_cell_${index}`}>{index + 1}</Cell>)}
         </Scroll>
       </Wrapper>
     );
@@ -44,12 +44,11 @@ class TopScroll extends React.Component {
 }
 
 TopScroll.propTypes = {
-  size: PropTypes.shape(Size).isRequired,
   top: PropTypes.number.isRequired,
 };
 
 export default connect(
   (mapStateToProps) => ({
-    size: mapStateToProps.setting.size,
+    selectedMap: mapStateToProps.setting.selectedMap,
   }),
 )(TopScroll);

@@ -5,10 +5,11 @@ import Input from '../../../controls/Input';
 import Field from '../../../controls/Field';
 import Button from '../../../controls/Button';
 import { connect } from 'react-redux';
-import {setError, setMap} from "../../../../redux/actions";
+import {setError, setMap, setSelectedMap} from "../../../../redux/actions";
 import PropTypes from "prop-types";
 import WithRequest from "../../../shells/ShellRequest";
 import {API_CREATE_MAP} from "../../../../tools/routing";
+import {isEmpty} from "../../../../tools/tools";
 
 const Title = styled.h3`
   margin: 0 0 20px 0;
@@ -42,7 +43,14 @@ class AddMap extends WithRequest {
             <Input
               title="Имя"
               name="name"
-              width="100%"
+              width="60%"
+              margin="0 10px 0 0"
+              rules={{ required: true, minLength: 3, maxLength: 32 }}
+            />
+            <Input
+              title="Группа"
+              name="group"
+              width="40%"
               rules={{ required: true, minLength: 3, maxLength: 32 }}
             />
           </Wrapper>
@@ -73,9 +81,10 @@ class AddMap extends WithRequest {
   }
 
   _onSubmit = async (data) => {
-    const {addMap} = this.props;
+    const {addMap, selectedMap, addSelectedMap} = this.props;
     const formatData = {
       name: data.name,
+      group: data.group,
       size: {
         x: data['size.x'],
         y: data['size.y'],
@@ -86,21 +95,32 @@ class AddMap extends WithRequest {
     if(answer.errors) {
       this.setState({errors: answer.errors});
     } else {
-      addMap({ _id: answer._id, name: answer.name });
+
+      addMap(answer);
+      if (isEmpty(selectedMap)) {
+        addSelectedMap(answer);
+      }
       this.setState({reset: true});
     }
   }
 }
 
 AddMap.propTypes = {
+  selectedMap: PropTypes.shape({
+    _id: PropTypes.string,
+    name: PropTypes.string,
+  }),
   addMap: PropTypes.func.isRequired,
   addError: PropTypes.func.isRequired,
 };
 
 export default connect(
-  undefined,
+  (mapStateToProps) => ({
+    selectedMap: mapStateToProps.setting.selectedMap,
+  }),
   (mapDispatchToProps) => ({
     addMap: (data) => mapDispatchToProps(setMap(data)),
+    addSelectedMap: (map) => mapDispatchToProps(setSelectedMap(map)),
     addError: (data) => mapDispatchToProps(setError(data)),
   }),
 )(AddMap);
