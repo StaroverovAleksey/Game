@@ -2,10 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import FieldSize from './AddMap';
+import AddMap from './AddMap';
 import { fonBlue } from '../../../../tools/palette';
 import ResetField from './ResetField';
 import AddTerrain from './AddTerrain';
+import MapSelection from './MapSelection';
 
 const Wrapper = styled.aside`
   display: ${({ open }) => (open ? 'flex' : 'none')};
@@ -36,7 +37,8 @@ class LeftPart extends React.Component {
 
       <Wrapper open={menuState}>
 
-        <FieldSize />
+        <MapSelection />
+        <AddMap />
         <ResetField />
         <AddTerrain />
 
