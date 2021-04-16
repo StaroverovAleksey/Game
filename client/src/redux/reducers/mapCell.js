@@ -2,7 +2,7 @@
 
 export default function reducer(state = { }, action) {
   switch (action.type) {
-    case SET_MAP_CELLS: return { ...state, ...action.payload };
+    case SET_MAP_CELLS: return { ...action.payload };
 
     case DELETE_ALL_MAP_SELLS: return { };
 

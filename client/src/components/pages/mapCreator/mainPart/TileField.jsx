@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import {API_CREATE_MAP_CELL, atrTerrainsPath, atrUtilsPath} from '../../../../tools/routing';
 import {connect} from "react-redux";
-import {MapCell, Size, Terrain} from "../../../../tools/types";
+import {Terrain} from "../../../../tools/types";
 import WithRequest from "../../../shells/ShellRequest";
 
 const OuterWrapper = styled.div`
@@ -57,6 +57,14 @@ class TileField extends WithRequest {
     window.addEventListener('resize', this._sizing);
   }
 
+  async componentDidUpdate(prevProps, prevState, snapshot) {
+    if (prevProps.mapCells !== this.props.mapCells) {
+      console.log(11111111111);
+      await this._preRender();
+      this._sizing();
+    }
+  }
+
   componentWillUnmount() {
     window.removeEventListener('resize', this._sizing);
   }
@@ -83,7 +91,8 @@ class TileField extends WithRequest {
   }
 
   _preRender = async () => {
-    const { size, mapCells } = this.props;
+    const { mapCells } = this.props;
+    const { size } = this.props.selectedMap;
     this.setState({
       preparedData: <div>
         {new Array(size.y).fill('').map((value, y) => (
@@ -151,7 +160,7 @@ class TileField extends WithRequest {
   _onMouseMove = (event) => {
     let {fieldX, fieldY, mouseX, mouseY, wrapperWidth, wrapperHeight} = this.state;
     const { onMouseMove } = this.props;
-    const { x, y } = this.props.size;
+    const { x, y } = this.props.selectedMap.size;
 
     const newFieldY = fieldY - (mouseY - event.pageY);
     const newFieldX = fieldX + (event.pageX - mouseX);
@@ -172,12 +181,12 @@ class TileField extends WithRequest {
     event.target.style.backgroundImage = atrTerrainsPath(choiceTerrain.fileName);
     event.target.style.opacity = 0.3;
     createMapData.push(event.target);
-    this.setState({...createMapData});
+    this.setState({createMapData});
   }
 
   _sizing = () => {
     let { fieldX, fieldY } = this.state;
-    const { x, y } = this.props.size;
+    const { x, y } = this.props.selectedMap.size;
     const { onMouseMove } = this.props;
     const xDifferent = x * 64 - this.wrapRef.current.offsetWidth;
     const yDifferent = y * 64 - this.wrapRef.current.offsetHeight;

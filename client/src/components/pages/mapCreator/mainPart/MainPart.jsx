@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import TileField from './TileField';
-import {Size} from "../../../../tools/types";
 import TopScroll from "./TopScroll";
 import SideScroll from "./SideScroll";
 import {isEmpty} from "../../../../tools/tools";
@@ -57,8 +56,7 @@ class MainPart extends React.Component {
 
             <InnerWrapper>
               <SideScroll top={fieldY}/>
-              <TileField size={selectedMap.size}
-                         onMouseMove={this._onMouseMove}
+              <TileField onMouseMove={this._onMouseMove}
               />
             </InnerWrapper>
 

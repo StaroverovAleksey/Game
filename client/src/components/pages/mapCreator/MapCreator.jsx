@@ -53,6 +53,14 @@ class MapCreator extends WithRequest {
     this.setState({ loading: false });
   }
 
+  async componentDidUpdate(prevProps) {
+    const { selectedMap, addMapCells } = this.props;
+    if (prevProps.selectedMap !== selectedMap) {
+      const [mapCells] = await this.GET([`${API_GET_MAP_CELL}/?_id=${selectedMap._id}`]);
+      addMapCells(mapCells);
+    }
+  }
+
   render() {
     const { loading } = this.state;
     return (
@@ -84,7 +92,9 @@ MapCreator.propTypes = {
 };
 
 export default connect(
-  undefined,
+  (mapStateToProps) => ({
+    selectedMap: mapStateToProps.setting.selectedMap,
+  }),
   (mapDispatchToProps) => ({
     addTerrains: (terrains) => mapDispatchToProps(setTerrains(terrains)),
     addMaps: (maps) => mapDispatchToProps(setMaps(maps)),
