@@ -1,12 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
-import Field from '../../../controls/Field';
+import Field from '../../../../controls/Field';
 import { connect } from 'react-redux';
-import {setError, setMap, setSelectedMap} from "../../../../redux/actions";
+import {setError, setMap, setSelectedMap} from "../../../../../redux/actions";
 import PropTypes from "prop-types";
-import WithRequest from "../../../shells/ShellRequest";
-import {API_CREATE_MAP, atrUtilsPath} from "../../../../tools/routing";
-import {isEmpty} from "../../../../tools/tools";
+import WithRequest from "../../../../shells/ShellRequest";
+import {API_CREATE_MAP, atrUtilsPath} from "../../../../../tools/routing";
+import {isEmpty} from "../../../../../tools/tools";
 import MapSelectionItem from "./MapSelectionItem";
 
 const Title = styled.h3`
@@ -49,9 +49,8 @@ class MapSelection extends WithRequest {
         <Title>Выбор карты</Title>
 
         <MapSelectionItem
-          name={isEmpty(selectedMap) ? `Создайте карту` : `${selectedMap.group} / ${selectedMap.name}`}
-          width={100}
-          type={'group'}
+          name={isEmpty(selectedMap) ? `Создайте карту` : `${selectedMap.group} --- ${selectedMap.name}`}
+          type={'lead'}
           open={openSelector}
           onChange={this._openSelector}
         />
@@ -63,7 +62,6 @@ class MapSelection extends WithRequest {
                 <MapSelectionItem
                   name={group[0].group}
                   id={group_index}
-                  width={90}
                   type={'group'}
                   open={openGroup === group_index}
                   onChange={this._openGroup}
@@ -75,8 +73,8 @@ class MapSelection extends WithRequest {
                       key={`map_${map_index}`}
                       name={map.name}
                       id={`${group_index}_${map_index}`}
-                      width={80}
                       type={'map'}
+                      check={map._id === selectedMap._id}
                       onChange={this._selectMap}
                     />)
 

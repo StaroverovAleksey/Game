@@ -59,7 +59,6 @@ class TileField extends WithRequest {
 
   async componentDidUpdate(prevProps, prevState, snapshot) {
     if (prevProps.mapCells !== this.props.mapCells) {
-      console.log(11111111111);
       await this._preRender();
       this._sizing();
     }

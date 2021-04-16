@@ -31,3 +31,5 @@ export const SET_ERROR = 'SET_ERROR';
 export const setError = (error) => ({ type: SET_ERROR, payload: error });
 export const LEFT_MENU_STATE = 'LEFT_MENU_STATE';
 export const changeStateLeftMenu = (state) => ({ type: LEFT_MENU_STATE, payload: state });
+export const LOADING_MAP_SELLS = 'LOADING_MAP_SELLS';
+export const loadingMapSells = (loading) => ({ type: LOADING_MAP_SELLS, payload: loading });

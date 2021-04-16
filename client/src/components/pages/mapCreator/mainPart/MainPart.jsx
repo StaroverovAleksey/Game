@@ -6,6 +6,7 @@ import TileField from './TileField';
 import TopScroll from "./TopScroll";
 import SideScroll from "./SideScroll";
 import {isEmpty} from "../../../../tools/tools";
+import {Loading} from "../MapCreator";
 
 const OuterWrapper = styled.div`
   display: flex;
@@ -44,23 +45,26 @@ class MainPart extends React.Component {
 
   render() {
     const { fieldX, fieldY } = this.state;
-    const { selectedMap } = this.props;
+    const { selectedMap, loadingMapSells } = this.props;
     return (
       <OuterWrapper>
 
         {isEmpty(selectedMap) ?
           <EmptyMapsList>Список карт пуст.<br/>Создайте карту</EmptyMapsList>
+        : loadingMapSells ?
+            <Loading>Загрузка...</Loading>
         : <React.Fragment>
 
-            <TopScroll left={fieldX}/>
+                <TopScroll left={fieldX}/>
 
-            <InnerWrapper>
-              <SideScroll top={fieldY}/>
-              <TileField onMouseMove={this._onMouseMove}
-              />
-            </InnerWrapper>
+                <InnerWrapper>
+                  <SideScroll top={fieldY}/>
+                  <TileField onMouseMove={this._onMouseMove}
+                  />
+                </InnerWrapper>
 
-          </React.Fragment>}
+              </React.Fragment>
+        }
 
       </OuterWrapper>
     );
@@ -81,5 +85,6 @@ MainPart.propTypes = {
 export default connect(
   (mapStateToProps) => ({
     selectedMap: mapStateToProps.setting.selectedMap,
+    loadingMapSells: mapStateToProps.setting.loadingMapSells,
   }),
 )(MainPart);

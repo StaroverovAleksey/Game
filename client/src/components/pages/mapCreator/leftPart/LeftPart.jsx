@@ -6,7 +6,7 @@ import AddMap from './AddMap';
 import { fonBlue } from '../../../../tools/palette';
 import ResetField from './ResetField';
 import AddTerrain from './AddTerrain';
-import MapSelection from './MapSelection';
+import MapSelection from './MapSelection/MapSelection';
 
 const Wrapper = styled.aside`
   display: ${({ open }) => (open ? 'flex' : 'none')};

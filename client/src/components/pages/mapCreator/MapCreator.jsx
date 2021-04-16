@@ -6,6 +6,7 @@ import LeftPart from './leftPart/LeftPart';
 import TopPart from './topPart/TopPart';
 import MainPart from './mainPart/MainPart';
 import {
+  loadingMapSells,
   setError, setMapCells, setMaps, setSelectedMap, setTerrains,
 } from '../../../redux/actions';
 import { API_GET_MAP_CELL, API_GET_MAPS, API_GET_TERRAIN } from '../../../tools/routing';
@@ -23,8 +24,9 @@ const InnerWrapper = styled.div`
   flex-direction: column;
   width: 100vw;
 `;
-const Loading = styled.p`
+export const Loading = styled.p`
   font-size: 36px;
+  text-align: center;
 `;
 
 class MapCreator extends WithRequest {
@@ -48,16 +50,20 @@ class MapCreator extends WithRequest {
       const [mapCells] = await this.GET([`${API_GET_MAP_CELL}/?_id=${selectedMap._id}`]);
       addSelectedMap(selectedMap);
       addMapCells(mapCells);
+    } else {
+      addSelectedMap({});
     }
 
     this.setState({ loading: false });
   }
 
   async componentDidUpdate(prevProps) {
-    const { selectedMap, addMapCells } = this.props;
-    if (prevProps.selectedMap !== selectedMap) {
+    const { selectedMap, addMapCells, addLoadingMapSells } = this.props;
+    if (prevProps.selectedMap !== 'loading' && prevProps.selectedMap !== selectedMap) {
+      addLoadingMapSells(true);
       const [mapCells] = await this.GET([`${API_GET_MAP_CELL}/?_id=${selectedMap._id}`]);
       addMapCells(mapCells);
+      addLoadingMapSells(false);
     }
   }
 
@@ -100,6 +106,7 @@ export default connect(
     addMaps: (maps) => mapDispatchToProps(setMaps(maps)),
     addSelectedMap: (map) => mapDispatchToProps(setSelectedMap(map)),
     addMapCells: (mapCells) => mapDispatchToProps(setMapCells(mapCells)),
+    addLoadingMapSells: (loading) => mapDispatchToProps(loadingMapSells(loading)),
     addError: (data) => mapDispatchToProps(setError(data)),
   }),
 )(MapCreator);

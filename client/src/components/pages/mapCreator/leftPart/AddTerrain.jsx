@@ -46,17 +46,17 @@ class AddTerrain extends WithRequest {
 
           <Wrapper>
             <Input
-              title="Тип"
-              name="sort"
-              width="50%"
-              margin="0 10px 0 0"
-              rules={{ required: true, spaceForbidden: true }}
-            />
-            <Input
               title="Название"
               name="name"
-              width="50%"
-              rules={{ required: true, spaceForbidden: true }}
+              width="60%"
+              margin="0 10px 0 0"
+              rules={{ required: true, spaceForbidden: true, minLength: 3, maxLength: 14 }}
+            />
+            <Input
+              title="Группа"
+              name="sort"
+              width="40%"
+              rules={{ required: true, spaceForbidden: true, minLength: 3, maxLength: 14 }}
             />
           </Wrapper>
 
@@ -66,7 +66,7 @@ class AddTerrain extends WithRequest {
               name="number"
               width="50%"
               margin="0 10px 0 0"
-              rules={{ required: true, isNum: true, minValue: 10 }}
+              rules={{ required: true, isNum: true }}
             />
             <CheckBox
               title="Проходимость"

@@ -20,7 +20,7 @@ router.post('/create', multiparty, [
         .trim(),
     body('name')
         .isString().withMessage('string expected')
-        .isLength({ min: 3, max: 32 }).withMessage('length between 3 and 32')
+        .isLength({ min: 3, max: 14 }).withMessage('length between 3 and 14')
         .trim()
         .custom((value) => {
             if (value.split('').some((v) => v === ' ')) {
@@ -31,7 +31,7 @@ router.post('/create', multiparty, [
         }),
     body('sort')
         .isString().withMessage('string expected')
-        .isLength({ min: 3, max: 32 }).withMessage('length between 3 and 32')
+        .isLength({ min: 3, max: 14 }).withMessage('length between 3 and 14')
         .trim()
         .custom((value) => {
             if (value.split('').some((v) => v === ' ')) {

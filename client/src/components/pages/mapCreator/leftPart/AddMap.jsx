@@ -41,17 +41,17 @@ class AddMap extends WithRequest {
         <Form onSubmit={this._onSubmit} errors={this.state.errors} reset={this.state.reset}>
           <Wrapper>
             <Input
-              title="Имя"
+              title="Название"
               name="name"
               width="60%"
               margin="0 10px 0 0"
-              rules={{ required: true, minLength: 3, maxLength: 32 }}
+              rules={{ required: true, minLength: 3, maxLength: 14 }}
             />
             <Input
               title="Группа"
               name="group"
               width="40%"
-              rules={{ required: true, minLength: 3, maxLength: 32 }}
+              rules={{ required: true, minLength: 3, maxLength: 14 }}
             />
           </Wrapper>
           <Wrapper>

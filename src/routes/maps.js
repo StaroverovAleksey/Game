@@ -8,11 +8,11 @@ const router = Router();
 router.post('/create', [
     body('name')
         .isString().withMessage('string expected')
-        .isLength({ min: 3, max: 32 }).withMessage('length between 3 and 32')
+        .isLength({ min: 3, max: 14 }).withMessage('length between 3 and 14')
         .trim(),
     body('group')
         .isString().withMessage('string expected')
-        .isLength({ min: 3, max: 32 }).withMessage('length between 3 and 32')
+        .isLength({ min: 3, max: 14 }).withMessage('length between 3 and 14')
         .trim(),
     body('size')
         .isObject().withMessage('object expected'),
