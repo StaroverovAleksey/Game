@@ -59,7 +59,7 @@ class MapSelectionItem extends WithRequest {
 
   render() {
     const {
-      name, type, id, onChange, open, check,
+      name, type, id, onChange, open, check, onContextMenu,
     } = this.props;
     return (
       <SelectedWrapper
@@ -74,6 +74,9 @@ class MapSelectionItem extends WithRequest {
         />
         <NameContainer
           type={type}
+          id={id}
+          className="modalMenuWithin"
+          onContextMenu={onContextMenu}
         >
           {name}
         </NameContainer>

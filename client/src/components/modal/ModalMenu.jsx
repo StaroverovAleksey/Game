@@ -8,8 +8,8 @@ const OuterWrapper = styled.div`
   display: flex;
   justify-content: center;
   position: absolute;
-  top: ${({x}) => x}px;
-  left: ${({y}) => y}px;
+  top: ${({y}) => y}px;
+  left: ${({x}) => x}px;
   opacity: 1;
   z-index: 98;
 `;
@@ -18,7 +18,9 @@ class ModalMenu extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      open: false
+      open: false,
+      docWidth: document.documentElement.clientWidth,
+      docHeight: document.documentElement.clientHeight,
     };
     this.ref = React.createRef();
   }
@@ -39,11 +41,12 @@ class ModalMenu extends React.Component {
       yCoord,
       data
     } = this.props;
+    const {docWidth, docHeight} = this.state;
     return (
 
         <OuterWrapper
-          x={xCoord}
-          y={yCoord}
+          x={this.ref.current && this.ref.current.offsetWidth + xCoord > docWidth ? docWidth - this.ref.current.offsetWidth : xCoord}
+          y={this.ref.current && this.ref.current.offsetHeight + yCoord > docHeight ? docHeight - this.ref.current.offsetHeight : yCoord}
           className="modalMenu"
           ref={this.ref}>
           <Field>

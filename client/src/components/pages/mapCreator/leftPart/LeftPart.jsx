@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import AddMap from './AddMap';
 import { fonBlue } from '../../../../tools/palette';
-import ResetField from './ResetField';
 import AddTerrain from './AddTerrain';
 import MapSelection from './MapSelection/MapSelection';
 
@@ -39,7 +38,6 @@ class LeftPart extends React.Component {
 
         <MapSelection />
         <AddMap />
-        <ResetField />
         <AddTerrain />
 
       </Wrapper>

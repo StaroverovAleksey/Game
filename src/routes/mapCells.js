@@ -117,12 +117,11 @@ router.delete('/delete', [
             });
         }
 
-        const map = await Map.findById(req.query._id);
+        const map = await Map.findById(req.body._id);
         map.cells = {}
         await map.save();
         res.status(200).json({});
     } catch (error) {
-        console.log(error);
         res.status(500).json({massage: 'server error'});
     }
 });

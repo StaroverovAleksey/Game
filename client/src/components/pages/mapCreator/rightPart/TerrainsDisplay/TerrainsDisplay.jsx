@@ -102,8 +102,8 @@ class TerrainsDisplay extends WithRequest {
 
       {modalMenuCoord.length
         ? <ModalMenu
-          xCoord={modalMenuCoord[0]}
-          yCoord={modalMenuCoord[1]}
+          xCoord={modalMenuCoord[1]}
+          yCoord={modalMenuCoord[0]}
           closeCallback={this._closeModalMenu}
           data={[
             {title: 'Изменить', callback: this._updateTerrain},
