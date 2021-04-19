@@ -40,7 +40,7 @@ router.post('/create', [
         }
 
         try {
-            var terrain = await Terrain.findOne({ _id: req.body.terrain_id }).exec();
+            var terrain = await Terrain.findById(req.body.terrain_id).exec();
         } catch (e) {}
         if (!terrain) {
             return res.status(400).json({
@@ -54,7 +54,7 @@ router.post('/create', [
         }
 
         try {
-            var map = await Map.findOne({_id: req.body.map_id}).exec();
+            var map = await Map.findById(req.body.map_id).exec();
         } catch (e) {}
         if (!map) {
             return res.status(400).json({
@@ -95,7 +95,7 @@ router.get('/read', [
             });
         }
 
-        const map = await Map.findOne({_id: req.query._id}).populate('cells.$*.terrain');
+        const map = await Map.findById(req.query._id).populate('cells.$*.terrain');
         res.status(200).json(map.cells);
     } catch (error) {
         res.status(500).json({massage: 'server error'});
@@ -117,7 +117,7 @@ router.delete('/delete', [
             });
         }
 
-        const map = await Map.findOne({_id: req.query._id});
+        const map = await Map.findById(req.query._id);
         map.cells = {}
         await map.save();
         res.status(200).json({});

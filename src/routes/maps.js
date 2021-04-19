@@ -1,7 +1,7 @@
 const {Router} = require('express');
 const {validationResult} = require('express-validator');
 const Map = require('../models/Maps');
-const Terrain = require('../models/Terrains');
+const {firstUpper} = require("../utils/utils");
 const {body} = require("express-validator");
 const router = Router();
 
@@ -35,7 +35,7 @@ router.post('/create', [
             });
         }
 
-        let repeat = await Map.findOne({name: req.body.name}).exec();
+        const repeat = await Map.findOne({name: firstUpper(req.body.name), group: firstUpper(req.body.group)}).exec();
         if (repeat) {
             return res.status(400).json({
                 errors: [{
@@ -48,8 +48,8 @@ router.post('/create', [
         }
 
         const data = {
-            name: req.body.name,
-            group: req.body.group,
+            name: firstUpper(req.body.name),
+            group: firstUpper(req.body.group),
             size: {
                 x: req.body.size.x,
                 y: req.body.size.y,
@@ -60,7 +60,7 @@ router.post('/create', [
         const map = await new Map(data);
         const saveMap = await map.save();
 
-        res.status(200).json({_id: saveMap._id, name: saveMap.name, group: saveMap.group, size: saveMap.size});
+        res.status(200).json({_id: saveMap._id});
     } catch (error) {
         res.status(500).json({massage: 'server error'});
     }

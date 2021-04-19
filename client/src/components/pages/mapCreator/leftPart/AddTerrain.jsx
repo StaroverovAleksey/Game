@@ -11,6 +11,7 @@ import File from "../../../controls/File";
 import {API_CREATE_TERRAIN} from "../../../../tools/routing";
 import WithRequest from "../../../shells/ShellRequest";
 import CheckBox from "../../../controls/CheckBox";
+import {firstUpper} from "../../../../../../src/utils/utils";
 
 const Title = styled.h3`
   margin: 0 0 20px 0;
@@ -22,7 +23,7 @@ const Wrapper = styled.div`
   display: flex;
   margin-top: 30px;
   justify-content: ${({align}) => align || 'space-between'};
-  :first-child {
+  :first-child, :last-child {
     margin-top: 0;
   }
 `;
@@ -50,32 +51,14 @@ class AddTerrain extends WithRequest {
               name="name"
               width="60%"
               margin="0 10px 0 0"
-              rules={{ required: true, spaceForbidden: true, minLength: 3, maxLength: 14 }}
+              rules={{ required: true, minLength: 3, maxLength: 14 }}
             />
             <Input
               title="Группа"
-              name="sort"
+              name="group"
               width="40%"
-              rules={{ required: true, spaceForbidden: true, minLength: 3, maxLength: 14 }}
+              rules={{ required: true, minLength: 3, maxLength: 14 }}
             />
-          </Wrapper>
-
-          <Wrapper>
-            <Input
-              title="Номер"
-              name="number"
-              width="50%"
-              margin="0 10px 0 0"
-              rules={{ required: true, isNum: true }}
-            />
-            <CheckBox
-              title="Проходимость"
-              text="Загрузить"
-              name="passability"
-              width="50%"
-              margin="0 0 0 auto"
-            />
-
           </Wrapper>
 
           <Wrapper>
@@ -85,10 +68,20 @@ class AddTerrain extends WithRequest {
               width="100px"
               rules={{ format: ['jpeg', 'jpg'] }}
             />
+            <CheckBox
+              title="Проходимость"
+              text="Загрузить"
+              name="passability"
+              width="50%"
+              margin="0 0 0 auto"
+            />
+          </Wrapper>
+
+          <Wrapper>
             <Button
               text="Отправить"
               width="100px"
-              margin="auto 0 0 0"
+              margin="auto 0 0 auto"
             />
           </Wrapper>
 
@@ -108,11 +101,11 @@ class AddTerrain extends WithRequest {
       this.setState({errors: answer.errors});
     } else {
       const dataToAction = {};
-      dataToAction.sort = data.sort.toString().trim().toUpperCase()[0] + data.sort.toString().trim().toLowerCase().slice(1);
-      dataToAction.name = data.name.toString().trim();
-      dataToAction.number = parseInt(data.number);
+      dataToAction.group = firstUpper(data.group);
+      dataToAction.name = firstUpper(data.name);
       dataToAction.fileName = answer.fileName;
       dataToAction.passability = data.passability;
+      dataToAction._id = answer._id;
       this.props.addTerrain(dataToAction);
       this.setState({reset: true});
     }

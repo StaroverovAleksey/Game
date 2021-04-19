@@ -100,7 +100,7 @@ class TileField extends WithRequest {
               const name = `${x + 1}_${y + 1}`;
               return <Tile
                 id={name}
-                fileName={mapCells[name] ? atrTerrainsPath(mapCells[name].terrain.fileName) : atrUtilsPath('emptyTile.png')}
+                fileName={mapCells[name] && mapCells[name].terrain ? atrTerrainsPath(mapCells[name].terrain.fileName) : atrUtilsPath('emptyTile.png')}
                 key={`tile_${x}${y}`}
               />;
             })}

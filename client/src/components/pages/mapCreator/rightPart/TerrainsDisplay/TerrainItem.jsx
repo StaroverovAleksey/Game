@@ -68,19 +68,6 @@ const Name = styled.span`
   z-index: 2;
 `;
 
-const Number = styled.span`
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  background-color: rgba(0, 0, 0, .5);
-  font-size: 24px;
-  font-weight: bold;
-  color: white;
-  padding: 0 5px;
-  border-radius: 10px;
-  z-index: 2;
-`;
-
 class TerrainItem extends React.Component {
   constructor(props) {
     super(props);
@@ -102,11 +89,10 @@ class TerrainItem extends React.Component {
           active={active}
         />
         <Name>{terrain.name}</Name>
-        <Number>{terrain.number}</Number>
         <Choice
           active={active}
           className="modalMenuWithin"
-          id={terrain.number}
+          id={terrain._id}
         />
       </Wrapper>
     );
@@ -117,7 +103,7 @@ TerrainItem.propTypes = {
   terrain: PropTypes.shape({
     fileName: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
-    number: PropTypes.number.isRequired,
+    _id: PropTypes.string.isRequired,
   }).isRequired,
   remainder: PropTypes.number.isRequired,
   callBack: PropTypes.func.isRequired,

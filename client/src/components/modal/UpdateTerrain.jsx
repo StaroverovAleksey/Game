@@ -11,6 +11,7 @@ import {API_UPDATE_TERRAIN, atrTerrainsPath} from "../../tools/routing";
 import {connect} from "react-redux";
 import {setError, setTerrain, updateTerrain} from "../../redux/actions";
 import PropTypes from "prop-types";
+import {firstUpper} from "../../../../src/utils/utils";
 
 const OuterWrapper = styled.div`
   display: flex;
@@ -41,7 +42,7 @@ const Wrapper = styled.div`
   display: flex;
   margin-top: 30px;
   justify-content: ${({align}) => align || 'space-between'};
-  :first-child {
+  :first-child, :last-child {
     margin-top: 0;
   }
 `;
@@ -61,13 +62,13 @@ class UpdateTerrain extends WithRequest {
 
   render() {
     const {onCancel} = this.props;
-    const {sort, name, number, passability, fileName} = this.props.data;
+    const {group, name, passability, fileName, _id} = this.props.data;
     const {disabled} = this.state;
     return (
       <OuterWrapper>
         <InnerWrapper>
           <Field>
-            <Title>{`Изменение ${sort}/${name}`}</Title>
+            <Title>{`Изменение ${group}/${name}`}</Title>
             <Form
               onSubmit={this._onSubmit}
               errors={this.state.errors}
@@ -77,40 +78,20 @@ class UpdateTerrain extends WithRequest {
 
               <Wrapper>
                 <Input
-                  title="Тип"
-                  value={sort}
-                  name="sort"
-                  width="50%"
-                  margin="0 10px 0 0"
-                  rules={{ required: true, spaceForbidden: true }}
-                />
-                <Input
                   title="Название"
                   value={name}
                   name="name"
-                  width="50%"
-                  rules={{ required: true, spaceForbidden: true }}
-                />
-              </Wrapper>
-
-              <Wrapper>
-                <Input
-                  title="Номер"
-                  value={number}
-                  name="number"
-                  width="50%"
+                  width="60%"
                   margin="0 10px 0 0"
-                  rules={{ required: true, isNum: true, minValue: 10 }}
+                  rules={{ required: true, minLength: 3, maxLength: 14 }}
                 />
-                <CheckBox
-                  title="Проходимость"
-                  checked={passability}
-                  text="Загрузить"
-                  name="passability"
-                  width="50%"
-                  margin="auto 0 0 0"
+                <Input
+                  title="Группа"
+                  value={group}
+                  name="group"
+                  width="40%"
+                  rules={{ required: true, minLength: 3, maxLength: 14 }}
                 />
-
               </Wrapper>
 
               <Wrapper>
@@ -121,17 +102,27 @@ class UpdateTerrain extends WithRequest {
                   width="100px"
                   rules={{ format: ['jpeg', 'jpg'] }}
                 />
+                <CheckBox
+                  title="Проходимость"
+                  checked={passability}
+                  text="Загрузить"
+                  name="passability"
+                  width="50%"
+                />
+
+              </Wrapper>
+
+              <Wrapper>
                 <Button
                   text="Отменить"
                   width="100px"
                   type={'button'}
                   onClick={onCancel}
-                  margin="auto 0 0 0"
+                  margin="0 20px 0 auto"
                 />
                 <Button
                   text="Применить"
                   width="100px"
-                  margin="auto 0 0 0"
                   disabled={disabled}
                 />
               </Wrapper>
@@ -152,34 +143,33 @@ class UpdateTerrain extends WithRequest {
   }
 
   _onSubmit = async (data) => {
-    const {number} = this.props.data;
+    const {_id, name, group} = this.props.data;
     const {onCancel, changeTerrain} = this.props;
     this.setState({errors: [], reset: false});
+
+    if (data.group) {
+      data.group = firstUpper(data.group);
+    } else {
+      data.group = firstUpper(group);
+    }
+    if (data.name) {
+      data.name = firstUpper(data.name);
+    } else {
+      data.name = firstUpper(name);
+    }
+
     const formData = new FormData();
     Object.keys(data).map((key) => {
-      if (data[key] !== this.props.data[key]) {
-        formData.append(key, data[key]);
-      }
+      formData.append(key, data[key]);
     })
-    formData.append('oldNumber', number);
-
+    formData.append('_id', _id);
 
     const answer = await this.PATCH_FORM(API_UPDATE_TERRAIN, formData);
-
-
 
     if(answer.errors) {
       this.setState({errors: answer.errors});
     } else {
-      data.oldNumber = number;
-
-      if (data.number) {
-        data.number = parseInt(data.number);
-      }
-
-      if (data.sort) {
-        data.sort = data.sort.toString().toUpperCase()[0] + data.sort.toString().toLowerCase().slice(1);
-      }
+      data._id = _id;
 
       if (answer.fileName) {
         delete data.img;
@@ -195,13 +185,13 @@ UpdateTerrain.propTypes = {
   data: PropTypes.shape({
     fileName: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
-    number: PropTypes.number.isRequired,
-    sort: PropTypes.string.isRequired,
+    group: PropTypes.string.isRequired,
     passability: PropTypes.bool.isRequired,
   }).isRequired,
   addTerrain: PropTypes.func.isRequired,
   addError: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired,
+  changeTerrain: PropTypes.func.isRequired,
 };
 
 export default connect(

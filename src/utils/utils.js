@@ -8,5 +8,9 @@ module.exports = {
             () => codesASCII[Math.round(Math.random() * (codesASCII.length - 1))]
         );
         return String.fromCharCode(...randomCodesASCII);
+    },
+
+    firstUpper (string) {
+        return string.toString().trim().toUpperCase()[0] + string.toString().trim().toLowerCase().slice(1);
     }
 }

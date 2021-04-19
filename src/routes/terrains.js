@@ -7,6 +7,7 @@ const {promisify} = require('util');
 const sizeOf = promisify(require('image-size'));
 const {body} = require("express-validator");
 const Terrain = require('../models/Terrains');
+const {firstUpper} = require("../utils/utils");
 const {getFileName} = require("../utils/utils");
 const {check} = require("express-validator");
 const router = Router();
@@ -14,32 +15,14 @@ const router = Router();
 const multiparty = formParser();
 
 router.post('/create', multiparty, [
-    check('number')
-        .isNumeric().withMessage('number expected')
-        .isLength({ max: 3 }).withMessage('max length expected 3')
-        .trim(),
     body('name')
         .isString().withMessage('string expected')
         .isLength({ min: 3, max: 14 }).withMessage('length between 3 and 14')
-        .trim()
-        .custom((value) => {
-            if (value.split('').some((v) => v === ' ')) {
-                throw new Error('space forbidden')
-            } else {
-                return true;
-            }
-        }),
-    body('sort')
+        .trim(),
+    body('group')
         .isString().withMessage('string expected')
         .isLength({ min: 3, max: 14 }).withMessage('length between 3 and 14')
-        .trim()
-        .custom((value) => {
-            if (value.split('').some((v) => v === ' ')) {
-                throw new Error('space forbidden')
-            } else {
-                return true;
-            }
-        }),
+        .trim(),
     body('passability')
         .isBoolean().withMessage('boolean expected')
 ], async (req, res) => {
@@ -66,11 +49,13 @@ router.post('/create', multiparty, [
             });
         }
 
-        let result = !isNaN(req.body.number) ? await Terrain.findOne({ number: req.body.number }).exec() : null;
-        if (result) {
+        try {
+            var repeat = await Terrain.findOne({name: firstUpper(req.body.name), group: firstUpper(req.body.group)}).exec();
+        } catch (e) {}
+        if (repeat) {
             errors.errors.push({
-                'msg': "number is exist",
-                'param': "number",
+                'msg': "name is exist",
+                'param': "name",
                 'location': "body"
             });
         }
@@ -82,9 +67,8 @@ router.post('/create', multiparty, [
             });
         }
 
-        const number = req.body.number;
-        const name = req.body.name;
-        const sort = req.body.sort.toString().toUpperCase()[0] + req.body.sort.toString().toLowerCase().slice(1);
+        const name = firstUpper(req.body.name);
+        const group = firstUpper(req.body.group);
         const passability = req.body.passability;
         const file = await fs.readFileSync(req.files.img.path);
         const pathToDirectory = `./client/arts/terrains`;
@@ -100,12 +84,12 @@ router.post('/create', multiparty, [
 
         await fs.writeFileSync(pathToFile, file);
 
-        const cellType = new Terrain({
-            number, name, sort, fileName, passability
+        const terrain = new Terrain({
+            name, group, fileName, passability
         });
-        await cellType.save();
+        const saveTerrain = await terrain.save();
 
-        res.status(200).json({fileName});
+        res.status(200).json({fileName, _id: saveTerrain._id});
     } catch (error) {
         res.status(500).json({massage: 'server error'});
     }
@@ -129,42 +113,22 @@ router.get('/read', async (req, res) => {
 
 
 router.patch('/update', multiparty, [
-    check('oldNumber')
-        .isNumeric().withMessage('number expected')
-        .isLength({ max: 3 }).withMessage('max length expected 3')
-        .trim(),
-    check('number')
-        .if(body('number').exists())
-        .isNumeric().withMessage('number expected')
-        .isLength({ max: 3 }).withMessage('max length expected 3')
-        .trim(),
     body('name')
         .if(body('name').exists())
         .isString().withMessage('string expected')
         .isLength({ min: 3, max: 32 }).withMessage('length between 3 and 32')
-        .trim()
-        .custom((value) => {
-            if (value.split('').some((v) => v === ' ')) {
-                throw new Error('space forbidden')
-            } else {
-                return true;
-            }
-        }),
-    body('sort')
-        .if(body('sort').exists())
+        .trim(),
+    body('group')
+        .if(body('group').exists())
         .isString().withMessage('string expected')
         .isLength({ min: 3, max: 32 }).withMessage('length between 3 and 32')
-        .trim()
-        .custom((value) => {
-            if (value.split('').some((v) => v === ' ')) {
-                throw new Error('space forbidden')
-            } else {
-                return true;
-            }
-        }),
+        .trim(),
     body('passability')
         .if(body('passability').exists())
-        .isBoolean().withMessage('boolean expected')
+        .isBoolean().withMessage('boolean expected'),
+    body('_id')
+      .isString().withMessage('string expected')
+      .trim(),
 ], async (req, res) => {
     try {
         const errors = validationResult(req);
@@ -182,26 +146,26 @@ router.patch('/update', multiparty, [
             }
         }
 
-        if (req.body.number) {
-            let result = !isNaN(req.body.number) ? await Terrain.findOne({ number: req.body.number }).exec() : null;
-            if (result) {
+        if (req.body.group || req.body.name) {
+            try {
+                var repeat = await Terrain.findOne({name: firstUpper(req.body.name), group: firstUpper(req.body.group)}).exec();
+            } catch (e) {}
+            if (repeat) {
                 errors.errors.push({
-                    'msg': "number is exist",
-                    'param': "number",
+                    'msg': "name is exist",
+                    'param': "name",
                     'location': "body"
                 });
             }
         }
 
-        if (req.body.number) {
-            let result = !isNaN(req.body.oldNumber) ? await Terrain.findOne({ number: req.body.oldNumber }).exec() : null;
-            if (!result) {
-                errors.errors.push({
-                    'msg': "oldNumber not found",
-                    'param': "number",
-                    'location': "body"
-                });
-            }
+        const oldData = await Terrain.findById(req.body._id ).exec();
+        if (!oldData) {
+            errors.errors.push({
+                'msg': "terrain not found",
+                'param': "name",
+                'location': "body"
+            });
         }
 
         if (!errors.isEmpty()) {
@@ -211,13 +175,16 @@ router.patch('/update', multiparty, [
             });
         }
 
-        if (req.body.sort) {
-            req.body.sort = req.body.sort.toString().toUpperCase()[0] + req.body.sort.toString().toLowerCase().slice(1);
+        if (req.body.group) {
+            req.body.group = firstUpper(req.body.group);
+        }
+
+        if (req.body.name) {
+            req.body.name = firstUpper(req.body.name);
         }
 
         let fileName;
         if (req.files.img) {
-            const oldData = await Terrain.findOne({ number: req.body.oldNumber }).exec();
             const path = `./client/arts/terrains/${oldData.fileName}`;
             await fs.unlinkSync(path);
 
@@ -229,7 +196,7 @@ router.patch('/update', multiparty, [
             req.body.fileName = fileName;
         }
 
-        await Terrain.findOneAndUpdate({number: req.body.oldNumber}, req.body).exec();
+        await Terrain.findByIdAndUpdate(req.body._id, req.body).exec();
 
         res.status(200).json(fileName ? {fileName} : {});
     } catch (error) {
@@ -246,9 +213,8 @@ router.patch('/update', multiparty, [
 
 
 router.delete('/delete', [
-    check('number')
-        .isNumeric().withMessage('number expected')
-        .isLength({ max: 3 }).withMessage('max length expected 3')
+    check('_id')
+        .isString().withMessage('string expected')
         .trim(),
 ], async (req, res) => {
     try {
@@ -260,12 +226,12 @@ router.delete('/delete', [
             });
         }
 
-        const terrainForDelete = await Terrain.findOne({ number: req.body.number }).exec();
+        const terrainForDelete = await Terrain.findOne({ _id: req.body._id }).exec();
         const path = `./client/arts/terrains/${terrainForDelete.fileName}`;
 
         await fs.unlinkSync(path);
 
-        await Terrain.deleteOne({ number: req.body.number });
+        await Terrain.deleteOne({ _id: req.body._id });
         res.status(200).json({});
     } catch (error) {
         res.status(500).json({massage: 'server error'});

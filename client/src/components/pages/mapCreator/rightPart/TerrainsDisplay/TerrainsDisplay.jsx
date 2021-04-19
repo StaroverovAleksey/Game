@@ -29,6 +29,14 @@ const InnerWrapper = styled.div`
   }
 `;
 
+const EmptyTerrainsList = styled.div`
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  user-select: none;
+  color: #ef9898;
+`;
+
 class TerrainsDisplay extends WithRequest {
   constructor(props) {
     super(props);
@@ -37,7 +45,7 @@ class TerrainsDisplay extends WithRequest {
       activeTerrain: false,
       modalMenuCoord: [],
       modalConfirm: false,
-      modalMenuNumber: null,
+      modalMenuId: null,
       updateTerrain: false,
     }
   }
@@ -59,27 +67,30 @@ class TerrainsDisplay extends WithRequest {
       modalConfirm,
       modalMenuCoord,
       updateTerrain,
-      modalMenuNumber
+      modalMenuId
     } = this.state;
     return <Field>
-      <div onContextMenu={this._contextMenu}>
-        {sortingData.map((sort, i) => {
-          const remainder = sort.length % 5 || 5;
-          return <React.Fragment key={i}>
-            <Title>{`${sort[0].sort}:`}</Title>
-            <InnerWrapper>
-              {sort.map((terrain, index) => {
-                return <TerrainItem
-                  terrain={terrain}
-                  remainder={remainder}
-                  key={`terrain_item_${index}`}
-                  callBack={this.choiceTerrain}
-                  active={terrain === activeTerrain}/>
-              })}
-            </InnerWrapper>
-          </React.Fragment>;
-        })}
-      </div>
+      {sortingData.length ?
+        <div onContextMenu={this._contextMenu}>
+          {sortingData.map((group, i) => {
+            const remainder = group.length % 5 || 5;
+            return <React.Fragment key={i}>
+              <Title>{`${group[0].group}:`}</Title>
+              <InnerWrapper>
+                {group.map((terrain, index) => {
+                  return <TerrainItem
+                    terrain={terrain}
+                    remainder={remainder}
+                    key={`terrain_item_${index}`}
+                    callBack={this.choiceTerrain}
+                    active={terrain === activeTerrain}/>
+                })}
+              </InnerWrapper>
+            </React.Fragment>;
+          })}
+        </div>
+      : <EmptyTerrainsList>Список местностей пуст.<br/>Создайте местность</EmptyTerrainsList>}
+
 
       {modalConfirm ?
         <Confirm
@@ -103,7 +114,7 @@ class TerrainsDisplay extends WithRequest {
 
       {updateTerrain ?
         <UpdateTerrain
-          data={this._getData(modalMenuNumber)}
+          data={this._getData(modalMenuId)}
           onCancel={() => this.setState({updateTerrain: false})}
         />
       : null}
@@ -111,10 +122,10 @@ class TerrainsDisplay extends WithRequest {
     </Field>;
   }
 
-  _getData = (number) => {
+  _getData = (_id) => {
     const {sortingData} = this.state;
     for (let i = 0; i < sortingData.length; i++) {
-      const index = sortingData[i].findIndex((value) => value.number === number);
+      const index = sortingData[i].findIndex((value) => value._id === _id);
       if (index > -1) {
         return sortingData[i][index];
       }
@@ -125,10 +136,10 @@ class TerrainsDisplay extends WithRequest {
     const {terrain} = this.props;
     const sortTerrains = new Set;
     const sortingData = [];
-    terrain.map((value) => sortTerrains.add(value.sort));
+    terrain.map((value) => sortTerrains.add(value.group));
     for (let sort of sortTerrains) {
       const sortArray = [];
-      terrain.map((value) => value.sort === sort && sortArray.push(value));
+      terrain.map((value) => value.group === sort && sortArray.push(value));
       sortingData.push(sortArray);
     }
     this.setState({sortingData});
@@ -145,12 +156,12 @@ class TerrainsDisplay extends WithRequest {
   _contextMenu = (event) => {
     if (event.target.classList.contains('modalMenuWithin')) {
       event.preventDefault();
-      this.setState({modalMenuCoord: [event.pageY, event.pageX], modalMenuNumber: parseInt(event.target.id)});
+      this.setState({modalMenuCoord: [event.pageY, event.pageX], modalMenuId: event.target.id});
     }
   }
 
   _closeModalMenu = () => {
-    this.setState({modalMenuCoord: [], modalMenuNumber: null, modalConfirm: false});
+    this.setState({modalMenuCoord: [], modalMenuId: null, modalConfirm: false});
   }
 
   _deleteTerrainConfirm = async () => {
@@ -158,11 +169,11 @@ class TerrainsDisplay extends WithRequest {
   }
 
   _deleteTerrain = async () => {
-    const {modalMenuNumber} = this.state;
+    const {modalMenuId} = this.state;
     const {removeTerrain} = this.props;
-    await this.DELETE(API_DELETE_TERRAIN, JSON.stringify({number: modalMenuNumber}));
+    await this.DELETE(API_DELETE_TERRAIN, JSON.stringify({_id: modalMenuId}));
     this._closeModalMenu();
-    removeTerrain(modalMenuNumber);
+    removeTerrain(modalMenuId);
   }
 
   _updateTerrain = () => {

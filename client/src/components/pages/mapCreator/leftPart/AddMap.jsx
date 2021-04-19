@@ -10,6 +10,7 @@ import PropTypes from "prop-types";
 import WithRequest from "../../../shells/ShellRequest";
 import {API_CREATE_MAP} from "../../../../tools/routing";
 import {isEmpty} from "../../../../tools/tools";
+import {firstUpper} from "../../../../../../src/utils/utils";
 
 const Title = styled.h3`
   margin: 0 0 20px 0;
@@ -81,13 +82,14 @@ class AddMap extends WithRequest {
   }
 
   _onSubmit = async (data) => {
+    this.setState({errors: [], reset: false});
     const {addMap, selectedMap, addSelectedMap} = this.props;
     const formatData = {
-      name: data.name,
-      group: data.group,
+      name: firstUpper(data.name),
+      group: firstUpper(data.group),
       size: {
-        x: data['size.x'],
-        y: data['size.y'],
+        x: parseInt(data['size.x']),
+        y: parseInt(data['size.y']),
       }
     }
 
@@ -95,10 +97,10 @@ class AddMap extends WithRequest {
     if(answer.errors) {
       this.setState({errors: answer.errors});
     } else {
-
-      addMap(answer);
+      formatData._id = answer._id;
+      addMap(formatData);
       if (isEmpty(selectedMap)) {
-        addSelectedMap(answer);
+        addSelectedMap(formatData);
       }
       this.setState({reset: true});
     }

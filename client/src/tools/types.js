@@ -6,9 +6,8 @@ export const Size = {
 };
 
 export const Terrain = {
-  number: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
-  sort: PropTypes.string.isRequired,
+  group: PropTypes.string.isRequired,
   fileName: PropTypes.string.isRequired,
   passability: PropTypes.bool.isRequired,
 };

@@ -1,6 +1,6 @@
 ﻿export default {
   required: {
-    func: (value) => value.trim(),
+    func: (value) => value.toString().trim(),
     error: () => 'Обязательное поле',
   },
   minValue: {
