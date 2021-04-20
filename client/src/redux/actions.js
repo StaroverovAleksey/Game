@@ -14,11 +14,13 @@ export const setMaps = (maps) => ({ type: SET_MAPS, payload: maps });
 export const SET_ONE_MAP = 'SET_ONE_MAP';
 export const setMap = (map) => ({ type: SET_ONE_MAP, payload: map });
 export const DELETE_MAP = 'DELETE_MAP';
-export const deleteMap = () => ({ type: DELETE_MAP });
+export const deleteMap = (mapId) => ({ type: DELETE_MAP, payload: mapId });
 
 /** **********************************************      CELLS      */
 export const SET_MAP_CELLS = 'SET_MAP_CELLS';
 export const setMapCells = (mapCells) => ({ type: SET_MAP_CELLS, payload: mapCells });
+export const ADD_MAP_CELLS = 'ADD_MAP_CELLS';
+export const addMapCells = (mapCells) => ({ type: ADD_MAP_CELLS, payload: mapCells });
 export const DELETE_ALL_MAP_SELLS = 'DELETE_ALL_MAP_SELLS';
 export const deleteAllMapSells = () => ({ type: DELETE_ALL_MAP_SELLS });
 

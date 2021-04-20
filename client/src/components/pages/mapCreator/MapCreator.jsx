@@ -12,6 +12,7 @@ import {
 import { API_GET_MAP_CELL, API_GET_MAPS, API_GET_TERRAIN } from '../../../tools/routing';
 import WithRequest from '../../shells/ShellRequest';
 import RightPart from './rightPart/RightPart';
+import {isEmpty} from "../../../tools/tools";
 
 const OuterWrapper = styled.div`
   display: flex;
@@ -58,12 +59,26 @@ class MapCreator extends WithRequest {
   }
 
   async componentDidUpdate(prevProps) {
-    const { selectedMap, addMapCells, addLoadingMapSells } = this.props;
-    if (prevProps.selectedMap !== 'loading' && prevProps.selectedMap !== selectedMap) {
+    const {
+      selectedMap, addMapCells, addLoadingMapSells, maps, addSelectedMap,
+    } = this.props;
+
+    if (!isEmpty(selectedMap) && prevProps.selectedMap !== 'loading' && prevProps.selectedMap !== selectedMap) {
       addLoadingMapSells(true);
       const [mapCells] = await this.GET([`${API_GET_MAP_CELL}/?_id=${selectedMap._id}`]);
       addMapCells(mapCells);
       addLoadingMapSells(false);
+    }
+
+    if (prevProps.maps !== maps) {
+      if (maps.length === 0) {
+        addSelectedMap({});
+        return;
+      }
+      const index = maps.findIndex((value) => value._id === selectedMap._id);
+      if (index === -1) {
+        addSelectedMap(maps[0]);
+      }
     }
   }
 
@@ -99,6 +114,7 @@ MapCreator.propTypes = {
 
 export default connect(
   (mapStateToProps) => ({
+    maps: mapStateToProps.map.maps,
     selectedMap: mapStateToProps.setting.selectedMap,
   }),
   (mapDispatchToProps) => ({

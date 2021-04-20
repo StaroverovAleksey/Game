@@ -2,10 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 import Field from '../../../../controls/Field';
 import { connect } from 'react-redux';
-import {deleteAllMapSells, setError, setMap, setSelectedMap} from "../../../../../redux/actions";
-import PropTypes from "prop-types";
+import {deleteAllMapSells, deleteMap, setError, setMap, setSelectedMap} from "../../../../../redux/actions";
 import WithRequest from "../../../../shells/ShellRequest";
-import {API_CREATE_MAP, API_DELETE_MAP_CELL, atrUtilsPath} from "../../../../../tools/routing";
+import {API_DELETE_MAP, API_DELETE_MAP_CELL} from "../../../../../tools/routing";
 import {isEmpty} from "../../../../../tools/tools";
 import MapSelectionItem from "./MapSelectionItem";
 import Confirm from "../../../../modal/Confirm";
@@ -32,7 +31,8 @@ class MapSelection extends WithRequest {
       openGroup: -1,
       modalMenuCoord: [],
       confirmMethod: false,
-      modalMenuId: '',
+      modalMenuMap: {},
+      modalAct: '',
     };
   }
 
@@ -48,7 +48,7 @@ class MapSelection extends WithRequest {
 
   render() {
     const {selectedMap} = this.props;
-    const {data, openSelector, openGroup, modalMenuCoord, confirmMethod} = this.state;
+    const {data, openSelector, openGroup, modalMenuCoord, confirmMethod, modalMenuMap, modalAct} = this.state;
     return (
       <Field>
         <Title>Выбор карты</Title>
@@ -93,7 +93,7 @@ class MapSelection extends WithRequest {
 
         {confirmMethod ?
           <Confirm
-            description={'Уверен?'}
+            description={`${modalAct} карту ${modalMenuMap.group} / ${modalMenuMap.name}?`}
             onSuccess={confirmMethod}
             onCancel={() => this.setState({confirmMethod: false})}
           />
@@ -107,7 +107,7 @@ class MapSelection extends WithRequest {
             data={[
               {title: 'Изменить', callback: this._updateMap},
               {title: 'Очистить', callback: this._clearMapConfirm},
-              {title: 'Удалить', callback: this._deleteMap}
+              {title: 'Удалить', callback: this._deleteMapConfirm}
             ]}
           />
           : null}
@@ -117,36 +117,44 @@ class MapSelection extends WithRequest {
   }
 
   _updateMap = (event) => {
-    const {modalMenuId} = this.state;
 
   }
 
   _clearMapConfirm = async () => {
-    this.setState({modalMenuCoord: [], confirmMethod: this._clearMap});
+    this.setState({modalMenuCoord: [], confirmMethod: this._clearMap, modalAct: 'Очистить'});
   }
 
   _clearMap = async () => {
-    const {modalMenuId} = this.state;
+    const {modalMenuMap} = this.state;
     const {removeAllMapSells} = this.props;
-    await this.DELETE(API_DELETE_MAP_CELL, JSON.stringify({_id: modalMenuId}));
+    await this.DELETE(API_DELETE_MAP_CELL, JSON.stringify({_id: modalMenuMap._id}));
     removeAllMapSells();
     this._closeModalMenu();
   }
 
-  _deleteMap = (event) => {
-    const {modalMenuId} = this.state;
-    console.log(modalMenuId);
+  _deleteMapConfirm = async () => {
+    this.setState({modalMenuCoord: [], confirmMethod: this._deleteMap, modalAct: 'Удалить'});
+  }
+
+  _deleteMap = async () => {
+    const {modalMenuMap} = this.state;
+    const {removeMap} = this.props;
+    await this.DELETE(API_DELETE_MAP, JSON.stringify({_id: modalMenuMap._id}));
+    removeMap(modalMenuMap._id);
+    this._closeModalMenu();
   }
 
   _contextMenu = (event) => {
+    const {maps} = this.props;
     if (event.target.classList.contains('modalMenuWithin')) {
       event.preventDefault();
-      this.setState({modalMenuCoord: [event.pageY, event.pageX], modalMenuId: event.target.id});
+      const index = maps.findIndex((value) => value._id === event.target.id);
+      this.setState({modalMenuCoord: [event.pageY, event.pageX], modalMenuMap: maps[index]});
     }
   }
 
   _closeModalMenu = () => {
-    this.setState({modalMenuCoord: [], modalMenuId: null, confirmMethod: false});
+    this.setState({modalMenuCoord: [], modalMenuMap: {}, confirmMethod: false});
   }
 
   _openGroup = (event) => {
@@ -190,6 +198,7 @@ export default connect(
     addMap: (data) => mapDispatchToProps(setMap(data)),
     addSelectedMap: (map) => mapDispatchToProps(setSelectedMap(map)),
     removeAllMapSells: () => mapDispatchToProps(deleteAllMapSells()),
+    removeMap: (mapId) => mapDispatchToProps(deleteMap(mapId)),
     addError: (data) => mapDispatchToProps(setError(data)),
   }),
 )(MapSelection);

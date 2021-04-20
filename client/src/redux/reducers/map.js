@@ -9,7 +9,10 @@ export default function reducer(state = { }, action) {
       newState.maps.push(action.payload);
       return newState;
 
-    case DELETE_MAP: return { };
+    case DELETE_MAP:
+      const index = newState.maps.findIndex((value) => value._id === action.payload);
+      newState.maps.splice(index, 1);
+      return newState;
 
     default: return { ...state };
   }

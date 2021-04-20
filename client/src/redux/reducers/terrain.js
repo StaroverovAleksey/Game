@@ -15,9 +15,7 @@ export default function reducer(state = { }, action) {
     case UPDATE_TERRAIN:
       index = newState.terrains.findIndex((value) => value._id === action.payload._id);
       Object.keys(action.payload).forEach((key) => {
-        if (newState.terrains[index][key]) {
-          newState.terrains[index][key] = action.payload[key];
-        }
+        newState.terrains[index][key] = action.payload[key];
       });
       return newState;
 

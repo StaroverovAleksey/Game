@@ -5,6 +5,7 @@ import {API_CREATE_MAP_CELL, atrTerrainsPath, atrUtilsPath} from '../../../../to
 import {connect} from "react-redux";
 import {Terrain} from "../../../../tools/types";
 import WithRequest from "../../../shells/ShellRequest";
+import {addMapCells, setError, setTerrain} from "../../../../redux/actions";
 
 const OuterWrapper = styled.div`
   background-color: white;
@@ -125,7 +126,7 @@ class TileField extends WithRequest {
 
   _onMouseUp = async (event) => {
     const { createMapData } = this.state;
-    const { choiceTerrain, selectedMap } = this.props;
+    const { choiceTerrain, selectedMap, addingMapCells } = this.props;
     event.preventDefault();
     this.fieldRef.current.removeEventListener('mousemove', this._onMouseMove );
     this.fieldRef.current.removeEventListener('mouseover', this._painting );
@@ -142,9 +143,19 @@ class TileField extends WithRequest {
         data.cells.push({x, y});
       }
       this.setState({serverRequest: true});
-      const answer = await this.POST(API_CREATE_MAP_CELL, JSON.stringify(data));
+      await this.POST(API_CREATE_MAP_CELL, JSON.stringify(data));
+
+      const actionData = {};
+      data.cells.forEach((value) => {
+        const key = `${value.x}_${value.y}`;
+        actionData[key] = {};
+        actionData[key].terrain = choiceTerrain;
+      });
+      addingMapCells(actionData);
+
       for (let item of createMapData) {
         item.style.opacity = 1;
+        item.style.backgroundImage = '';
       }
     }
 
@@ -184,6 +195,9 @@ class TileField extends WithRequest {
   }
 
   _sizing = () => {
+    if (!this.wrapRef.current) {
+      return;
+    }
     let { fieldX, fieldY } = this.state;
     const { x, y } = this.props.selectedMap.size;
     const { onMouseMove } = this.props;
@@ -224,6 +238,7 @@ TileField.propTypes = {
       name: PropTypes.string,
     }),
   onMouseMove: PropTypes.func.isRequired,
+  addingMapCells: PropTypes.func.isRequired,
 };
 
 export default connect(
@@ -231,5 +246,8 @@ export default connect(
     choiceTerrain: mapStateToProps.setting.choiceTerrain,
     mapCells: mapStateToProps.mapCell,
     selectedMap: mapStateToProps.setting.selectedMap,
+  }),
+  (mapDispatchToProps) => ({
+    addingMapCells: (cells) => mapDispatchToProps(addMapCells(cells)),
   }),
 )(TileField);

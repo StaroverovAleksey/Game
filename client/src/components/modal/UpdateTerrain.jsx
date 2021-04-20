@@ -147,14 +147,11 @@ class UpdateTerrain extends WithRequest {
     const {onCancel, changeTerrain} = this.props;
     this.setState({errors: [], reset: false});
 
-    if (data.group) {
-      data.group = firstUpper(data.group);
-    } else {
+    data._id = _id;
+    if (data.name && !data.group) {
       data.group = firstUpper(group);
     }
-    if (data.name) {
-      data.name = firstUpper(data.name);
-    } else {
+    if (data.group && !data.name) {
       data.name = firstUpper(name);
     }
 
@@ -162,7 +159,6 @@ class UpdateTerrain extends WithRequest {
     Object.keys(data).map((key) => {
       formData.append(key, data[key]);
     })
-    formData.append('_id', _id);
 
     const answer = await this.PATCH_FORM(API_UPDATE_TERRAIN, formData);
 
