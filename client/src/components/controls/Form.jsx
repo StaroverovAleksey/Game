@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import {FormProvider} from '../../tools/context';
+import {isEmpty} from "../../tools/tools";
 
 const FormCommon = styled.form`
   display: flex;
@@ -45,7 +46,22 @@ class Form extends React.Component {
   }
 
   _onChange = (name, value) => {
-    this.setState({[name]: value}, () => {
+
+    if (typeof value === 'object') {
+
+      var formattedValue = Object.assign({}, this.state[name]);
+      if (!isEmpty(formattedValue)) {
+        const key = Object.keys(value)[0];
+        formattedValue[key] = value[key];
+      } else {
+        formattedValue = value;
+      }
+
+    } else {
+      formattedValue = value;
+    }
+
+    this.setState({[name]: formattedValue}, () => {
       const data = Object.assign({}, this.state);
       delete data.errors;
       this.props.onChange(data);

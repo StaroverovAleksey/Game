@@ -91,7 +91,14 @@ class Input extends React.Component {
     this.setState({
       value: value,
       error: ''
-    }, () => this.context.onChange(name, value));
+    }, () => {
+      if (name.split('.').length > 1) {
+        const key = name.split('.')[1];
+        this.context.onChange(name.split('.')[0], {[key]: value});
+      } else {
+        this.context.onChange(name, value);
+      }
+    });
   }
 
   validation = async () => {

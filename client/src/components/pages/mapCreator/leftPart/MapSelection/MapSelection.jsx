@@ -9,6 +9,8 @@ import {isEmpty} from "../../../../../tools/tools";
 import MapSelectionItem from "./MapSelectionItem";
 import Confirm from "../../../../modal/Confirm";
 import ModalMenu from "../../../../modal/ModalMenu";
+import UpdateTerrain from "../../../../modal/UpdateTerrain";
+import UpdateMap from "../../../../modal/UpdateMap";
 
 const Title = styled.h3`
   margin: 0 0 10px 0;
@@ -33,6 +35,7 @@ class MapSelection extends WithRequest {
       confirmMethod: false,
       modalMenuMap: {},
       modalAct: '',
+      updateMap: false,
     };
   }
 
@@ -48,7 +51,16 @@ class MapSelection extends WithRequest {
 
   render() {
     const {selectedMap} = this.props;
-    const {data, openSelector, openGroup, modalMenuCoord, confirmMethod, modalMenuMap, modalAct} = this.state;
+    const {
+      data,
+      openSelector,
+      openGroup,
+      modalMenuCoord,
+      confirmMethod,
+      modalMenuMap,
+      modalAct,
+      updateMap
+    } = this.state;
     return (
       <Field>
         <Title>Выбор карты</Title>
@@ -112,12 +124,19 @@ class MapSelection extends WithRequest {
           />
           : null}
 
+        {updateMap ?
+          <UpdateMap
+            data={modalMenuMap}
+            onCancel={() => this.setState({updateMap: false})}
+          />
+          : null}
+
       </Field>
     );
   }
 
-  _updateMap = (event) => {
-
+  _updateMap = () => {
+    this.setState({updateMap: true, modalMenuCoord: []});
   }
 
   _clearMapConfirm = async () => {
@@ -126,9 +145,11 @@ class MapSelection extends WithRequest {
 
   _clearMap = async () => {
     const {modalMenuMap} = this.state;
-    const {removeAllMapSells} = this.props;
+    const {removeAllMapSells, selectedMap} = this.props;
     await this.DELETE(API_DELETE_MAP_CELL, JSON.stringify({_id: modalMenuMap._id}));
-    removeAllMapSells();
+    if (modalMenuMap._id === selectedMap._id) {
+      removeAllMapSells();
+    }
     this._closeModalMenu();
   }
 

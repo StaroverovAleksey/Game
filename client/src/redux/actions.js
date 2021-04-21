@@ -13,6 +13,8 @@ export const SET_MAPS = 'SET_MAPS';
 export const setMaps = (maps) => ({ type: SET_MAPS, payload: maps });
 export const SET_ONE_MAP = 'SET_ONE_MAP';
 export const setMap = (map) => ({ type: SET_ONE_MAP, payload: map });
+export const UPDATE_MAP = 'UPDATE_MAP';
+export const updateMap = (map) => ({ type: UPDATE_MAP, payload: map });
 export const DELETE_MAP = 'DELETE_MAP';
 export const deleteMap = (mapId) => ({ type: DELETE_MAP, payload: mapId });
 

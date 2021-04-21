@@ -21,6 +21,7 @@ const Wrapper = styled.div`
   width: 100%;
   display: flex;
   margin-top: 30px;
+  justify-content: space-around;
   :first-child {
     margin-top: 0;
   }

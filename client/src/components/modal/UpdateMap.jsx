@@ -3,13 +3,11 @@ import styled from 'styled-components';
 import WithRequest from '../shells/ShellRequest';
 import Form from "../controls/Form";
 import Input from "../controls/Input";
-import CheckBox from "../controls/CheckBox";
-import File from "../controls/File";
 import Button from "../controls/Button";
 import Field from "../controls/Field";
-import {API_UPDATE_TERRAIN, atrTerrainsPath} from "../../tools/routing";
+import {API_UPDATE_TERRAIN} from "../../tools/routing";
 import {connect} from "react-redux";
-import {setError, updateTerrain} from "../../redux/actions";
+import {setError, setTerrain, updateMap, updateTerrain} from "../../redux/actions";
 import PropTypes from "prop-types";
 import {firstUpper} from "../../../../src/utils/utils";
 
@@ -41,30 +39,29 @@ const Wrapper = styled.div`
   width: 100%;
   display: flex;
   margin-top: 30px;
-  justify-content: ${({align}) => align || 'space-between'};
-  :first-child, :last-child {
+  :first-child {
     margin-top: 0;
   }
 `;
 
-class UpdateTerrain extends WithRequest {
+class UpdateMap extends WithRequest {
   constructor(props) {
     super(props);
     this.state = {
       errors: [],
       reset: false,
       disabled: true,
-      update: false,
     };
   }
 
   render() {
     const {onCancel} = this.props;
-    const {group, name, passability, fileName, _id} = this.props.data;
+    const {group, name, size} = this.props.data;
     const {disabled} = this.state;
     return (
       <OuterWrapper>
         <InnerWrapper>
+
           <Field>
             <Title>{`Изменение ${group}/${name}`}</Title>
             <Form
@@ -73,50 +70,46 @@ class UpdateTerrain extends WithRequest {
               reset={this.state.reset}
               onChange={this._onChange}
             >
-
               <Wrapper>
                 <Input
                   title="Название"
-                  value={name}
                   name="name"
+                  value={name}
                   width="60%"
                   margin="0 10px 0 0"
                   rules={{ required: true, minLength: 3, maxLength: 14 }}
                 />
                 <Input
                   title="Группа"
-                  value={group}
                   name="group"
+                  value={group}
                   width="40%"
                   rules={{ required: true, minLength: 3, maxLength: 14 }}
                 />
               </Wrapper>
-
               <Wrapper>
-                <File
-                  title="Изображение"
-                  path={atrTerrainsPath(fileName)}
-                  name="img"
+                <Input
+                  title="Ширина"
+                  name="size.x"
+                  value={size.x}
                   width="100px"
-                  rules={{ format: ['jpeg', 'jpg'] }}
+                  margin="0 10px 0 0"
+                  rules={{ required: true, isNum: true, minValue: 10, maxValue: 100 }}
                 />
-                <CheckBox
-                  title="Проходимость"
-                  checked={passability}
-                  text="Загрузить"
-                  name="passability"
-                  width="50%"
+                <Input
+                  title="Высота"
+                  name="size.y"
+                  value={size.y}
+                  width="100px"
+                  margin="0 10px 0 0"
+                  rules={{ required: true, isNum: true, minValue: 10, maxValue: 100 }}
                 />
-
-              </Wrapper>
-
-              <Wrapper>
                 <Button
                   text="Отменить"
                   width="100px"
                   type={'button'}
                   onClick={onCancel}
-                  margin="0 20px 0 auto"
+                  margin="0 10px 0 0"
                 />
                 <Button
                   text="Применить"
@@ -124,28 +117,25 @@ class UpdateTerrain extends WithRequest {
                   disabled={disabled}
                 />
               </Wrapper>
-
             </Form>
+
           </Field>
         </InnerWrapper>
       </OuterWrapper>
+
     );
   }
 
   _onChange = () => {
-    const {update} = this.state;
-    if (update) {
-      this.setState({disabled: false});
-    }
-    this.setState({update: true});
+    this.setState({disabled: false});
   }
 
   _onSubmit = async (data) => {
-    const {_id, name, group} = this.props.data;
-    const {onCancel, changeTerrain} = this.props;
+    const {group, name, _id} = this.props.data;
+    const {onCancel, changeMap} = this.props;
     this.setState({errors: [], reset: false});
-
     data._id = _id;
+    console.log(data);
     if (data.name && !data.group) {
       data.group = firstUpper(group);
     }
@@ -153,43 +143,29 @@ class UpdateTerrain extends WithRequest {
       data.name = firstUpper(name);
     }
 
-    const formData = new FormData();
-    Object.keys(data).map((key) => {
-      formData.append(key, data[key]);
-    })
-
-    const answer = await this.PATCH_FORM(API_UPDATE_TERRAIN, formData);
+    /*const answer = await this.PATCH_FORM(API_UPDATE_TERRAIN, JSON.stringify(data));
 
     if(answer.errors) {
       this.setState({errors: answer.errors});
     } else {
+      data._id = _id;
 
-      if (answer.fileName) {
-        delete data.img;
-        data.fileName = answer.fileName;
-      }
       onCancel();
-      changeTerrain(data);
-    }
+      changeMap(data);
+    }*/
+
+
+    onCancel();
+    changeMap(data);
+
+
   }
 }
-
-UpdateTerrain.propTypes = {
-  data: PropTypes.shape({
-    fileName: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    group: PropTypes.string.isRequired,
-    passability: PropTypes.bool.isRequired,
-  }).isRequired,
-  addError: PropTypes.func.isRequired,
-  onCancel: PropTypes.func.isRequired,
-  changeTerrain: PropTypes.func.isRequired,
-};
 
 export default connect(
   undefined,
   (mapDispatchToProps) => ({
-    changeTerrain: (data) => mapDispatchToProps(updateTerrain(data)),
+    changeMap: (data) => mapDispatchToProps(updateMap(data)),
     addError: (data) => mapDispatchToProps(setError(data)),
   }),
-)(UpdateTerrain);
+)(UpdateMap);
