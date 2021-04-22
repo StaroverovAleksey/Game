@@ -66,6 +66,10 @@ router.post('/create', [
     }
 });
 
+
+
+
+
 router.get('/read', async (req, res) => {
     try {
         const maps = await Map.find({}, 'name size group').exec();
@@ -74,6 +78,95 @@ router.get('/read', async (req, res) => {
         res.status(500).json({massage: 'server error'});
     }
 });
+
+
+
+router.patch('/update', [
+    body('name')
+        .if(body('name').exists())
+        .isString().withMessage('string expected')
+        .isLength({ min: 3, max: 14 }).withMessage('length between 3 and 14')
+        .trim(),
+    body('group')
+        .if(body('group').exists())
+        .isString().withMessage('string expected')
+        .isLength({ min: 3, max: 14 }).withMessage('length between 3 and 14')
+        .trim(),
+    body('size')
+        .if(body('size').exists())
+        .isObject().withMessage('object expected'),
+    body('size.x')
+        .if(body('size.x').exists())
+        .isNumeric().withMessage('number expected')
+        .isLength({ max: 3 }).withMessage('max length expected 3')
+        .trim(),
+    body('size.y')
+        .if(body('size.y').exists())
+        .isNumeric().withMessage('number expected')
+        .isLength({ max: 3 }).withMessage('max length expected 3')
+        .trim(),
+    body('_id')
+        .isString().withMessage('string expected')
+        .trim(),
+], async (req, res) => {
+    try {
+        const errors = validationResult(req);
+
+        if (req.body.group || req.body.name) {
+            try {
+                var repeat = await Map.findOne({name: firstUpper(req.body.name), group: firstUpper(req.body.group)}).exec();
+            } catch (e) {}
+            if (repeat && repeat._id.toString() !== req.body._id.toString()) {
+                errors.errors.push({
+                    'msg': "name is exist",
+                    'param': "name",
+                    'location': "body"
+                });
+            }
+        }
+
+        const oldData = await Map.findById(req.body._id ).exec();
+        if (!oldData) {
+            errors.errors.push({
+                'msg': "map not found",
+                'param': "name",
+                'location': "body"
+            });
+        }
+
+        if (!errors.isEmpty()) {
+            return res.status(400).json({
+                errors: errors.array(),
+                message: 'bad request'
+            });
+        }
+
+        if (req.body.group) {
+            req.body.group = firstUpper(req.body.group);
+        }
+
+        if (req.body.name) {
+            req.body.name = firstUpper(req.body.name);
+        }
+
+        if (req.body.size && !req.body.size.y) {
+            req.body.size.y = oldData.size.y;
+        }
+
+        if (req.body.size && !req.body.size.x) {
+            req.body.size.x = oldData.size.x;
+        }
+
+        await Map.findByIdAndUpdate(req.body._id, req.body).exec();
+
+        res.status(200).json({});
+    } catch (error) {
+        res.status(500).json({massage: 'server error'});
+    }
+});
+
+
+
 
 router.delete('/delete', [
     body('_id')

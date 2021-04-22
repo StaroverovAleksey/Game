@@ -1,4 +1,6 @@
-﻿import {DELETE_MAP, SET_MAPS, SET_ONE_MAP, UPDATE_MAP} from '../actions';
+﻿import {
+  DELETE_MAP, SET_MAPS, SET_ONE_MAP, UPDATE_MAP,
+} from '../actions';
 
 export default function reducer(state = { }, action) {
   const newState = JSON.parse(JSON.stringify(state));
@@ -15,6 +17,12 @@ export default function reducer(state = { }, action) {
       Object.keys(action.payload).forEach((key) => {
         newState.maps[index][key] = action.payload[key];
       });
+      if (!newState.maps[index].size.x) {
+        newState.maps[index].size.x = state.maps[index].size.x;
+      }
+      if (!newState.maps[index].size.y) {
+        newState.maps[index].size.y = state.maps[index].size.y;
+      }
       return newState;
 
     case DELETE_MAP:

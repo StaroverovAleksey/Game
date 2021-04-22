@@ -150,7 +150,7 @@ router.patch('/update', multiparty, [
             try {
                 var repeat = await Terrain.findOne({name: firstUpper(req.body.name), group: firstUpper(req.body.group)}).exec();
             } catch (e) {}
-            if (repeat) {
+            if (repeat && repeat._id.toString() !== req.body._id.toString()) {
                 errors.errors.push({
                     'msg': "name is exist",
                     'param': "name",

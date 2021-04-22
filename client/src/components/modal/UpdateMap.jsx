@@ -5,9 +5,9 @@ import Form from "../controls/Form";
 import Input from "../controls/Input";
 import Button from "../controls/Button";
 import Field from "../controls/Field";
-import {API_UPDATE_TERRAIN} from "../../tools/routing";
+import {API_UPDATE_MAP, API_UPDATE_TERRAIN} from "../../tools/routing";
 import {connect} from "react-redux";
-import {setError, setTerrain, updateMap, updateTerrain} from "../../redux/actions";
+import {setError, setSelectedMap, setTerrain, updateMap, updateTerrain} from "../../redux/actions";
 import PropTypes from "prop-types";
 import {firstUpper} from "../../../../src/utils/utils";
 
@@ -131,11 +131,10 @@ class UpdateMap extends WithRequest {
   }
 
   _onSubmit = async (data) => {
-    const {group, name, _id} = this.props.data;
-    const {onCancel, changeMap} = this.props;
+    const {group, name, _id, size} = this.props.data;
+    const {onCancel, changeMap, setSelectedMap, selectedMap} = this.props;
     this.setState({errors: [], reset: false});
     data._id = _id;
-    console.log(data);
     if (data.name && !data.group) {
       data.group = firstUpper(group);
     }
@@ -143,29 +142,41 @@ class UpdateMap extends WithRequest {
       data.name = firstUpper(name);
     }
 
-    /*const answer = await this.PATCH_FORM(API_UPDATE_TERRAIN, JSON.stringify(data));
+    const answer = await this.PATCH(API_UPDATE_MAP, JSON.stringify(data));
 
     if(answer.errors) {
       this.setState({errors: answer.errors});
     } else {
-      data._id = _id;
+
+      if (selectedMap._id === _id) {
+        Object.keys(this.props.data).forEach((key) => {
+          if (!(key in data)) {
+            data[key] = this.props.data[key];
+          }
+        })
+        if (!data.size.x) {
+          data.size.x = size.x;
+        }
+        if (!data.size.y) {
+          data.size.y = size.y;
+        }
+        setSelectedMap(data);
+      }
 
       onCancel();
       changeMap(data);
-    }*/
 
-
-    onCancel();
-    changeMap(data);
-
-
+    }
   }
 }
 
 export default connect(
-  undefined,
+  (mapStateToProps) => ({
+    selectedMap: mapStateToProps.setting.selectedMap,
+  }),
   (mapDispatchToProps) => ({
     changeMap: (data) => mapDispatchToProps(updateMap(data)),
+    setSelectedMap: (data) => mapDispatchToProps(setSelectedMap(data)),
     addError: (data) => mapDispatchToProps(setError(data)),
   }),
 )(UpdateMap);

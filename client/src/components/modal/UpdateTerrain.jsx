@@ -9,7 +9,7 @@ import Button from "../controls/Button";
 import Field from "../controls/Field";
 import {API_UPDATE_TERRAIN, atrTerrainsPath} from "../../tools/routing";
 import {connect} from "react-redux";
-import {setError, updateTerrain} from "../../redux/actions";
+import {choiceTerrain, setError, updateTerrain} from "../../redux/actions";
 import PropTypes from "prop-types";
 import {firstUpper} from "../../../../src/utils/utils";
 
@@ -142,7 +142,7 @@ class UpdateTerrain extends WithRequest {
 
   _onSubmit = async (data) => {
     const {_id, name, group} = this.props.data;
-    const {onCancel, changeTerrain} = this.props;
+    const {onCancel, changeTerrain, choiceTerrain} = this.props;
     this.setState({errors: [], reset: false});
 
     data._id = _id;
@@ -168,8 +168,9 @@ class UpdateTerrain extends WithRequest {
         delete data.img;
         data.fileName = answer.fileName;
       }
-      onCancel();
+      choiceTerrain(false);
       changeTerrain(data);
+      onCancel();
     }
   }
 }
@@ -190,6 +191,7 @@ export default connect(
   undefined,
   (mapDispatchToProps) => ({
     changeTerrain: (data) => mapDispatchToProps(updateTerrain(data)),
+    choiceTerrain: (data) => mapDispatchToProps(choiceTerrain(data)),
     addError: (data) => mapDispatchToProps(setError(data)),
   }),
 )(UpdateTerrain);

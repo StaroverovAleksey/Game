@@ -63,7 +63,7 @@ class MapCreator extends WithRequest {
       selectedMap, addMapCells, addLoadingMapSells, maps, addSelectedMap,
     } = this.props;
 
-    if (!isEmpty(selectedMap) && prevProps.selectedMap !== 'loading' && prevProps.selectedMap !== selectedMap) {
+    if (!isEmpty(selectedMap) && prevProps.selectedMap !== 'loading' && prevProps.selectedMap._id !== selectedMap._id) {
       addLoadingMapSells(true);
       const [mapCells] = await this.GET([`${API_GET_MAP_CELL}/?_id=${selectedMap._id}`]);
       addMapCells(mapCells);

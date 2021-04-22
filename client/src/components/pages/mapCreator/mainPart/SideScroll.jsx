@@ -33,10 +33,11 @@ class TopScroll extends React.Component {
 
   render() {
     const { selectedMap, top } = this.props;
+    const { y } = selectedMap.size;
     return (
       <Wrapper>
         <Scroll style={{ top: `${top}px` }}>
-          {new Array(selectedMap.size.y).fill('').map((value, index) => <Cell key={`side_scroll_cell_${index}`}>{index + 1}</Cell>)}
+          {new Array(parseInt(y)).fill('').map((value, index) => <Cell key={`side_scroll_cell_${index}`}>{index + 1}</Cell>)}
         </Scroll>
       </Wrapper>
     );

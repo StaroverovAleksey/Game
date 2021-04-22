@@ -95,9 +95,9 @@ class TileField extends WithRequest {
     const { size } = this.props.selectedMap;
     this.setState({
       preparedData: <div>
-        {new Array(size.y).fill('').map((value, y) => (
+        {new Array(parseInt(size.y)).fill('').map((value, y) => (
           <Row key={`tile_row_${y}`}>
-            {new Array(size.x).fill('').map((value1, x) => {
+            {new Array(parseInt(size.x)).fill('').map((value1, x) => {
               const name = `${x + 1}_${y + 1}`;
               return <Tile
                 id={name}
@@ -174,8 +174,8 @@ class TileField extends WithRequest {
 
     const newFieldY = fieldY - (mouseY - event.pageY);
     const newFieldX = fieldX + (event.pageX - mouseX);
-    fieldX = newFieldX > 0 || newFieldX < -(x * 64 - wrapperWidth)  ? fieldX : newFieldX;
-    fieldY = newFieldY > 0 || newFieldY < -(y * 64 - wrapperHeight) ? fieldY : newFieldY;
+    fieldX = newFieldX > 0 || newFieldX < -(parseInt(x) * 64 - wrapperWidth)  ? fieldX : newFieldX;
+    fieldY = newFieldY > 0 || newFieldY < -(parseInt(y) * 64 - wrapperHeight) ? fieldY : newFieldY;
     this.setState({
       mouseX: event.pageX
       , mouseY: event.pageY
@@ -201,8 +201,8 @@ class TileField extends WithRequest {
     let { fieldX, fieldY } = this.state;
     const { x, y } = this.props.selectedMap.size;
     const { onMouseMove } = this.props;
-    const xDifferent = x * 64 - this.wrapRef.current.offsetWidth;
-    const yDifferent = y * 64 - this.wrapRef.current.offsetHeight;
+    const xDifferent = parseInt(x) * 64 - this.wrapRef.current.offsetWidth;
+    const yDifferent = parseInt(y) * 64 - this.wrapRef.current.offsetHeight;
 
     if (xDifferent > 0) {
       fieldX = fieldX < -(xDifferent) ? -(xDifferent) : fieldX;

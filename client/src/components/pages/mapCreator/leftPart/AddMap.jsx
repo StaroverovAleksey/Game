@@ -88,10 +88,7 @@ class AddMap extends WithRequest {
     const formatData = {
       name: firstUpper(data.name),
       group: firstUpper(data.group),
-      size: {
-        x: parseInt(data['size.x']),
-        y: parseInt(data['size.y']),
-      }
+      size: data.size
     }
 
     const answer = await this.POST(API_CREATE_MAP, JSON.stringify(formatData));
