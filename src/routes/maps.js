@@ -1,6 +1,7 @@
 const {Router} = require('express');
 const {validationResult} = require('express-validator');
 const Map = require('../models/Maps');
+const {trimCells} = require("../utils/utils");
 const {firstUpper} = require("../utils/utils");
 const {body} = require("express-validator");
 const router = Router();
@@ -125,7 +126,9 @@ router.patch('/update', [
             }
         }
 
-        const oldData = await Map.findById(req.body._id ).exec();
+        try {
+            var oldData = await Map.findById(req.body._id).exec();
+        } catch (e) {}
         if (!oldData) {
             errors.errors.push({
                 'msg': "map not found",
@@ -157,6 +160,10 @@ router.patch('/update', [
             req.body.size.x = oldData.size.x;
         }
 
+        if (req.body.size) {
+            req.body.cells = trimCells(oldData, req.body.size);
+        }
+
         await Map.findByIdAndUpdate(req.body._id, req.body).exec();
 
         res.status(200).json({});
@@ -174,6 +181,30 @@ router.delete('/delete', [
         .trim()
 ], async (req, res) => {
     try {
+        const errors = validationResult(req);
+
+        if (!errors.isEmpty()) {
+            return res.status(418).json({
+                errors: errors.array(),
+                message: 'bad request'
+            });
+        }
+
+        try {
+            await Map.deleteOne({_id: req.body._id});
+        } catch (e) {
+            errors.errors.push({
+                'msg': "map not found",
+                'param': "_id",
+                'location': "body"
+            });
+
+            return res.status(418).json({
+                errors: errors.array(),
+                message: 'bad request'
+            });
+        }
+
         await Map.deleteOne({_id: req.body._id});
         res.status(200).json({});
     } catch (error) {

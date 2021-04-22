@@ -159,7 +159,9 @@ router.patch('/update', multiparty, [
             }
         }
 
-        const oldData = await Terrain.findById(req.body._id ).exec();
+        try {
+            var oldData = await Terrain.findById(req.body._id ).exec();
+        } catch (e) {}
         if (!oldData) {
             errors.errors.push({
                 'msg': "terrain not found",
@@ -213,7 +215,7 @@ router.patch('/update', multiparty, [
 
 
 router.delete('/delete', [
-    check('_id')
+    body('_id')
         .isString().withMessage('string expected')
         .trim(),
 ], async (req, res) => {
@@ -226,7 +228,22 @@ router.delete('/delete', [
             });
         }
 
-        const terrainForDelete = await Terrain.findOne({ _id: req.body._id }).exec();
+        try {
+            var terrainForDelete = await Terrain.findOne({ _id: req.body._id }).exec();
+        } catch (e) {}
+        if (!terrainForDelete) {
+            errors.errors.push({
+                'msg': "terrain not found",
+                'param': "_id",
+                'location': "body"
+            });
+
+            return res.status(418).json({
+                errors: errors.array(),
+                message: 'bad request'
+            });
+        }
+
         const path = `./client/arts/terrains/${terrainForDelete.fileName}`;
 
         await fs.unlinkSync(path);

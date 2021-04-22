@@ -109,7 +109,6 @@ router.delete('/delete', [
 ],   async (req, res) => {
     try {
         const errors = validationResult(req);
-
         if (!errors.isEmpty()) {
             return res.status(418).json({
                 errors: errors.array(),
@@ -117,7 +116,22 @@ router.delete('/delete', [
             });
         }
 
-        const map = await Map.findById(req.body._id);
+        try {
+            var map = await Map.findById(req.body._id);
+        } catch (e) {}
+        if (!map) {
+            errors.errors.push({
+                'msg': "terrain not found",
+                'param': "_id",
+                'location': "body"
+            });
+
+            return res.status(418).json({
+                errors: errors.array(),
+                message: 'bad request'
+            });
+        }
+
         map.cells = {}
         await map.save();
         res.status(200).json({});
