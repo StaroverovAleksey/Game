@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import {FormProvider} from '../../tools/context';
-import {isEmpty} from "../../tools/tools";
+import {isEmpty} from "../../../../src/utils/utils";
 
 const FormCommon = styled.form`
   display: flex;

@@ -5,7 +5,8 @@ import {API_CREATE_MAP_CELL, atrTerrainsPath, atrUtilsPath} from '../../../../to
 import {connect} from "react-redux";
 import {Terrain} from "../../../../tools/types";
 import WithRequest from "../../../shells/ShellRequest";
-import {addMapCells, setError, setTerrain} from "../../../../redux/actions";
+import {addMapCells} from "../../../../redux/actions";
+import {MAIN_TERRAIN, SECOND_TERRAIN} from "../../../../../../src/utils/constants";
 
 const OuterWrapper = styled.div`
   background-color: white;
@@ -18,9 +19,9 @@ const OuterWrapper = styled.div`
 
 const InnerWrapper = styled.div`
   position: absolute;
-  cursor: ${({ choiceTerrain, addTerrain }) =>
+  cursor: ${({ choiceTerrain, mapDataType }) =>
     choiceTerrain
-      ? (addTerrain ? `${atrUtilsPath('pencilCursorAdd.png')}, pointer` : `${atrUtilsPath('pencilCursor.png')}, pointer`)
+      ? (mapDataType === SECOND_TERRAIN ? `${atrUtilsPath('pencilCursorAdd.png')}, pointer` : `${atrUtilsPath('pencilCursor.png')}, pointer`)
       : 'pointer'};
 `;
 
@@ -49,8 +50,9 @@ class TileField extends WithRequest {
       mouseX: null,
       mouseY: null,
       createMapData: [],
+      mapDataType: MAIN_TERRAIN,
+      mapDataTypeFix: MAIN_TERRAIN,
       serverRequest: false,
-      addTerrain: false
     };
     this.wrapRef = React.createRef();
     this.fieldRef = React.createRef();
@@ -79,12 +81,12 @@ class TileField extends WithRequest {
 
   render() {
     const { choiceTerrain } = this.props;
-    const { preparedData, fieldX, fieldY, serverRequest, addTerrain } = this.state;
+    const { preparedData, fieldX, fieldY, serverRequest, mapDataType } = this.state;
     return preparedData ?
       <OuterWrapper ref={this.wrapRef}>
         <InnerWrapper
           choiceTerrain={choiceTerrain && !serverRequest}
-          addTerrain={addTerrain}
+          mapDataType={mapDataType}
           onMouseDown={this._moveStart}
           onMouseUp={this._onMouseUp}
           onContextMenu={(event) => event.preventDefault()}
@@ -110,7 +112,7 @@ class TileField extends WithRequest {
               const name = `${x + 1}_${y + 1}`;
               return <Tile
                 id={name}
-                fileName={mapCells[name] && mapCells[name].terrain ? atrTerrainsPath(mapCells[name].terrain.fileName) : atrUtilsPath('emptyTile.png')}
+                fileName={mapCells[name] && mapCells[name].terrains ? atrTerrainsPath(mapCells[name].terrains.mainTerrain.fileName) : atrUtilsPath('emptyTile.png')}
                 key={`tile_${x}${y}`}
               />;
             })}
@@ -134,7 +136,7 @@ class TileField extends WithRequest {
   }
 
   _onMouseUp = async (event) => {
-    const { createMapData } = this.state;
+    const { createMapData, mapDataTypeFix } = this.state;
     const { choiceTerrain, selectedMap, addingMapCells } = this.props;
     event.preventDefault();
     this.fieldRef.current.removeEventListener('mousemove', this._onMouseMove );
@@ -144,6 +146,7 @@ class TileField extends WithRequest {
       const data = {
         terrain_id: choiceTerrain._id,
         map_id: selectedMap._id,
+        typeTerrain: mapDataTypeFix,
         cells: []
       }
       for (let item of createMapData) {
@@ -172,7 +175,8 @@ class TileField extends WithRequest {
       mouseX: null,
       mouseY: null,
       createMapData: [],
-      serverRequest: false
+      serverRequest: false,
+      mapDataTypeFix: MAIN_TERRAIN
     });
   }
 
@@ -195,12 +199,12 @@ class TileField extends WithRequest {
   }
 
   _painting = async (event) => {
-    const { createMapData } = this.state;
+    const { createMapData, mapDataType } = this.state;
     const { choiceTerrain } = this.props;
     event.target.style.backgroundImage = atrTerrainsPath(choiceTerrain.fileName);
     event.target.style.opacity = 0.3;
     createMapData.push(event.target);
-    this.setState({createMapData});
+    this.setState({createMapData, mapDataTypeFix: mapDataType});
   }
 
   _sizing = () => {
@@ -234,16 +238,16 @@ class TileField extends WithRequest {
   }
 
   _keydownHandler = (event) => {
-    const {addTerrain} = this.state;
-    if (event.key === 'Control' && !addTerrain) {
-      this.setState({addTerrain: true});
+    const {mapDataType} = this.state;
+    if (event.key === 'Control' && mapDataType !== SECOND_TERRAIN) {
+      this.setState({mapDataType: SECOND_TERRAIN}, () => this._onMouseUp(event));
     }
   }
 
   _keyupHandler = (event) => {
-    const {addTerrain} = this.state;
-    if (event.key === 'Control' && addTerrain) {
-      this.setState({addTerrain: false});
+    const {mapDataType} = this.state;
+    if (event.key === 'Control' && mapDataType === SECOND_TERRAIN) {
+      this.setState({mapDataType: MAIN_TERRAIN}, () => this._onMouseUp(event));
     }
   }
 }

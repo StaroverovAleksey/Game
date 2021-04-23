@@ -12,7 +12,7 @@ import {
 import { API_GET_MAP_CELL, API_GET_MAPS, API_GET_TERRAIN } from '../../../tools/routing';
 import WithRequest from '../../shells/ShellRequest';
 import RightPart from './rightPart/RightPart';
-import {isEmpty} from "../../../tools/tools";
+import { isEmpty } from '../../../../../src/utils/utils';
 
 const OuterWrapper = styled.div`
   display: flex;

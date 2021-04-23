@@ -9,8 +9,7 @@ import {setError, setMap, setSelectedMap} from "../../../../redux/actions";
 import PropTypes from "prop-types";
 import WithRequest from "../../../shells/ShellRequest";
 import {API_CREATE_MAP} from "../../../../tools/routing";
-import {isEmpty} from "../../../../tools/tools";
-import {firstUpper} from "../../../../../../src/utils/utils";
+import {firstUpper, isEmpty} from "../../../../../../src/utils/utils";
 
 const Title = styled.h3`
   margin: 0 0 20px 0;

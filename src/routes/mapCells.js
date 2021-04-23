@@ -2,6 +2,8 @@ const {Router} = require('express');
 const {validationResult} = require('express-validator');
 const Map = require('../models/Maps');
 const Terrain = require('../models/Terrains');
+const {SECOND_TERRAIN} = require("../utils/constants");
+const {MAIN_TERRAIN} = require("../utils/constants");
 const {query} = require("express-validator");
 const {body} = require("express-validator");
 const router = Router();
@@ -11,6 +13,9 @@ router.post('/create', [
         .isString().withMessage('string expected')
         .trim(),
     body('map_id')
+        .isString().withMessage('string expected')
+        .trim(),
+    body('typeTerrain')
         .isString().withMessage('string expected')
         .trim(),
     body('cells')
@@ -69,8 +74,21 @@ router.post('/create', [
 
         for (let i = 0; i < req.body.cells.length; i++) {
             const name = `${req.body.cells[i].x}_${req.body.cells[i].y}`;
-            map.cells.set(name, {terrain: terrain._id});
+
+            const {terrains={}} = map.cells.get(name) || {};
+            console.log(terrains);
+            if (req.body.typeTerrain === MAIN_TERRAIN) {
+
+                terrains[MAIN_TERRAIN] = terrain._id;
+            }
+            if (req.body.typeTerrain === SECOND_TERRAIN) {
+                terrains[SECOND_TERRAIN] = terrain._id;
+            }
+
+            //console.log(terrains);
+            map.cells.set(name, {terrains});
         }
+
 
         await map.save();
 
@@ -95,7 +113,10 @@ router.get('/read', [
             });
         }
 
-        const map = await Map.findById(req.query._id).populate('cells.$*.terrain');
+        const map = await Map.findById(req.query._id)
+            .populate('cells.$*.terrains.mainTerrain')
+            .populate('cells.$*.terrains.secondTerrain');
+        console.log(map.cells);
         res.status(200).json(map.cells);
     } catch (error) {
         res.status(500).json({massage: 'server error'});

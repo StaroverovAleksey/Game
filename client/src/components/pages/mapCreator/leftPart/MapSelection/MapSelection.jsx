@@ -5,12 +5,11 @@ import { connect } from 'react-redux';
 import {deleteAllMapSells, deleteMap, setError, setMap, setSelectedMap} from "../../../../../redux/actions";
 import WithRequest from "../../../../shells/ShellRequest";
 import {API_DELETE_MAP, API_DELETE_MAP_CELL} from "../../../../../tools/routing";
-import {isEmpty} from "../../../../../tools/tools";
 import MapSelectionItem from "./MapSelectionItem";
 import Confirm from "../../../../modal/Confirm";
 import ModalMenu from "../../../../modal/ModalMenu";
-import UpdateTerrain from "../../../../modal/UpdateTerrain";
 import UpdateMap from "../../../../modal/UpdateMap";
+import {isEmpty} from "../../../../../../../src/utils/utils";
 
 const Title = styled.h3`
   margin: 0 0 10px 0;

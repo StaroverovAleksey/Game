@@ -1,4 +1,11 @@
 module.exports = {
+    isEmpty(obj) {
+        for (const key in obj) {
+            return false;
+        }
+        return true;
+    },
+
     getFileName () {
         const ascii_1 = new Array(58-48).fill('').map((value, index) => index + 48);
         const ascii_3 = new Array(123-97).fill('').map((value, index) => index + 97);
