@@ -18,7 +18,10 @@ const OuterWrapper = styled.div`
 
 const InnerWrapper = styled.div`
   position: absolute;
-  cursor: ${({ choiceTerrain }) => choiceTerrain ? `${atrUtilsPath('pencilCursor.png')}, pointer` : 'pointer'};
+  cursor: ${({ choiceTerrain, addTerrain }) =>
+    choiceTerrain
+      ? (addTerrain ? `${atrUtilsPath('pencilCursorAdd.png')}, pointer` : `${atrUtilsPath('pencilCursor.png')}, pointer`)
+      : 'pointer'};
 `;
 
 const Row = styled.div`
@@ -47,6 +50,7 @@ class TileField extends WithRequest {
       mouseY: null,
       createMapData: [],
       serverRequest: false,
+      addTerrain: false
     };
     this.wrapRef = React.createRef();
     this.fieldRef = React.createRef();
@@ -56,6 +60,8 @@ class TileField extends WithRequest {
     await this._preRender();
     this._sizing();
     window.addEventListener('resize', this._sizing);
+    window.addEventListener('keydown', this._keydownHandler);
+    window.addEventListener('keyup', this._keyupHandler);
   }
 
   async componentDidUpdate(prevProps, prevState, snapshot) {
@@ -67,15 +73,18 @@ class TileField extends WithRequest {
 
   componentWillUnmount() {
     window.removeEventListener('resize', this._sizing);
+    window.removeEventListener('keydown', this._keydownHandler);
+    window.removeEventListener('keyup', this._keyupHandler);
   }
 
   render() {
     const { choiceTerrain } = this.props;
-    const { preparedData, fieldX, fieldY, serverRequest } = this.state;
+    const { preparedData, fieldX, fieldY, serverRequest, addTerrain } = this.state;
     return preparedData ?
       <OuterWrapper ref={this.wrapRef}>
         <InnerWrapper
           choiceTerrain={choiceTerrain && !serverRequest}
+          addTerrain={addTerrain}
           onMouseDown={this._moveStart}
           onMouseUp={this._onMouseUp}
           onContextMenu={(event) => event.preventDefault()}
@@ -223,7 +232,23 @@ class TileField extends WithRequest {
       fieldY,
     }, () => onMouseMove(fieldX, fieldY));
   }
+
+  _keydownHandler = (event) => {
+    const {addTerrain} = this.state;
+    if (event.key === 'Control' && !addTerrain) {
+      this.setState({addTerrain: true});
+    }
+  }
+
+  _keyupHandler = (event) => {
+    const {addTerrain} = this.state;
+    if (event.key === 'Control' && addTerrain) {
+      this.setState({addTerrain: false});
+    }
+  }
 }
+
+
 
 TileField.propTypes = {
   choiceTerrain: PropTypes.oneOfType([

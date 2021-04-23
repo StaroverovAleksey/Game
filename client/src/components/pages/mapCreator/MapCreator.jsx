@@ -47,7 +47,8 @@ class MapCreator extends WithRequest {
     addMaps(maps);
 
     if (maps.maps.length > 0) {
-      const selectedMap = maps.maps[0];
+      const storageMap = JSON.parse(localStorage.getItem('selectedMap'));
+      const selectedMap = storageMap || maps.maps[0];
       const [mapCells] = await this.GET([`${API_GET_MAP_CELL}/?_id=${selectedMap._id}`]);
       addSelectedMap(selectedMap);
       addMapCells(mapCells);
@@ -70,7 +71,7 @@ class MapCreator extends WithRequest {
       addLoadingMapSells(false);
     }
 
-    if (prevProps.maps !== maps) {
+    if (!isEmpty(prevProps.maps) && prevProps.maps !== maps) {
       if (maps.length === 0) {
         addSelectedMap({});
         return;
