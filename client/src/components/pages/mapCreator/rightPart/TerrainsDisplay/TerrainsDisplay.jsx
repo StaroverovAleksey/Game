@@ -58,6 +58,9 @@ class TerrainsDisplay extends WithRequest {
     if (prevProps !== this.props) {
       this.sortingData();
     }
+    if (prevProps.choiceTerrain !== this.props.choiceTerrain && !this.props.choiceTerrain) {
+      this.setState({activeTerrain: false});
+    }
   }
 
   render() {
@@ -189,9 +192,10 @@ TerrainsDisplay.propTypes = {
 };
 
 export default connect(
-  (mapStateToProps) => (
-    { terrain: mapStateToProps.terrain.terrains }
-  ),
+  (mapStateToProps) => ({
+    terrain: mapStateToProps.terrain.terrains,
+    choiceTerrain: mapStateToProps.setting.choiceTerrain,
+  }),
   (mapDispatchToProps) => ({
     addChoice: (terrain) => mapDispatchToProps(choiceTerrain(terrain)),
     removeTerrain: (number) => mapDispatchToProps(deleteTerrain(number)),

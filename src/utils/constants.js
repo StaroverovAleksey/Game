@@ -4,3 +4,4 @@ module.exports.CELL_SIZE = {
 };
 module.exports.MAIN_TERRAIN = 'mainTerrain';
 module.exports.SECOND_TERRAIN = 'secondTerrain';
+module.exports.DELETE_COLLAGE = 'deleteCollage';

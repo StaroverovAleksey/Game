@@ -19,22 +19,14 @@ router.post('/create', [
         .isString().withMessage('string expected')
         .trim(),
     body('cells')
-        .isArray().withMessage('array of objects expected')
+        .isArray().withMessage('array of strings expected')
         .notEmpty().withMessage('should not be empty'),
-    body('cells.*.x')
-        .isNumeric().withMessage('number expected')
-        .isLength({ max: 3 }).withMessage('max length expected 3')
-        .trim(),
-    body('cells.*.y')
-        .isNumeric().withMessage('number expected')
-        .isLength({ max: 3 }).withMessage('max length expected 3')
-        .trim(),
 ], async (req, res) => {
     try {
         const errors = validationResult(req);
 
         if (!errors.isEmpty()) {
-            const index = errors.errors.findIndex((value) => value.msg === 'array of objects expected');
+            const index = errors.errors.findIndex((value) => value.msg === 'array of strings expected');
             if (index > -1) {
                 errors.errors = [errors.errors[0]];
             }
@@ -73,22 +65,18 @@ router.post('/create', [
         }
 
         for (let i = 0; i < req.body.cells.length; i++) {
-            const name = `${req.body.cells[i].x}_${req.body.cells[i].y}`;
+            const name = req.body.cells[i];
 
-            const {terrains={}} = map.cells.get(name) || {};
-            console.log(terrains);
+            const cell = map.cells.get(name) || {};
             if (req.body.typeTerrain === MAIN_TERRAIN) {
-
-                terrains[MAIN_TERRAIN] = terrain._id;
+                cell[MAIN_TERRAIN] = terrain._id;
             }
             if (req.body.typeTerrain === SECOND_TERRAIN) {
-                terrains[SECOND_TERRAIN] = terrain._id;
+                cell[SECOND_TERRAIN] = terrain._id;
             }
 
-            //console.log(terrains);
-            map.cells.set(name, {terrains});
+            map.cells.set(name, cell);
         }
-
 
         await map.save();
 
@@ -114,9 +102,8 @@ router.get('/read', [
         }
 
         const map = await Map.findById(req.query._id)
-            .populate('cells.$*.terrains.mainTerrain')
-            .populate('cells.$*.terrains.secondTerrain');
-        console.log(map.cells);
+            .populate('cells.$*.mainTerrain')
+            .populate('cells.$*.secondTerrain');
         res.status(200).json(map.cells);
     } catch (error) {
         res.status(500).json({massage: 'server error'});
@@ -126,7 +113,11 @@ router.get('/read', [
 router.delete('/delete', [
     body('_id')
         .isString().withMessage('string expected')
-        .trim()
+        .trim(),
+    body('cells')
+        .if(body('cells').exists())
+        .isArray().withMessage('array of strings expected')
+        .notEmpty().withMessage('should not be empty'),
 ],   async (req, res) => {
     try {
         const errors = validationResult(req);
@@ -153,7 +144,12 @@ router.delete('/delete', [
             });
         }
 
-        map.cells = {}
+        if (req.body.cells) {
+            req.body.cells.forEach((cell) => map.cells.delete(cell));
+        } else {
+            map.cells = {}
+        }
+
         await map.save();
         res.status(200).json({});
     } catch (error) {

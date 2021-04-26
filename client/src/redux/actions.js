@@ -23,6 +23,8 @@ export const SET_MAP_CELLS = 'SET_MAP_CELLS';
 export const setMapCells = (mapCells) => ({ type: SET_MAP_CELLS, payload: mapCells });
 export const ADD_MAP_CELLS = 'ADD_MAP_CELLS';
 export const addMapCells = (mapCells) => ({ type: ADD_MAP_CELLS, payload: mapCells });
+export const DELETE_MAP_SELLS = 'DELETE_MAP_SELLS';
+export const deleteMapSells = (cells) => ({ type: DELETE_MAP_SELLS, payload: cells });
 export const DELETE_ALL_MAP_SELLS = 'DELETE_ALL_MAP_SELLS';
 export const deleteAllMapSells = () => ({ type: DELETE_ALL_MAP_SELLS });
 

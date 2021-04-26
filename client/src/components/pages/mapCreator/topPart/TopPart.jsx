@@ -6,7 +6,7 @@ import {
   fonTop, qwerty,
 } from '../../../../tools/palette';
 import { changeStateLeftMenu } from '../../../../redux/actions';
-import { atrUtilsPath } from '../../../../tools/routing';
+import { atrUtilsPath } from '../../../../../../src/utils/utils';
 
 const Container = styled.div`
   display: flex;

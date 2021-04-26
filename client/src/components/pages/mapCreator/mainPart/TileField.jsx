@@ -1,12 +1,10 @@
 ﻿import React from 'react';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
-import {API_CREATE_MAP_CELL, atrTerrainsPath, atrUtilsPath} from '../../../../tools/routing';
 import {connect} from "react-redux";
-import {Terrain} from "../../../../tools/types";
-import WithRequest from "../../../shells/ShellRequest";
-import {addMapCells} from "../../../../redux/actions";
+import {addMapCells, choiceTerrain, deleteMapSells, setSelectedMap} from "../../../../redux/actions";
 import {MAIN_TERRAIN, SECOND_TERRAIN} from "../../../../../../src/utils/constants";
+import ShellTileField from "../../../shells/ShellTileField";
+import {atrTerrainsPath, atrUtilsPath, getCursorImg, getTileCollage} from "../../../../../../src/utils/utils";
 
 const OuterWrapper = styled.div`
   background-color: white;
@@ -19,10 +17,7 @@ const OuterWrapper = styled.div`
 
 const InnerWrapper = styled.div`
   position: absolute;
-  cursor: ${({ choiceTerrain, mapDataType }) =>
-    choiceTerrain
-      ? (mapDataType === SECOND_TERRAIN ? `${atrUtilsPath('pencilCursorAdd.png')}, pointer` : `${atrUtilsPath('pencilCursor.png')}, pointer`)
-      : 'pointer'};
+  cursor: ${getCursorImg};
 `;
 
 const Row = styled.div`
@@ -40,7 +35,7 @@ const Tile = styled.div`
   }
 `;
 
-class TileField extends WithRequest {
+class TileField extends ShellTileField {
   constructor(props) {
     super(props);
     this.state = {
@@ -81,11 +76,11 @@ class TileField extends WithRequest {
 
   render() {
     const { choiceTerrain } = this.props;
-    const { preparedData, fieldX, fieldY, serverRequest, mapDataType } = this.state;
+    const { preparedData, fieldX, fieldY, mapDataType } = this.state;
     return preparedData ?
       <OuterWrapper ref={this.wrapRef}>
         <InnerWrapper
-          choiceTerrain={choiceTerrain && !serverRequest}
+          choiceTerrain={choiceTerrain}
           mapDataType={mapDataType}
           onMouseDown={this._moveStart}
           onMouseUp={this._onMouseUp}
@@ -112,7 +107,7 @@ class TileField extends WithRequest {
               const name = `${x + 1}_${y + 1}`;
               return <Tile
                 id={name}
-                fileName={mapCells[name] && mapCells[name].terrains ? atrTerrainsPath(mapCells[name].terrains.mainTerrain.fileName) : atrUtilsPath('emptyTile.png')}
+                fileName={getTileCollage(mapCells[name])}
                 key={`tile_${x}${y}`}
               />;
             })}
@@ -120,91 +115,6 @@ class TileField extends WithRequest {
         ))}
       </div>
     })
-  }
-
-  _moveStart = (event) => {
-    const { serverRequest } = this.state;
-    const { choiceTerrain } = this.props;
-    event.preventDefault();
-    if (event.button === 2) {
-      this.fieldRef.current.addEventListener('mousemove', this._onMouseMove );
-      this.setState({mouseX: event.pageX, mouseY: event.pageY});
-    } else if (event.button === 0 && choiceTerrain && !serverRequest) {
-      this._painting(event);
-      this.fieldRef.current.addEventListener('mouseover', this._painting);
-    }
-  }
-
-  _onMouseUp = async (event) => {
-    const { createMapData, mapDataTypeFix } = this.state;
-    const { choiceTerrain, selectedMap, addingMapCells } = this.props;
-    event.preventDefault();
-    this.fieldRef.current.removeEventListener('mousemove', this._onMouseMove );
-    this.fieldRef.current.removeEventListener('mouseover', this._painting );
-
-    if (createMapData.length) {
-      const data = {
-        terrain_id: choiceTerrain._id,
-        map_id: selectedMap._id,
-        typeTerrain: mapDataTypeFix,
-        cells: []
-      }
-      for (let item of createMapData) {
-        const x = parseInt(item.id.split('_')[0]);
-        const y = parseInt(item.id.split('_')[1]);
-        data.cells.push({x, y});
-      }
-      this.setState({serverRequest: true});
-      await this.POST(API_CREATE_MAP_CELL, JSON.stringify(data));
-
-      const actionData = {};
-      data.cells.forEach((value) => {
-        const key = `${value.x}_${value.y}`;
-        actionData[key] = {};
-        actionData[key].terrain = choiceTerrain;
-      });
-      addingMapCells(actionData);
-
-      for (let item of createMapData) {
-        item.style.opacity = 1;
-        item.style.backgroundImage = '';
-      }
-    }
-
-    this.setState({
-      mouseX: null,
-      mouseY: null,
-      createMapData: [],
-      serverRequest: false,
-      mapDataTypeFix: MAIN_TERRAIN
-    });
-  }
-
-  _onMouseMove = (event) => {
-    let {fieldX, fieldY, mouseX, mouseY, wrapperWidth, wrapperHeight} = this.state;
-    const { onMouseMove } = this.props;
-    const { x, y } = this.props.selectedMap.size;
-
-    const newFieldY = fieldY - (mouseY - event.pageY);
-    const newFieldX = fieldX + (event.pageX - mouseX);
-    fieldX = newFieldX > 0 || newFieldX < -(parseInt(x) * 64 - wrapperWidth)  ? fieldX : newFieldX;
-    fieldY = newFieldY > 0 || newFieldY < -(parseInt(y) * 64 - wrapperHeight) ? fieldY : newFieldY;
-    this.setState({
-      mouseX: event.pageX
-      , mouseY: event.pageY
-      , fieldX
-      , fieldY
-    })
-    onMouseMove(fieldX, fieldY);
-  }
-
-  _painting = async (event) => {
-    const { createMapData, mapDataType } = this.state;
-    const { choiceTerrain } = this.props;
-    event.target.style.backgroundImage = atrTerrainsPath(choiceTerrain.fileName);
-    event.target.style.opacity = 0.3;
-    createMapData.push(event.target);
-    this.setState({createMapData, mapDataTypeFix: mapDataType});
   }
 
   _sizing = () => {
@@ -237,38 +147,7 @@ class TileField extends WithRequest {
     }, () => onMouseMove(fieldX, fieldY));
   }
 
-  _keydownHandler = (event) => {
-    const {mapDataType} = this.state;
-    if (event.key === 'Control' && mapDataType !== SECOND_TERRAIN) {
-      this.setState({mapDataType: SECOND_TERRAIN}, () => this._onMouseUp(event));
-    }
-  }
-
-  _keyupHandler = (event) => {
-    const {mapDataType} = this.state;
-    if (event.key === 'Control' && mapDataType === SECOND_TERRAIN) {
-      this.setState({mapDataType: MAIN_TERRAIN}, () => this._onMouseUp(event));
-    }
-  }
 }
-
-
-
-TileField.propTypes = {
-  choiceTerrain: PropTypes.oneOfType([
-    PropTypes.oneOf([false]),
-    PropTypes.shape(Terrain),
-  ]),
-  mapCells: PropTypes.shape(
-    PropTypes.shape(Terrain).isRequired,
-    ),
-  selectedMap: PropTypes.shape({
-      _id: PropTypes.string,
-      name: PropTypes.string,
-    }),
-  onMouseMove: PropTypes.func.isRequired,
-  addingMapCells: PropTypes.func.isRequired,
-};
 
 export default connect(
   (mapStateToProps) => ({
@@ -278,5 +157,7 @@ export default connect(
   }),
   (mapDispatchToProps) => ({
     addingMapCells: (cells) => mapDispatchToProps(addMapCells(cells)),
+    addChoiceTerrain: (map) => mapDispatchToProps(choiceTerrain(map)),
+    deleteMapSells: (cells) => mapDispatchToProps(deleteMapSells(cells)),
   }),
 )(TileField);

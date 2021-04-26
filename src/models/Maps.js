@@ -10,10 +10,8 @@ const schema = new Schema({
     cells: {
         type: Map,
         of: {
-            terrains: {
-                mainTerrain: {ref: 'terrains', type: Schema.Types.ObjectId},
-                secondTerrain: {ref: 'terrains', type: Schema.Types.ObjectId},
-            }
+            mainTerrain: {ref: 'terrains', type: Schema.Types.ObjectId},
+            secondTerrain: {ref: 'terrains', type: Schema.Types.ObjectId},
         }
     }
 }, {

@@ -7,11 +7,11 @@ import CheckBox from "../controls/CheckBox";
 import File from "../controls/File";
 import Button from "../controls/Button";
 import Field from "../controls/Field";
-import {API_UPDATE_TERRAIN, atrTerrainsPath} from "../../tools/routing";
+import {API_UPDATE_TERRAIN} from "../../tools/routing";
 import {connect} from "react-redux";
 import {choiceTerrain, setError, updateTerrain} from "../../redux/actions";
 import PropTypes from "prop-types";
-import {firstUpper} from "../../../../src/utils/utils";
+import {atrTerrainsPath, firstUpper} from "../../../../src/utils/utils";
 
 const OuterWrapper = styled.div`
   display: flex;
