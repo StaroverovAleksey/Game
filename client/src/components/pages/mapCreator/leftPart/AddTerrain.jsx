@@ -66,7 +66,7 @@ class AddTerrain extends WithRequest {
               title="Изображение"
               name="img"
               width="100px"
-              rules={{ format: ['jpeg', 'jpg'] }}
+              rules={{ format: ['jpeg', 'jpg', 'png'] }}
             />
             <CheckBox
               title="Проходимость"

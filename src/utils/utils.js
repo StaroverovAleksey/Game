@@ -22,7 +22,7 @@ module.exports = {
         if (!cell || (!cell.mainTerrain && !cell.secondTerrain)) {
             return module.exports.atrUtilsPath('emptyTile.png');
         }
-        const imgForCollage = ['mainTerrain', 'secondTerrain'];
+        const imgForCollage = ['secondTerrain', 'mainTerrain'];
         return imgForCollage
             .map((imgName) => (cell[imgName] && module.exports.atrTerrainsPath(cell[imgName].fileName)))
             .filter((value) => value)

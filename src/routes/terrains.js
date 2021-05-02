@@ -29,7 +29,7 @@ router.post('/create', multiparty, [
     try {
         const errors = validationResult(req);
 
-        if (req.files.img && req.files.img.type === 'image/jpeg') {
+        if (req.files.img && (req.files.img.type === 'image/jpeg' || req.files.img.type === 'image/png')) {
 
             const dimensions = await sizeOf(req.files.img.path);
 

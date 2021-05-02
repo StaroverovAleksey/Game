@@ -98,7 +98,7 @@ class UpdateTerrain extends WithRequest {
                   path={atrTerrainsPath(fileName)}
                   name="img"
                   width="100px"
-                  rules={{ format: ['jpeg', 'jpg'] }}
+                  rules={{ format: ['jpeg', 'jpg', 'png'] }}
                 />
                 <CheckBox
                   title="Проходимость"
@@ -147,10 +147,16 @@ class UpdateTerrain extends WithRequest {
 
     data._id = _id;
     if (data.name && !data.group) {
+      data.name = firstUpper(data.name);
       data.group = firstUpper(group);
     }
     if (data.group && !data.name) {
+      data.group = firstUpper(data.group);
       data.name = firstUpper(name);
+    }
+    if (data.name && data.group) {
+      data.group = firstUpper(data.group);
+      data.name = firstUpper(data.name);
     }
 
     const formData = new FormData();

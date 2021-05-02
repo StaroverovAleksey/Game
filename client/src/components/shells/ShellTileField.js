@@ -66,6 +66,7 @@ class ShellTileField extends WithRequest {
     }
 
     const actionData = {};
+    console.log(mapDataTypeFix);
     data.cells.forEach((value) => {
       actionData[value] = {};
       actionData[value][mapDataTypeFix] = choiceTerrain;
