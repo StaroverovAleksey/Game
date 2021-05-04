@@ -1,7 +1,7 @@
 ﻿import React from 'react';
 import styled from 'styled-components';
 import {connect} from "react-redux";
-import {addMapCells, choiceTerrain, deleteMapSells, setSelectedMap} from "../../../../redux/actions";
+import {addMapCells, choiceTerrain, deleteMapSells, setError, setSelectedMap} from "../../../../redux/actions";
 import {MAIN_TERRAIN, SECOND_TERRAIN} from "../../../../../../src/utils/constants";
 import ShellTileField from "../../../shells/ShellTileField";
 import {atrTerrainsPath, atrUtilsPath, getCursorImg, getTileCollage} from "../../../../../../src/utils/utils";
@@ -159,5 +159,6 @@ export default connect(
     addingMapCells: (cells) => mapDispatchToProps(addMapCells(cells)),
     addChoiceTerrain: (map) => mapDispatchToProps(choiceTerrain(map)),
     deleteMapSells: (cells) => mapDispatchToProps(deleteMapSells(cells)),
+    addError: (data) => mapDispatchToProps(setError(data)),
   }),
 )(TileField);

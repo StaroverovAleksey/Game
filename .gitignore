@@ -4,3 +4,4 @@ package-lock.json
 
 /client/dist
 /client/node_modules
+/client/arts/terrains

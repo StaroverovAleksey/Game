@@ -31,7 +31,6 @@ if (process.env.NODE_ENV === 'production') {
 const PORT = config.get('serverPort') || 5000;
 
 async function start() {
-    console.log(config.get('mongoUri'));
     try {
         await mongoose.connect(config.get('mongoUri'), {
             useNewUrlParser: true,

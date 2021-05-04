@@ -30,7 +30,7 @@ const Image = styled.div`
   width: 100%;
   height: 100%;
   box-sizing: border-box;
-  background-image: ${({ path }) => path};
+  background-image: ${({ path }) => `${path}, ${atrUtilsPath('transparency.png')}`};
   opacity: ${({ active }) => (active ? '0.4' : '1')};
   :hover {
     opacity: ${({ active }) => (active ? '0.4' : '0.7')};

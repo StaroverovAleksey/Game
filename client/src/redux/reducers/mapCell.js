@@ -7,7 +7,15 @@ export default function reducer(state = { }, action) {
   switch (action.type) {
     case SET_MAP_CELLS: return { ...action.payload };
 
-    case ADD_MAP_CELLS: return { ...state, ...action.payload };
+    case ADD_MAP_CELLS:
+      Object.keys(action.payload).forEach((key) => {
+        if (newState[key]) {
+          newState[key] = Object.assign(newState[key], action.payload[key]);
+        } else {
+          newState[key] = action.payload[key];
+        }
+      });
+      return { ...newState };
 
     case DELETE_MAP_SELLS:
       action.payload.forEach((cell) => {
