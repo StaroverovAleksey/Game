@@ -7,6 +7,8 @@ import {
 } from '../../../../tools/palette';
 import { changeStateLeftMenu } from '../../../../redux/actions';
 import { atrUtilsPath } from '../../../../../../src/utils/utils';
+import {PATH_GAME_CREATOR} from "../../../../tools/routing";
+import {NavLink} from "react-router-dom";
 
 const Container = styled.div`
   display: flex;
@@ -44,6 +46,7 @@ class TopPart extends React.Component {
           onClick={openLeftMenu}
           menuState={menuState}
         />
+        <NavLink to="/">Игра</NavLink>
 
       </Container>
     );

@@ -5,7 +5,7 @@ import Field from '../controls/Field';
 import Input from '../controls/Input';
 import Form from '../controls/Form';
 import Button from '../controls/Button';
-import {API_AUTH_LOGIN, API_GET_TERRAIN, PATH_LOGIN, PATH_REGISTRATION} from "../../tools/routing";
+import {API_AUTH_CHECK, API_AUTH_LOGIN, API_GET_TERRAIN, PATH_LOGIN, PATH_REGISTRATION} from "../../tools/routing";
 import {connect} from "react-redux";
 import {setError} from "../../redux/actions";
 import WithRequest from "../shells/ShellRequest";
@@ -40,7 +40,7 @@ class Login extends WithRequest {
   }
 
   async componentDidMount() {
-    const isAuth = await this.GET(API_GET_TERRAIN);
+    const isAuth = await this.GET(API_AUTH_CHECK);
     this.setState({isAuth, loading: false});
   }
 
