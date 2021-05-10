@@ -2,7 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import MapCreator from './pages/mapCreator/MapCreator';
+import Login from './pages/Login';
+import Registration from './pages/Registration';
+import { PATH_GAME_CREATOR, PATH_LOGIN, PATH_REGISTRATION } from '../tools/routing';
+import Game from './pages/game/Game';
+import Empty from "./pages/Empty";
 
 const Error = styled.p`
   font-size: 36px;
@@ -18,7 +24,17 @@ class App extends React.Component {
         <br />
         Обнови страницу, может быть, поможет.
       </Error>
-    ) : <MapCreator />;
+    ) : (
+      <BrowserRouter>
+        <Switch>
+          <Route exact path="/" component={Game} />
+          <Route path={PATH_LOGIN} component={Login} />
+          <Route path={PATH_REGISTRATION} component={Registration} />
+          <Route path={PATH_GAME_CREATOR} component={MapCreator} />
+          <Route component={Empty} />
+        </Switch>
+      </BrowserRouter>
+    );
   }
 }
 

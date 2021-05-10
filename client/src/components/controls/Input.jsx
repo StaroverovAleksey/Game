@@ -66,7 +66,7 @@ class Input extends React.Component {
 
   render() {
     const { value, error } = this.state;
-    const { name, title, width, margin } = this.props;
+    const { name, title, width, margin, type } = this.props;
     const index = this.context.errors.findIndex((value) => value.param === name);
     const errorMsg = index > -1 ? this.context.errors[index].msg : '';
     return (
@@ -78,7 +78,8 @@ class Input extends React.Component {
         <InputCommon
           value={value}
           error={error || errorMsg}
-          onChange={this._onChange}/>
+          onChange={this._onChange}
+          type={type}/>
         <Error>{error || errorMsg}</Error>
       </Wrapper>
     );
@@ -129,7 +130,8 @@ Input.defaultProps = {
   title: '',
   width: '190px',
   margin: '0 0 0 0',
-  rules: {}
+  rules: {},
+  type: 'text',
 };
 
 Input.propTypes = {
@@ -141,6 +143,7 @@ Input.propTypes = {
   name: PropTypes.string,
   width: PropTypes.string,
   margin: PropTypes.string,
+  type: PropTypes.string,
   rules: PropTypes.objectOf(PropTypes.any),
 };
 

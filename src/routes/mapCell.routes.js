@@ -1,14 +1,15 @@
 const {Router} = require('express');
 const {validationResult} = require('express-validator');
-const Map = require('../models/Maps');
-const Terrain = require('../models/Terrains');
+const Map = require('../models/Map');
+const Terrain = require('../models/Terrain');
+const {isAdmin, isAuth} = require("../utils/middleware");
 const {SECOND_TERRAIN} = require("../utils/constants");
 const {MAIN_TERRAIN} = require("../utils/constants");
 const {query} = require("express-validator");
 const {body} = require("express-validator");
 const router = Router();
 
-router.post('/create', [
+router.post('/create', isAdmin, [
     body('terrain_id')
         .isString().withMessage('string expected')
         .trim(),
@@ -86,7 +87,7 @@ router.post('/create', [
     }
 });
 
-router.get('/read', [
+router.get('/read', isAuth, [
     query('_id')
         .isString().withMessage('string expected')
         .trim()
@@ -110,7 +111,7 @@ router.get('/read', [
     }
 });
 
-router.delete('/delete', [
+router.delete('/delete', isAdmin, [
     body('_id')
         .isString().withMessage('string expected')
         .trim(),

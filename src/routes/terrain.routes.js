@@ -6,15 +6,15 @@ const {CELL_SIZE} = require("../utils/constants");
 const {promisify} = require('util');
 const sizeOf = promisify(require('image-size'));
 const {body} = require("express-validator");
-const Terrain = require('../models/Terrains');
+const Terrain = require('../models/Terrain');
+const {isAdmin} = require("../utils/middleware");
 const {firstUpper} = require("../utils/utils");
 const {getFileName} = require("../utils/utils");
-const {check} = require("express-validator");
 const router = Router();
 
 const multiparty = formParser();
 
-router.post('/create', multiparty, [
+router.post('/create', isAdmin, multiparty, [
     body('name')
         .isString().withMessage('string expected')
         .isLength({ min: 3, max: 14 }).withMessage('length between 3 and 14')
@@ -98,7 +98,7 @@ router.post('/create', multiparty, [
 
 
 
-router.get('/read', async (req, res) => {
+router.get('/read', isAdmin, async (req, res) => {
     try {
         const terrains = await Terrain.find().exec();
         res.status(200).json({terrains});
@@ -112,7 +112,7 @@ router.get('/read', async (req, res) => {
 
 
 
-router.patch('/update', multiparty, [
+router.patch('/update', isAdmin, multiparty, [
     body('name')
         .if(body('name').exists())
         .isString().withMessage('string expected')
@@ -214,7 +214,7 @@ router.patch('/update', multiparty, [
 
 
 
-router.delete('/delete', [
+router.delete('/delete', isAdmin, [
     body('_id')
         .isString().withMessage('string expected')
         .trim(),

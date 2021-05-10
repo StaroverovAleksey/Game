@@ -2,22 +2,29 @@ const express = require('express');
 const config = require('config');
 const path = require('path');
 const mongoose = require('mongoose');
+const cookieParser = require("cookie-parser");
 
 const app = express();
 
 app.use(express.json({ extended: true }));
+app.use(cookieParser());
 
-/* Возврат заголовков, для кроссдоменного AJAX */
-app.use((req, res, next) => {
-    res.header(`Access-Control-Allow-Origin`, `*`);
-    res.header(`Access-Control-Allow-Methods`, `*`);
-    res.header(`Access-Control-Allow-Headers`, `Origin, X-Requested-With, Content-Type, Accept`);
-    next();
-});
+/* Возврат заголовков, для кроссдоменного AJAX (только для дев режима) */
+if (process.env.NODE_ENV !== 'production') {
+    app.use((req, res, next) => {
+        res.header(`Access-Control-Allow-Origin`, req.headers.origin); //адрес сервера, на котором запущен фронтенд.
+        res.header(`Access-Control-Allow-Methods`, `*`);
+        res.header('Access-Control-Allow-Credentials', 'true');
+        res.header(`Access-Control-Allow-Headers`, `Origin, X-Requested-With, Content-Type, Accept, Set-Cookie`);
+        next();
+    });
+}
 
-app.use('/api/terrains', require('./src/routes/terrains'));
-app.use('/api/maps', require('./src/routes/maps'));
-app.use('/api/map-cells', require('./src/routes/mapCells'));
+app.use('/api/auth', require('./src/routes/auth.routes'));
+app.use('/api/character', require('./src/routes/character.routes'));
+app.use('/api/terrains', require('./src/routes/terrain.routes'));
+app.use('/api/maps', require('./src/routes/map.routes'));
+app.use('/api/map-cells', require('./src/routes/mapCell.routes'));
 
 if (process.env.NODE_ENV === 'production') {
     app.use('/', express.static(path.join(__dirname, 'client', 'dist')));

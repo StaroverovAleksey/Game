@@ -13,6 +13,7 @@ import { API_GET_MAP_CELL, API_GET_MAPS, API_GET_TERRAIN } from '../../../tools/
 import WithRequest from '../../shells/ShellRequest';
 import RightPart from './rightPart/RightPart';
 import { isEmpty } from '../../../../../src/utils/utils';
+import Loading from '../Loading';
 
 const OuterWrapper = styled.div`
   display: flex;
@@ -24,10 +25,6 @@ const InnerWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100vw;
-`;
-export const Loading = styled.p`
-  font-size: 36px;
-  text-align: center;
 `;
 
 class MapCreator extends WithRequest {
@@ -88,7 +85,7 @@ class MapCreator extends WithRequest {
     return (
       <OuterWrapper>
         {loading
-          ? <Loading>Загрузка...</Loading>
+          ? <Loading />
           : (
             <>
               <LeftPart />

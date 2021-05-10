@@ -5,8 +5,8 @@ import PropTypes from 'prop-types';
 import TileField from './TileField';
 import TopScroll from "./TopScroll";
 import SideScroll from "./SideScroll";
-import {Loading} from "../MapCreator";
 import {isEmpty} from "../../../../../../src/utils/utils";
+import Loading from "../../Loading";
 
 const OuterWrapper = styled.div`
   display: flex;
@@ -52,7 +52,7 @@ class MainPart extends React.Component {
         {isEmpty(selectedMap) ?
           <EmptyMapsList>Список карт пуст.<br/>Создайте карту</EmptyMapsList>
         : loadingMapSells ?
-            <Loading>Загрузка...</Loading>
+            <Loading />
         : <React.Fragment>
 
                 <TopScroll left={fieldX}/>

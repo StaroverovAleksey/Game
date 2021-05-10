@@ -1,12 +1,13 @@
 const {Router} = require('express');
 const {validationResult} = require('express-validator');
-const Map = require('../models/Maps');
+const Map = require('../models/Map');
+const {isAdmin} = require("../utils/middleware");
 const {trimCells} = require("../utils/utils");
 const {firstUpper} = require("../utils/utils");
 const {body} = require("express-validator");
 const router = Router();
 
-router.post('/create', [
+router.post('/create', isAdmin, [
     body('name')
         .isString().withMessage('string expected')
         .isLength({ min: 3, max: 14 }).withMessage('length between 3 and 14')
@@ -71,7 +72,7 @@ router.post('/create', [
 
 
 
-router.get('/read', async (req, res) => {
+router.get('/read', isAdmin, async (req, res) => {
     try {
         const maps = await Map.find({}, 'name size group').exec();
         res.status(200).json({maps});
@@ -82,7 +83,7 @@ router.get('/read', async (req, res) => {
 
 
 
-router.patch('/update', [
+router.patch('/update', isAdmin, [
     body('name')
         .if(body('name').exists())
         .isString().withMessage('string expected')
@@ -175,7 +176,7 @@ router.patch('/update', [
 
 
 
-router.delete('/delete', [
+router.delete('/delete', isAdmin, [
     body('_id')
         .isString().withMessage('string expected')
         .trim()
