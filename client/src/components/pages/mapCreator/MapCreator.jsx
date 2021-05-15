@@ -45,7 +45,8 @@ class MapCreator extends WithRequest {
 
     if (maps.maps.length > 0) {
       const storageMap = JSON.parse(localStorage.getItem('selectedMap'));
-      const selectedMap = storageMap || maps.maps[0];
+      const checkStorageMap = maps.maps.findIndex((map) => map._id === storageMap._id);
+      const selectedMap = storageMap && checkStorageMap > -1 ? storageMap : maps.maps[0];
       const [mapCells] = await this.GET([`${API_GET_MAP_CELL}/?_id=${selectedMap._id}`]);
       addSelectedMap(selectedMap);
       addMapCells(mapCells);
