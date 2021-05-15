@@ -1,6 +1,6 @@
 import config from '../../config.json';
 
-const pathAPI = (method) => `${config.serverAddress}/api${method}`;
+const pathAPI = (method) => `${process.env.NODE_ENV === 'development' ? config.develop.serverAddress : config.production.serverAddress}/api${method}`;
 
 /** *PATH */
 export const PATH_REGISTRATION = '/registration';

@@ -1,7 +1,0 @@
-{
-  "serverPort": 80,
-  "mongoUri": "mongodb+srv://Staroverov:Cnfhjdthjd1988@cluster0.c4vyt.mongodb.net/production?retryWrites=true&w=majority",
-  "mongoPort": 27017,
-  "mongoLogin": "",
-  "mongoPass": ""
-}

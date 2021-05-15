@@ -8,7 +8,7 @@ import Login from './pages/Login';
 import Registration from './pages/Registration';
 import { PATH_GAME_CREATOR, PATH_LOGIN, PATH_REGISTRATION } from '../tools/routing';
 import Game from './pages/game/Game';
-import Empty from "./pages/Empty";
+import Empty from './pages/Empty';
 
 const Error = styled.p`
   font-size: 36px;

@@ -1,6 +1,6 @@
 const {DELETE_COLLAGE} = require("./constants");
 const {SECOND_TERRAIN} = require("./constants");
-const {pathToArts} = require("../../client/config.json");
+const config = require("../../client/config.json");
 
 module.exports = {
     isEmpty(obj) {
@@ -10,12 +10,16 @@ module.exports = {
         return true;
     },
 
+    pathToArt () {
+        return process.env.NODE_ENV === 'development' ? config.develop.pathToArts : config.production.pathToArts;
+    },
+
     atrTerrainsPath (name) {
-        return `url(${pathToArts}terrains/${name})`;
+        return `url(${module.exports.pathToArt()}terrains/${name})`;
     },
 
     atrUtilsPath (name) {
-        return `url(${pathToArts}utils/${name})`;
+        return `url(${module.exports.pathToArt()}utils/${name})`;
     },
 
     getTileCollage (cell) {

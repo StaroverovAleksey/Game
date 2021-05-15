@@ -1,8 +1,8 @@
 const express = require('express');
-const config = require('config');
 const path = require('path');
 const mongoose = require('mongoose');
 const cookieParser = require("cookie-parser");
+require('dotenv').config();
 
 const app = express();
 
@@ -35,16 +35,14 @@ if (process.env.NODE_ENV === 'production') {
     });
 }
 
-const PORT = config.get('serverPort') || 5000;
-
 async function start() {
     try {
-        await mongoose.connect(config.get('mongoUri'), {
+        await mongoose.connect(process.env.DB_CONNECT_STRING, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
             useCreateIndex: true
         })
-        app.listen(PORT, () => console.log(`App has been started on port ${PORT}`));
+        app.listen(process.env.APP_PORT, () => console.log(`App has been started on port ${process.env.APP_PORT}`));
     } catch (e) {
         console.log('Connection error', e.message);
         process.exit(1);
