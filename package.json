@@ -8,8 +8,10 @@
     "server": "nodemon index.js",
     "clientAdm": "npm run start --prefix clients/gameCreator",
     "clientGame": "npm run start --prefix clients/game",
-    "build": "npm run build --prefix client",
-    "client_ci": "npm ci --prefix client",
+    "gameCreator_build": "npm run build --prefix clients/gameCreator",
+    "game_build": "npm run build --prefix clients/game",
+    "gameCreator_ci": "npm ci --prefix clients/gameCreator",
+    "game_ci": "npm ci --prefix clients/game",
     "dev": "cross-env NODE_ENV=development concurrently \"npm run server\" \"npm run clientAdm\" \"npm run clientGame\""
   },
   "repository": {

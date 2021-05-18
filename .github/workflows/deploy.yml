@@ -28,8 +28,11 @@ jobs:
       - run: chmod 600 "$HOME/.ssh/key"
 
       # Build
-      - run: npm run client_ci
-      - run: npm run build
+      - run: npm run gameCreator_ci
+      - run: npm run gameCreator_build
+
+      - run: npm run game_ci
+      - run: npm run game_build
 
       # Deploy
       - run: ssh -i $HOME/.ssh/key -o StrictHostKeyChecking=no ${{ env.USER }}@${{ env.HOST }} rm -r game/clients/gameCreator/dist
