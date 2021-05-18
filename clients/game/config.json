@@ -1,0 +1,10 @@
+{
+  "develop": {
+    "serverAddress": "http://localhost",
+    "pathToArts": "http://localhost/"
+  },
+  "production": {
+    "serverAddress": "http://3.18.225.147",
+    "pathToArts": "http://3.18.225.147/"
+  }
+}

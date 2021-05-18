@@ -1,6 +1,6 @@
 const {DELETE_COLLAGE} = require("./constants");
 const {SECOND_TERRAIN} = require("./constants");
-const config = require("../../client/config.json");
+const config = require("../../clients/gameCreator/config.json");
 
 module.exports = {
     isEmpty(obj) {

@@ -1,0 +1,7 @@
+@import "~normalize.css";
+@import "fonts.css";
+
+body {
+    font-family: 'OpenSans', sans-serif;
+    background-color: #f6f7fb;
+}

@@ -32,10 +32,14 @@ jobs:
       - run: npm run build
 
       # Deploy
-      - run: ssh -i $HOME/.ssh/key -o StrictHostKeyChecking=no ${{ env.USER }}@${{ env.HOST }} rm -r game/client/dist
-      - run: ssh -i $HOME/.ssh/key ${{ env.USER }}@${{ env.HOST }} rm -r game/client/arts/utils
-      - run: scp -i $HOME/.ssh/key -r client/dist/ ${{ env.USER }}@${{ env.HOST }}:game/client
-      - run: scp -i $HOME/.ssh/key -r client/arts/utils ${{ env.USER }}@${{ env.HOST }}:game/client/arts
+      - run: ssh -i $HOME/.ssh/key -o StrictHostKeyChecking=no ${{ env.USER }}@${{ env.HOST }} rm -r game/clients/gameCreator/dist
+      - run: ssh -i $HOME/.ssh/key ${{ env.USER }}@${{ env.HOST }} rm -r game/clients/game/dist
+      - run: scp -i $HOME/.ssh/key -r clients/gameCreator/dist/ ${{ env.USER }}@${{ env.HOST }}:game/clients/gameCreator
+      - run: scp -i $HOME/.ssh/key -r clients/game/dist/ ${{ env.USER }}@${{ env.HOST }}:game/clients/game
+
+      - run: ssh -i $HOME/.ssh/key ${{ env.USER }}@${{ env.HOST }} rm -r game/arts/utils
+      - run: scp -i $HOME/.ssh/key -r arts/utils ${{ env.USER }}@${{ env.HOST }}:game/arts
+
       - run: scp -i $HOME/.ssh/key -r src/ ${{ env.USER }}@${{ env.HOST }}:game/
       - run: scp -i $HOME/.ssh/key index.js ${{ env.USER }}@${{ env.HOST }}:game/
       - run: scp -i $HOME/.ssh/key package.json ${{ env.USER }}@${{ env.HOST }}:game/

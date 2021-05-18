@@ -9,7 +9,7 @@ const {query} = require("express-validator");
 const {body} = require("express-validator");
 const router = Router();
 
-router.post('/create', isAdmin, [
+router.post('/create', [
     body('terrain_id')
         .isString().withMessage('string expected')
         .trim(),
@@ -87,7 +87,7 @@ router.post('/create', isAdmin, [
     }
 });
 
-router.get('/read', isAuth, [
+router.get('/read', [
     query('_id')
         .isString().withMessage('string expected')
         .trim()
@@ -111,7 +111,7 @@ router.get('/read', isAuth, [
     }
 });
 
-router.delete('/delete', isAdmin, [
+router.delete('/delete', [
     body('_id')
         .isString().withMessage('string expected')
         .trim(),

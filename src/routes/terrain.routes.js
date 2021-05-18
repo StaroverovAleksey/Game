@@ -14,7 +14,7 @@ const router = Router();
 
 const multiparty = formParser();
 
-router.post('/create', isAdmin, multiparty, [
+router.post('/create', multiparty, [
     body('name')
         .isString().withMessage('string expected')
         .isLength({ min: 3, max: 14 }).withMessage('length between 3 and 14')
@@ -71,7 +71,7 @@ router.post('/create', isAdmin, multiparty, [
         const group = firstUpper(req.body.group);
         const passability = req.body.passability;
         const file = await fs.readFileSync(req.files.img.path);
-        const pathToDirectory = `./client/arts/terrains`;
+        const pathToDirectory = `./arts/terrains`;
         const fileName = `${getFileName()}.${req.files.img.name.split('.').reverse()[0]}`;
         const pathToFile = `${pathToDirectory}/${fileName}`;
 
@@ -98,7 +98,7 @@ router.post('/create', isAdmin, multiparty, [
 
 
 
-router.get('/read', isAdmin, async (req, res) => {
+router.get('/read', async (req, res) => {
     try {
         const terrains = await Terrain.find().exec();
         res.status(200).json({terrains});
@@ -112,7 +112,7 @@ router.get('/read', isAdmin, async (req, res) => {
 
 
 
-router.patch('/update', isAdmin, multiparty, [
+router.patch('/update', multiparty, [
     body('name')
         .if(body('name').exists())
         .isString().withMessage('string expected')
@@ -191,7 +191,7 @@ router.patch('/update', isAdmin, multiparty, [
             await fs.unlinkSync(path);
 
             fileName = `${getFileName()}.${req.files.img.name.split('.').reverse()[0]}`;
-            const pathToFile = `./client/arts/terrains/${fileName}`;
+            const pathToFile = `./arts/terrains/${fileName}`;
             const file = await fs.readFileSync(req.files.img.path);
 
             await fs.writeFileSync(pathToFile, file);
@@ -214,7 +214,7 @@ router.patch('/update', isAdmin, multiparty, [
 
 
 
-router.delete('/delete', isAdmin, [
+router.delete('/delete', [
     body('_id')
         .isString().withMessage('string expected')
         .trim(),
@@ -244,7 +244,7 @@ router.delete('/delete', isAdmin, [
             });
         }
 
-        const path = `./client/arts/terrains/${terrainForDelete.fileName}`;
+        const path = `./arts/terrains/${terrainForDelete.fileName}`;
 
         await fs.unlinkSync(path);
 

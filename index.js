@@ -25,13 +25,19 @@ app.use('/api/character', require('./src/routes/character.routes'));
 app.use('/api/terrains', require('./src/routes/terrain.routes'));
 app.use('/api/maps', require('./src/routes/map.routes'));
 app.use('/api/map-cells', require('./src/routes/mapCell.routes'));
+app.use('/', express.static(path.join(__dirname, 'arts')));
 
 if (process.env.NODE_ENV === 'production') {
-    app.use('/', express.static(path.join(__dirname, 'client', 'dist')));
-    app.use('/', express.static(path.join(__dirname, 'client', 'arts')));
+    app.use('/', express.static(path.join(__dirname, 'clients', 'gameCreator', 'dist')));
+    app.use('/', express.static(path.join(__dirname, 'clients', 'game', 'dist')));
 
     app.get('', (req, res) => {
-        res.sendFile(path.resolve(__dirname, 'client', 'dist', 'index.html'));
+        if(req.headers.origin && parseInt(req.headers.origin.split(':')[1]) === process.env.ADMIN_PORT) {
+            res.sendFile(path.resolve(__dirname, 'clients', 'gameCreator', 'dist', 'index.html'));
+        } else {
+            res.sendFile(path.resolve(__dirname, 'client', 'game', 'dist', 'index.html'));
+        }
+
     });
 }
 
@@ -43,6 +49,9 @@ async function start() {
             useCreateIndex: true
         })
         app.listen(process.env.APP_PORT, () => console.log(`App has been started on port ${process.env.APP_PORT}`));
+        if (process.env.NODE_ENV === 'production') {
+            app.listen(process.env.ADMIN_PORT, () => console.log(`App has been started on port ${process.env.ADMIN_PORT}`));
+        }
     } catch (e) {
         console.log('Connection error', e.message);
         process.exit(1);

@@ -7,7 +7,7 @@ const {firstUpper} = require("../utils/utils");
 const {body} = require("express-validator");
 const router = Router();
 
-router.post('/create', isAdmin, [
+router.post('/create', [
     body('name')
         .isString().withMessage('string expected')
         .isLength({ min: 3, max: 14 }).withMessage('length between 3 and 14')
@@ -72,7 +72,7 @@ router.post('/create', isAdmin, [
 
 
 
-router.get('/read', isAdmin, async (req, res) => {
+router.get('/read', async (req, res) => {
     try {
         const maps = await Map.find({}, 'name size group').exec();
         res.status(200).json({maps});
@@ -83,7 +83,7 @@ router.get('/read', isAdmin, async (req, res) => {
 
 
 
-router.patch('/update', isAdmin, [
+router.patch('/update', [
     body('name')
         .if(body('name').exists())
         .isString().withMessage('string expected')
@@ -176,7 +176,7 @@ router.patch('/update', isAdmin, [
 
 
 
-router.delete('/delete', isAdmin, [
+router.delete('/delete', [
     body('_id')
         .isString().withMessage('string expected')
         .trim()

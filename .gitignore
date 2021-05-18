@@ -3,6 +3,10 @@
 .env
 package-lock.json
 
-/client/dist
-/client/node_modules
-/client/arts/terrains
+/arts/terrains
+
+/clients/game/dist
+/clients/game/node_modules
+
+/clients/gameCreator/dist
+/clients/gameCreator/node_modules
