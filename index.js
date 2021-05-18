@@ -28,13 +28,16 @@ app.use('/api/map-cells', require('./src/routes/mapCell.routes'));
 app.use('/', express.static(path.join(__dirname, 'arts')));
 
 if (process.env.NODE_ENV === 'production') {
-    app.use('/', express.static(path.join(__dirname, 'clients', 'gameCreator', 'dist')));
-    app.use('/', express.static(path.join(__dirname, 'clients', 'game', 'dist')));
+
+
 
     app.get('', (req, res) => {
+        console.log(req.headers.origin);
         if(req.headers.origin && parseInt(req.headers.origin.split(':')[1]) === process.env.ADMIN_PORT) {
+            app.use('/', express.static(path.join(__dirname, 'clients', 'gameCreator', 'dist')));
             res.sendFile(path.resolve(__dirname, 'clients', 'gameCreator', 'dist', 'index.html'));
         } else {
+            app.use('/', express.static(path.join(__dirname, 'clients', 'game', 'dist')));
             res.sendFile(path.resolve(__dirname, 'client', 'game', 'dist', 'index.html'));
         }
 
