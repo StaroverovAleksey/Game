@@ -1,6 +1,5 @@
 const {DELETE_COLLAGE} = require("./constants");
 const {SECOND_TERRAIN} = require("./constants");
-const config = require("../../clients/gameCreator/config.json");
 
 module.exports = {
     isEmpty(obj) {
@@ -11,7 +10,7 @@ module.exports = {
     },
 
     pathToArt () {
-        return process.env.NODE_ENV === 'development' ? config.develop.pathToArts : config.production.pathToArts;
+        return process.env.NODE_ENV === 'development' ? 'http://localhost/' : process.env.APP_ADDRES + '/';
     },
 
     atrTerrainsPath (name) {
