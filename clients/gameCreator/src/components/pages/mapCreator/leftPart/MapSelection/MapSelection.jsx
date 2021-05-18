@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import Field from '../../../../controls/Field';
+import Field from '../../../../atomic/Field';
 import { connect } from 'react-redux';
 import {deleteAllMapSells, deleteMap, setError, setMap, setSelectedMap} from "../../../../../redux/actions";
 import WithRequest from "../../../../shells/ShellRequest";

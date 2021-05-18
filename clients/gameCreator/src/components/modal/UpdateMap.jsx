@@ -1,10 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import WithRequest from '../shells/ShellRequest';
-import Form from "../controls/Form";
-import Input from "../controls/Input";
-import Button from "../controls/Button";
-import Field from "../controls/Field";
+import Form from "../atomic/Form";
+import Input from "../atomic/Input";
+import Button from "../atomic/Button";
+import Field from "../atomic/Field";
 import {API_UPDATE_MAP} from "../../tools/routing";
 import {connect} from "react-redux";
 import {setError, setSelectedMap, updateMap} from "../../redux/actions";

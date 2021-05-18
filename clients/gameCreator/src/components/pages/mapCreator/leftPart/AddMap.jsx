@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
-import Form from '../../../controls/Form';
-import Input from '../../../controls/Input';
-import Field from '../../../controls/Field';
-import Button from '../../../controls/Button';
+import Form from '../../../atomic/Form';
+import Input from '../../../atomic/Input';
+import Field from '../../../atomic/Field';
+import Button from '../../../atomic/Button';
 import { connect } from 'react-redux';
 import {setError, setMap, setSelectedMap} from "../../../../redux/actions";
 import PropTypes from "prop-types";

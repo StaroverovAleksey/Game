@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Field from '../controls/Field';
+import Field from '../atomic/Field';
 
 class WithRequest extends React.Component {
   render() {

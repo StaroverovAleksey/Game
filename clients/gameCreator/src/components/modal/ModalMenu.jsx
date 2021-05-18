@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import Button from '../controls/Button';
-import Field from '../controls/Field';
+import Button from '../atomic/Button';
+import Field from '../atomic/Field';
 
 const OuterWrapper = styled.div`
   display: flex;

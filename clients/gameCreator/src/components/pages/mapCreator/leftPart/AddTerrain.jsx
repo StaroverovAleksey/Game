@@ -1,16 +1,16 @@
 import React from 'react';
 import styled from 'styled-components';
-import Form from '../../../controls/Form';
-import Input from '../../../controls/Input';
-import Field from '../../../controls/Field';
-import Button from '../../../controls/Button';
+import Form from '../../../atomic/Form';
+import Input from '../../../atomic/Input';
+import Field from '../../../atomic/Field';
+import Button from '../../../atomic/Button';
 import { connect } from 'react-redux';
 import {setError, setTerrain} from "../../../../redux/actions";
 import PropTypes from "prop-types";
-import File from "../../../controls/File";
+import File from "../../../atomic/File";
 import {API_CREATE_TERRAIN} from "../../../../tools/routing";
 import WithRequest from "../../../shells/ShellRequest";
-import CheckBox from "../../../controls/CheckBox";
+import CheckBox from "../../../atomic/CheckBox";
 import {firstUpper} from "../../../../../../../src/utils/utils";
 
 const Title = styled.h3`

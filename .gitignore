@@ -4,6 +4,7 @@
 package-lock.json
 
 /arts/terrains
+/arts/structures
 
 /clients/game/dist
 /clients/game/node_modules
