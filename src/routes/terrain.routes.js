@@ -187,7 +187,7 @@ router.patch('/update', multiparty, [
 
         let fileName;
         if (req.files.img) {
-            const path = `./client/arts/terrains/${oldData.fileName}`;
+            const path = `./arts/terrains/${oldData.fileName}`;
             await fs.unlinkSync(path);
 
             fileName = `${getFileName()}.${req.files.img.name.split('.').reverse()[0]}`;

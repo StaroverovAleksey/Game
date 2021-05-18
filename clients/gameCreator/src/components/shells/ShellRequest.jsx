@@ -1,8 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Field from '../controls/Field';
-import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
-import {PATH_LOGIN} from "../../tools/routing";
 
 class WithRequest extends React.Component {
   render() {
@@ -20,13 +18,6 @@ class WithRequest extends React.Component {
         }, body});
       if (answer.status === 200 || answer.status === 400) {
         return await answer.json();
-      } else if (answer.status === 401) {
-
-        if (window.location.pathname !== PATH_LOGIN) {
-          window.location = window.location.origin + PATH_LOGIN;
-        }
-        return false;
-
       } else {
         addError({status: answer.status});
       }

@@ -1,7 +1,7 @@
 import {
   CHOICE_TERRAIN, LEFT_MENU_STATE, LOADING_MAP_SELLS, SET_ERROR, SET_SELECTED_MAP,
 } from '../actions';
-import { isEmpty } from '../../../../../src/utils/utils';
+import {isEmpty} from "../../tools/utils";
 
 const defaultState = {
   selectedMap: 'loading',

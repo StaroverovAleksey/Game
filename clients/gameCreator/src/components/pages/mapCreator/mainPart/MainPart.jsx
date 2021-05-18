@@ -5,8 +5,8 @@ import PropTypes from 'prop-types';
 import TileField from './TileField';
 import TopScroll from "./TopScroll";
 import SideScroll from "./SideScroll";
-import {isEmpty} from "../../../../../../../src/utils/utils";
 import Loading from "../../Loading";
+import {isEmpty} from "../../../../tools/utils";
 
 const OuterWrapper = styled.div`
   display: flex;

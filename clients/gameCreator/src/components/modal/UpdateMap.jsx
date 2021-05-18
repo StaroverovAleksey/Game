@@ -5,10 +5,9 @@ import Form from "../controls/Form";
 import Input from "../controls/Input";
 import Button from "../controls/Button";
 import Field from "../controls/Field";
-import {API_UPDATE_MAP, API_UPDATE_TERRAIN} from "../../tools/routing";
+import {API_UPDATE_MAP} from "../../tools/routing";
 import {connect} from "react-redux";
-import {setError, setSelectedMap, setTerrain, updateMap, updateTerrain} from "../../redux/actions";
-import PropTypes from "prop-types";
+import {setError, setSelectedMap, updateMap} from "../../redux/actions";
 import {firstUpper} from "../../../../../src/utils/utils";
 
 const OuterWrapper = styled.div`

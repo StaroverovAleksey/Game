@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import {atrTerrainsPath, atrUtilsPath} from "../../../../../../../../src/utils/utils";
+import {atrTerrainsPath, atrUtilsPath} from "../../../../../tools/utils";
 
 const Wrapper = styled.div`
   position: relative;

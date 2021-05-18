@@ -2,7 +2,7 @@ import React from 'react';
 import {DELETE_COLLAGE, MAIN_TERRAIN, SECOND_TERRAIN} from "../../../../../src/utils/constants";
 import WithRequest from "./ShellRequest";
 import {API_CREATE_MAP_CELL, API_DELETE_MAP_CELL} from "../../tools/routing";
-import {atrTerrainsPath, atrUtilsPath} from "../../../../../src/utils/utils";
+import {atrTerrainsPath} from "../../tools/utils";
 
 class ShellTileField extends WithRequest {
   constructor(props) {

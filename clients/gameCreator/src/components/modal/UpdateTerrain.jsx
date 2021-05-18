@@ -11,7 +11,7 @@ import {API_UPDATE_TERRAIN} from "../../tools/routing";
 import {connect} from "react-redux";
 import {choiceTerrain, setError, updateTerrain} from "../../redux/actions";
 import PropTypes from "prop-types";
-import {atrTerrainsPath, firstUpper} from "../../../../../src/utils/utils";
+import {atrTerrainsPath, firstUpper} from "../../tools/utils";
 
 const OuterWrapper = styled.div`
   display: flex;

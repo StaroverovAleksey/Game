@@ -2,11 +2,6 @@ import config from '../../config.json';
 
 const pathAPI = (method) => `${process.env.NODE_ENV === 'development' ? config.develop.serverAddress : config.production.serverAddress}/api${method}`;
 
-/** *PATH */
-export const PATH_REGISTRATION = '/registration';
-export const PATH_LOGIN = '/login';
-export const PATH_GAME_CREATOR = '/game-creator';
-
 /** *TERRAIN */
 export const API_CREATE_TERRAIN = pathAPI('/terrains/create');
 export const API_GET_TERRAIN = pathAPI('/terrains/read');

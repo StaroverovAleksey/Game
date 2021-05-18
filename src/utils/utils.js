@@ -1,46 +1,9 @@
-const {DELETE_COLLAGE} = require("./constants");
-const {SECOND_TERRAIN} = require("./constants");
-
 module.exports = {
     isEmpty(obj) {
         for (const key in obj) {
             return false;
         }
         return true;
-    },
-
-    pathToArt () {
-        return process.env.NODE_ENV === 'development' ? 'http://localhost/' : process.env.APP_ADDRES + '/';
-    },
-
-    atrTerrainsPath (name) {
-        return `url(${module.exports.pathToArt()}terrains/${name})`;
-    },
-
-    atrUtilsPath (name) {
-        return `url(${module.exports.pathToArt()}utils/${name})`;
-    },
-
-    getTileCollage (cell) {
-        if (!cell || (!cell.mainTerrain && !cell.secondTerrain)) {
-            return module.exports.atrUtilsPath('emptyTile.png');
-        }
-        const imgForCollage = ['secondTerrain', 'mainTerrain'];
-        return imgForCollage
-            .map((imgName) => (cell[imgName] && module.exports.atrTerrainsPath(cell[imgName].fileName)))
-            .filter((value) => value)
-            .join(', ');
-    },
-
-    getCursorImg ({ choiceTerrain, mapDataType }) {
-        if (mapDataType === DELETE_COLLAGE) {
-            return `${module.exports.atrUtilsPath('eraser.png')}, pointer`;
-        }
-        if (choiceTerrain) {
-            return mapDataType === SECOND_TERRAIN
-                ? `${module.exports.atrUtilsPath('pencilCursorAdd.png')}, pointer`
-                : `${module.exports.atrUtilsPath('pencilCursor.png')}, pointer`;
-        }
     },
 
     getFileName () {
