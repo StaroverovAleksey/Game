@@ -1,9 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
+import MainMenu from "./MainMenu";
 
 const Wrapper = styled.div`
   display: flex;
   align-items: flex-end;
+  position: relative;
   width: 100%;
   height: 100%;
   margin: 0 auto;
@@ -21,6 +23,7 @@ class TopFrame extends React.Component {
   render() {
     return (
       <Wrapper>
+        <MainMenu/>
       </Wrapper>
     );
   }

@@ -77,7 +77,7 @@ router.post('/registration', [
             });
         }
 
-        const startMap = await Map.findById(START_MAP_ID);
+        const startMap = await Map.findOne({start: true});
         const character = new Character({name, map: startMap.id, location: START_LOCATION});
         await character.save();
 
