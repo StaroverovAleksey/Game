@@ -6,6 +6,8 @@ import TopFrame from './topFrame/TopFrame';
 import BottomFrame from './bottomFrame/BottomFrame';
 import FrameBorder from "./FrameBorder";
 import WithRequest from "../../shells/ShellRequest";
+import {setError} from "../../../redux/actions";
+import {connect} from "react-redux";
 
 const Wrapper = styled.div`
   height: 100vh;
@@ -68,4 +70,9 @@ class Game extends WithRequest {
   }
 }
 
-export default Game;
+export default connect(
+    undefined,
+    (mapDispatchToProps) => ({
+      setError: (data) => mapDispatchToProps(setError(data)),
+    }),
+)(Game);

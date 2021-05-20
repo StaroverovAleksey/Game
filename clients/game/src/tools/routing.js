@@ -3,9 +3,13 @@ import config from '../../config.json';
 const pathAPI = (method) => `${process.env.NODE_ENV === 'development' ? config.develop.serverAddress : config.production.serverAddress}/api${method}`;
 
 /** *PATH */
-export const PATH_REGISTRATION = '/registration';
-export const PATH_LOGIN = '/login';
-export const PATH_GAME_CREATOR = '/game-creator';
+export const ROUT_MAIN = 'main';
+export const ROUT_LOGIN = 'login';
+export const ROUT_REGISTRATION = 'registration';
+export const ROUT_INVENTORY = 'inventory';
+export const ROUT_SKILLS = 'skills';
+export const ROUT_SETTINGS = 'settings';
+export const ROUT_ERROR = 'error';
 
 /** *TERRAIN */
 export const API_CREATE_TERRAIN = pathAPI('/terrains/create');

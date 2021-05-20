@@ -1,15 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
-import {NavLink, Redirect} from 'react-router-dom';
-import {API_AUTH_CHECK, API_AUTH_LOGIN, PATH_REGISTRATION} from "../../tools/routing";
-import {connect} from "react-redux";
-import Loading from "./Loading";
+import {API_AUTH_LOGIN, ROUT_MAIN, ROUT_REGISTRATION} from "../../tools/routing";
 import WithRequest from "../shells/ShellRequest";
 import Field from "../atomic/Field";
 import Form from "../atomic/Form";
 import Input from "../atomic/Input";
 import Button from "../atomic/Button";
-import {setError} from "../../../../gameCreator/src/redux/actions";
+import {setError, setRout} from "../../redux/actions";
+import {connect} from "react-redux";
 
 const OuterWrapper = styled.div`
   display: flex;
@@ -34,25 +32,12 @@ class Login extends WithRequest {
   constructor(props) {
     super(props);
     this.state = {
-      loading: true,
-      isAuth: null,
+      errors: [],
     };
   }
 
-  async componentDidMount() {
-    const isAuth = await this.GET(API_AUTH_CHECK);
-    console.log(isAuth);
-    this.setState({isAuth, loading: false});
-  }
-
   render() {
-    const {isAuth, loading} = this.state;
-    if (loading) {
-      return <Loading />
-    }
-    if(isAuth) {
-      return <Redirect to="/"/>
-    }
+    const {setRout} = this.props;
     return (
       <OuterWrapper>
         <Field>
@@ -80,7 +65,7 @@ class Login extends WithRequest {
                 text="Войти"
                 width="100px"
               />
-              <NavLink style={{ paddingTop: '10px' }} to={PATH_REGISTRATION}>Регистрация</NavLink>
+              <a style={{ paddingTop: '10px' }} href={'#'} onClick={() => setRout(ROUT_REGISTRATION)}>Регистрация</a>
             </InnerWrapper>
 
           </Form>
@@ -91,20 +76,21 @@ class Login extends WithRequest {
   }
 
   _onSubmit = async (data) => {
-    this.setState({errors: [], reset: false});
+    const {setRout} = this.props;
 
     const answer = await this.POST(API_AUTH_LOGIN, JSON.stringify(data));
     if(answer.errors) {
       this.setState({errors: answer.errors});
     } else {
-      this.setState({isAuth: true, loading: false});
+      setRout(ROUT_MAIN);
     }
   }
 }
 
 export default connect(
-  undefined,
-  (mapDispatchToProps) => ({
-    addError: (data) => mapDispatchToProps(setError(data)),
-  }),
+    undefined,
+    (mapDispatchToProps) => ({
+      setError: (data) => mapDispatchToProps(setError(data)),
+      setRout: (data) => mapDispatchToProps(setRout(data)),
+    }),
 )(Login);
