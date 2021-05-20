@@ -1,14 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
-import { NavLink } from 'react-router-dom';
-import {API_AUTH_REGISTRATION} from "../../tools/routing";
+import {API_AUTH_REGISTRATION, ROUT_LOGIN} from "../../tools/routing";
 import {connect} from "react-redux";
 import Field from "../atomic/Field";
 import Form from "../atomic/Form";
 import Input from "../atomic/Input";
 import Button from "../atomic/Button";
 import WithRequest from "../shells/ShellRequest";
-import {setError} from "../../../../gameCreator/src/redux/actions";
+import {setError, setRout} from "../../redux/actions";
 
 const OuterWrapper = styled.div`
   display: flex;
@@ -40,6 +39,7 @@ class Registration extends WithRequest {
 
   render() {
     const {successReg} = this.state;
+    const {setRout} = this.props;
     return (
       <OuterWrapper>
         <Field>
@@ -80,14 +80,14 @@ class Registration extends WithRequest {
                   text="Отправить"
                   width="100px"
                 />
-                <NavLink style={{ paddingTop: '10px' }} to="/">Форма входа</NavLink>
+                <a style={{ paddingTop: '10px' }} href={'#'} onClick={() => setRout(ROUT_LOGIN)}>Форма входа</a>
               </InnerWrapper>
 
             </Form>
 
           : <React.Fragment>
-              <p>Регистрация прошла успешно!</p>
-              <NavLink to="/">Войти с паролем</NavLink>
+                <p>Регистрация прошла успешно!</p>
+                <a href={'#'} onClick={() => setRout(ROUT_LOGIN)}>Войти с паролем</a>
             </React.Fragment>}
 
 
@@ -111,6 +111,7 @@ class Registration extends WithRequest {
 export default connect(
   undefined,
   (mapDispatchToProps) => ({
-    addError: (data) => mapDispatchToProps(setError(data)),
+    setError: (data) => mapDispatchToProps(setError(data)),
+    setRout: (data) => mapDispatchToProps(setRout(data)),
   }),
 )(Registration);

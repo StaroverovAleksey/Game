@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
 const ButtonCommon = styled.button`
-  margin: ${({ margin }) => margin};
+  margin: ${({margin}) => margin};
   cursor: pointer;
   background-color: transparent;
   border: none;
@@ -11,10 +11,10 @@ const ButtonCommon = styled.button`
   color: white;
   padding: 0;
   border-bottom: 3px solid transparent;
+
   :hover, :focus {
-    //color: rgba(57,168,57,0.7);
-    font-weight: bold;
-    border-bottom: 3px solid #ef9898;
+    color: #387ea1;
+    border-bottom: 1px solid #387ea1;
   }
 `;
 

@@ -1,5 +1,4 @@
 import React from 'react';
-import {PATH_LOGIN} from "../../tools/routing";
 
 class WithRequest extends React.Component {
   render() {
@@ -7,7 +6,7 @@ class WithRequest extends React.Component {
   }
 
   request = async (path, method, body, type='application/json') => {
-    const {addError} = this.props;
+    const {setError} = this.props;
     try {
       const answer = await fetch(path, {
         method,
@@ -17,18 +16,11 @@ class WithRequest extends React.Component {
         }, body});
       if (answer.status === 200 || answer.status === 400) {
         return await answer.json();
-      } else if (answer.status === 401) {
-
-        if (window.location.pathname !== PATH_LOGIN) {
-          window.location = window.location.origin + PATH_LOGIN;
-        }
-        return false;
-
       } else {
-        addError({status: answer.status});
+        setError({status: answer.status});
       }
     } catch (error) {
-      addError({status: 418, error: error});
+      setError({status: 418, error: error});
     }
   }
 
