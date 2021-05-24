@@ -3,6 +3,10 @@ const {Schema, model} = require('mongoose');
 const schema = new Schema({
     name: {type: String, required: true, unique: true},
     map: {ref: 'maps', type: Schema.Types.ObjectId, required: true},
+    mapSize: {
+        x: {type: Number, required: true},
+        y: {type: Number, required: true},
+    },
     location: {type: String, default: '1_1'},
 }, {
     autoIndex: process.env.NODE_ENV === 'development'

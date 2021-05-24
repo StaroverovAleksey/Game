@@ -4,6 +4,7 @@ import CmdButton from "../../../atomic/CmdButton";
 import {ROUT_INVENTORY, ROUT_LOGIN, ROUT_MAIN, ROUT_SETTINGS, ROUT_SKILLS} from "../../../../tools/routing";
 import {connect} from "react-redux";
 import {setRout} from "../../../../redux/actions";
+import i18n from "i18next";
 
 const Wrapper = styled.menu`
   display: flex;
@@ -29,28 +30,28 @@ class MainMenu extends React.Component {
           {routing !== ROUT_MAIN ?
               <CmdButton
                   margin={'0 0 0 10px'}
-                  text={'Назад'}
+                  text={i18n.t('back')}
                   onClick={() => setRout(ROUT_MAIN)}
               />
           : null}
           <CmdButton
               margin={'0 0 0 10px'}
-              text={'Инвентарь'}
+              text={i18n.t('inventory')}
               onClick={() => setRout(ROUT_INVENTORY)}
           />
           <CmdButton
               margin={'0 0 0 10px'}
-              text={'Умения'}
+              text={i18n.t('skills')}
               onClick={() => setRout(ROUT_SKILLS)}
           />
           <CmdButton
               margin={'0 0 0 10px'}
-              text={'Настройки'}
+              text={i18n.t('settings')}
               onClick={() => setRout(ROUT_SETTINGS)}
           />
           <CmdButton
               margin={'0 10px 0 10px'}
-              text={'Выйти'}
+              text={i18n.t('goOut')}
               onClick={() => setRout(ROUT_LOGIN)}
           />
       </Wrapper>

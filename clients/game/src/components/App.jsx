@@ -9,6 +9,7 @@ import {
 } from '../tools/routing';
 import Game from './pages/game/Game';
 import Error from "./pages/Error";
+import "../i18n/index";
 
 
 class App extends React.Component {

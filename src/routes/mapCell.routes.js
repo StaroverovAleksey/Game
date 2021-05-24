@@ -16,9 +16,6 @@ router.post('/create', [
     body('map_id')
         .isString().withMessage('string expected')
         .trim(),
-    body('typeTerrain')
-        .isString().withMessage('string expected')
-        .trim(),
     body('cells')
         .isArray().withMessage('array of strings expected')
         .notEmpty().withMessage('should not be empty'),
@@ -67,15 +64,8 @@ router.post('/create', [
 
         for (let i = 0; i < req.body.cells.length; i++) {
             const name = req.body.cells[i];
-
-            const cell = map.cells.get(name) || {};
-            if (req.body.typeTerrain === MAIN_TERRAIN) {
-                cell[MAIN_TERRAIN] = terrain._id;
-            }
-            if (req.body.typeTerrain === SECOND_TERRAIN) {
-                cell[SECOND_TERRAIN] = terrain._id;
-            }
-
+            const cell = map.cells.get(name) || {terrains: []};
+            cell.terrains.push(terrain._id);
             map.cells.set(name, cell);
         }
 
@@ -103,8 +93,7 @@ router.get('/read', [
         }
 
         const map = await Map.findById(req.query._id)
-            .populate('cells.$*.mainTerrain')
-            .populate('cells.$*.secondTerrain');
+            .populate('cells.$*.terrains');
         res.status(200).json(map.cells);
     } catch (error) {
         res.status(500).json({massage: 'server error'});
@@ -134,7 +123,7 @@ router.delete('/delete', [
         } catch (e) {}
         if (!map) {
             errors.errors.push({
-                'msg': "terrain not found",
+                'msg': "map not found",
                 'param': "_id",
                 'location': "body"
             });

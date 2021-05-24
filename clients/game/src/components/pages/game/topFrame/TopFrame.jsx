@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import MainMenu from "./MainMenu";
-import Main from "./Main";
+import Main from "./main/Main";
 import {connect} from "react-redux";
 import {
   ROUT_INVENTORY,

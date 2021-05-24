@@ -2,9 +2,9 @@
 import styled from 'styled-components';
 import {connect} from "react-redux";
 import {addMapCells, choiceTerrain, deleteMapSells, setError} from "../../../../redux/actions";
-import {MAIN_TERRAIN} from "../../../../../../../src/utils/constants";
 import ShellTileField from "../../../shells/ShellTileField";
 import {getCursorImg, getTileCollage} from "../../../../tools/utils";
+import {MAIN_TERRAIN} from "../../../../tools/constants";
 
 const OuterWrapper = styled.div`
   background-color: white;

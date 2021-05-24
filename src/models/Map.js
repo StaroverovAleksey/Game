@@ -12,8 +12,11 @@ const schema = new Schema({
         type: Map,
         required: true,
         of: {
-            mainTerrain: {ref: 'terrains', type: Schema.Types.ObjectId, required: false},
-            secondTerrain: {ref: 'terrains', type: Schema.Types.ObjectId, required: false},
+            terrains: {
+                type: Array,
+                required: false,
+                of: {ref: 'terrains', type: Schema.Types.ObjectId, required: false}
+            }
         }
     }
 }, {

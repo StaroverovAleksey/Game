@@ -1,8 +1,8 @@
 import React from 'react';
-import {DELETE_COLLAGE, MAIN_TERRAIN, SECOND_TERRAIN} from "../../../../../src/utils/constants";
 import WithRequest from "./ShellRequest";
 import {API_CREATE_MAP_CELL, API_DELETE_MAP_CELL} from "../../tools/routing";
 import {atrTerrainsPath} from "../../tools/utils";
+import {DELETE_COLLAGE, MAIN_TERRAIN} from "../../tools/constants";
 
 class ShellTileField extends WithRequest {
   constructor(props) {
@@ -55,20 +55,18 @@ class ShellTileField extends WithRequest {
   }
 
   _requestCreateCells = async () => {
-    const { createMapData, mapDataTypeFix } = this.state;
+    const { createMapData } = this.state;
 
     const { choiceTerrain, selectedMap, addingMapCells } = this.props;
     const data = {
       terrain_id: choiceTerrain._id,
       map_id: selectedMap._id,
-      typeTerrain: mapDataTypeFix,
       cells: createMapData.map((item) => item.id)
     }
 
     const actionData = {};
     data.cells.forEach((value) => {
-      actionData[value] = {};
-      actionData[value][mapDataTypeFix] = choiceTerrain;
+      actionData[value] = choiceTerrain;
     });
 
     await this.POST(API_CREATE_MAP_CELL, JSON.stringify(data));
@@ -130,9 +128,6 @@ class ShellTileField extends WithRequest {
 
   _keydownHandler = (event) => {
     const {mapDataType, serverRequest} = this.state;
-    if (event.key === 'Control' && mapDataType !== SECOND_TERRAIN) {
-      this.setState({mapDataType: SECOND_TERRAIN}, () => !serverRequest && this._onMouseUp(event));
-    }
 
     if (event.key === 'Shift' && mapDataType !== DELETE_COLLAGE) {
       this.setState({mapDataType: DELETE_COLLAGE}, () => !serverRequest && this._onMouseUp(event));
@@ -141,9 +136,6 @@ class ShellTileField extends WithRequest {
 
   _keyupHandler = (event) => {
     const {mapDataType, serverRequest} = this.state;
-    if (event.key === 'Control' && mapDataType === SECOND_TERRAIN) {
-      this.setState({mapDataType: MAIN_TERRAIN}, () => !serverRequest && this._onMouseUp(event));
-    }
 
     if (event.key === 'Shift' && mapDataType === DELETE_COLLAGE) {
       this.setState({mapDataType: MAIN_TERRAIN}, () => !serverRequest && this._onMouseUp(event));

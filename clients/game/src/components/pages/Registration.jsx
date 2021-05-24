@@ -8,6 +8,7 @@ import Input from "../atomic/Input";
 import Button from "../atomic/Button";
 import WithRequest from "../shells/ShellRequest";
 import {setError, setRout} from "../../redux/actions";
+import i18n from "i18next";
 
 const OuterWrapper = styled.div`
   display: flex;
@@ -43,33 +44,33 @@ class Registration extends WithRequest {
     return (
       <OuterWrapper>
         <Field>
-          <Title>Регистрация</Title>
+          <Title>{i18n.t('registration')}</Title>
           {!successReg ?
             <Form onSubmit={this._onSubmit} errors={this.state.errors}>
 
               <Input
-                title="Почта"
+                title={i18n.t('mail')}
                 name="email"
                 width="250px"
                 margin="0 0 26px 0"
                 rules={{ required: true, minLength: 3, maxLength: 64 }}
               />
               <Input
-                title="Имя персонажа"
+                title={i18n.t('characterName')}
                 name="name"
                 width="100%"
                 margin="0 0 26px 0"
                 rules={{ required: true, minLength: 3, maxLength: 46 }}
               />
               <Input
-                title="Пароль"
+                title={i18n.t('password')}
                 name="password"
                 width="100%"
                 margin="0 0 26px 0"
                 rules={{ required: true, minLength: 6, maxLength: 64 }}
               />
               <Input
-                title="Повторите пароль"
+                title={i18n.t('passwordRepeat')}
                 name="passwordRepeat"
                 width="100%"
                 margin="0 0 26px 0"
@@ -77,17 +78,17 @@ class Registration extends WithRequest {
               />
               <InnerWrapper>
                 <Button
-                  text="Отправить"
+                  text={i18n.t('send')}
                   width="100px"
                 />
-                <a style={{ paddingTop: '10px' }} href={'#'} onClick={() => setRout(ROUT_LOGIN)}>Форма входа</a>
+                <a style={{ paddingTop: '10px' }} href={'#'} onClick={() => setRout(ROUT_LOGIN)}>{i18n.t('entryForm')}</a>
               </InnerWrapper>
 
             </Form>
 
           : <React.Fragment>
-                <p>Регистрация прошла успешно!</p>
-                <a href={'#'} onClick={() => setRout(ROUT_LOGIN)}>Войти с паролем</a>
+                <p>{i18n.t('registrationSuccess')}</p>
+                <a href={'#'} onClick={() => setRout(ROUT_LOGIN)}>{i18n.t('entryWithPassword')}</a>
             </React.Fragment>}
 
 

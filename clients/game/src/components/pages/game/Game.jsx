@@ -6,7 +6,7 @@ import TopFrame from './topFrame/TopFrame';
 import BottomFrame from './bottomFrame/BottomFrame';
 import FrameBorder from "./FrameBorder";
 import WithRequest from "../../shells/ShellRequest";
-import {setError} from "../../../redux/actions";
+import {setCells, setCharacter, setError} from "../../../redux/actions";
 import {connect} from "react-redux";
 
 const Wrapper = styled.div`
@@ -63,10 +63,11 @@ class Game extends WithRequest {
   }
 
   _getInitialData = async () => {
+    const {setCharacter, setCells} = this.props;
     const character = await this.GET(API_GET_CHARACTER);
     const mapCells = await this.GET([`${API_GET_MAP_CELL}/?_id=${character.map}`]);
-    console.log(character);
-    console.log(mapCells);
+    setCharacter(character);
+    setCells(mapCells[0]);
   }
 }
 
@@ -74,5 +75,7 @@ export default connect(
     undefined,
     (mapDispatchToProps) => ({
       setError: (data) => mapDispatchToProps(setError(data)),
+      setCharacter: (data) => mapDispatchToProps(setCharacter(data)),
+      setCells: (data) => mapDispatchToProps(setCells(data)),
     }),
 )(Game);

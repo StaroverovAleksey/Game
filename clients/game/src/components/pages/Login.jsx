@@ -8,6 +8,7 @@ import Input from "../atomic/Input";
 import Button from "../atomic/Button";
 import {setError, setRout} from "../../redux/actions";
 import {connect} from "react-redux";
+import i18n from "i18next";
 
 const OuterWrapper = styled.div`
   display: flex;
@@ -41,11 +42,11 @@ class Login extends WithRequest {
     return (
       <OuterWrapper>
         <Field>
-          <Title>Авторизация</Title>
+          <Title>{i18n.t('authorization')}</Title>
           <Form onSubmit={this._onSubmit} errors={this.state.errors}>
 
             <Input
-              title="Почта"
+              title={i18n.t('mail')}
               name="email"
               width="250px"
               margin="0 0 26px 0"
@@ -53,7 +54,7 @@ class Login extends WithRequest {
               rules={{ required: true, minLength: 3, maxLength: 64 }}
             />
             <Input
-              title="Пароль"
+              title={i18n.t('password')}
               name="password"
               width="100%"
               margin="0 0 26px 0"
@@ -62,10 +63,10 @@ class Login extends WithRequest {
             />
             <InnerWrapper>
               <Button
-                text="Войти"
+                text={i18n.t('comeIn')}
                 width="100px"
               />
-              <a style={{ paddingTop: '10px' }} href={'#'} onClick={() => setRout(ROUT_REGISTRATION)}>Регистрация</a>
+              <a style={{ paddingTop: '10px' }} href={'#'} onClick={() => setRout(ROUT_REGISTRATION)}>{i18n.t('registration')}</a>
             </InnerWrapper>
 
           </Form>

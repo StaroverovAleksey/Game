@@ -21,13 +21,12 @@ export const atrUtilsPath = (name) => {
 };
 
 export const getTileCollage = (cell) => {
-    if (!cell || (!cell.mainTerrain && !cell.secondTerrain)) {
+    if (!cell || !cell.terrains || !cell.terrains.length === 0) {
         return atrUtilsPath('emptyTile.png');
     }
-    const imgForCollage = ['secondTerrain', 'mainTerrain'];
-    return imgForCollage
-        .map((imgName) => (cell[imgName] && atrTerrainsPath(cell[imgName].fileName)))
-        .filter((value) => value)
+    return cell.terrains
+        .map(({fileName}) => atrTerrainsPath(fileName))
+        .reverse()
         .join(', ');
 };
 
