@@ -42,9 +42,9 @@ class TopFrame extends React.Component {
   }
 
   _getRout = () => {
-    const { routing } = this.props;
+    const { routing, topFrameHeight } = this.props;
     switch (routing) {
-      case ROUT_MAIN: return <Main/>;
+      case ROUT_MAIN: return <Main topFrameHeight={topFrameHeight}/>;
       case ROUT_INVENTORY: return <Inventory/>;
       case ROUT_SKILLS: return <Skills/>;
       case ROUT_SETTINGS: return <Settings/>;

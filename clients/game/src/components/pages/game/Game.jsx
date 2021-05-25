@@ -19,7 +19,7 @@ class Game extends WithRequest {
     this.state = {
       loading: true,
       isAuth: false,
-      topFrameHeight: 40
+      topFrameHeight: 90
     };
     this.topFrameRef = React.createRef();
   }
@@ -38,7 +38,7 @@ class Game extends WithRequest {
       <Wrapper>
 
         <div style={{height: `${topFrameHeight}vh`}} ref={this.topFrameRef}>
-          <TopFrame/>
+          <TopFrame topFrameHeight={topFrameHeight}/>
         </div>
 
         <div style={{height: `${100 - topFrameHeight}vh`}}>
