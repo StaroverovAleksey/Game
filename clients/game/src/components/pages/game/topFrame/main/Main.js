@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import {connect} from "react-redux";
-import {atrCharPath} from "../../../../../tools/utils";
+import CharCell from "./CharCell";
 
 const OuterWrapper = styled.div`
   display: inline-flex;
@@ -11,6 +11,7 @@ const OuterWrapper = styled.div`
   font-size: 34px;
   font-weight: bold;
   overflow: hidden;
+  box-sizing: border-box;
   padding-top: ${({marginTop}) => `${marginTop}px`};
 `;
 
@@ -34,26 +35,6 @@ const Cell = styled.div`
   box-sizing: border-box;
 `;
 
-const Qwerty = styled.div`
-  position: absolute;
-  top: 0;
-  left: ${({left}) => left}px;
-  width: 64px;
-  height: 64px;
-  background-image: ${() => `${atrCharPath('character.png')}`};
-  background-size: cover;
-  animation: ${({animation}) => animation};
-  transition: 1s;
-  transition-timing-function: cubic-bezier(1, 1, 0, 0);
-
-  @keyframes load {
-    100.0% {background-position-x: -576px;}
-  }
-  @keyframes load1 {
-    100.0% {background-position-x: -576px;}
-  }
-`;
-
 class Main extends React.Component {
     constructor(props) {
         super(props);
@@ -65,25 +46,18 @@ class Main extends React.Component {
     }
 
     componentDidMount() {
-        document.addEventListener("keydown", this._onKeyPressed);
+        this._verticalAlignment();
+        window.addEventListener("resize", this._onResizeHandler);
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (prevProps.topFrameHeight !== this.props.topFrameHeight) {
-            const topFrame = window.document.documentElement.offsetHeight / 100 * this.props.topFrameHeight;
-            const elem = this.props.mapSize.y * 64;
-
-            if (elem < topFrame) {
-                this.setState({marginTop: (topFrame - elem) / 2});
-            } else {
-                this.setState({marginTop: 0});
-            }
-            console.log(topFrame, elem);
+            this._verticalAlignment();
         }
     }
 
     componentWillUnmount() {
-        document.removeEventListener("keydown", this._onKeyPressed);
+        window.removeEventListener("resize", this._onResizeHandler);
     }
 
     render() {
@@ -100,25 +74,27 @@ class Main extends React.Component {
                             })}
                         </String>
                     })}
-                    <Qwerty left={left}
-                            animation={animation}
+                    <CharCell left={left}
+                              animation={animation}
+                              callback={this._onKeyDownHandler}
                     />
                 </InnerWrapper>
             </OuterWrapper>
         );
     }
 
-    _onKeyPressed = (event) => {
-        const {left} = this.state;
-        if (event.code === 'KeyD') {
-            this.setState({left: left + 64, animation: 'load .5s steps(9, end) infinite'}, () => {
-                setTimeout(() => this.setState({animation: ''}), 1000);
-            });
-        }
+    _verticalAlignment = () => {
+        const {topFrameHeight, mapSize} = this.props;
+        const topFrameSize = window.document.documentElement.offsetHeight / 100 * topFrameHeight;
+        const fieldSize = mapSize.y * 64;
+
+        this.setState({marginTop: fieldSize < topFrameSize ? ((topFrameSize - fieldSize) / 2) : 0});
+    }
+
+    _onResizeHandler = () => {
+        this._verticalAlignment();
     }
 }
-
-
 
 export default connect(
     (mapStateToProps) => ({
