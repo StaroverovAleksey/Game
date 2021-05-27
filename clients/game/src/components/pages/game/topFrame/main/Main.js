@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import {connect} from "react-redux";
 import CharCell from "./CharCell";
+import BackGround from "./BackGround";
 
 const OuterWrapper = styled.div`
   display: inline-flex;
@@ -21,18 +22,6 @@ const InnerWrapper = styled.div`
   height: 100%;
   position: relative;
   margin: 0 auto;
-`;
-
-const String = styled.div`
-  display: flex;
-  flex-direction: row;
-`;
-
-const Cell = styled.div`
-  width: 64px;
-  height: 64px;
-  border: 1px solid red;
-  box-sizing: border-box;
 `;
 
 class Main extends React.Component {
@@ -62,18 +51,10 @@ class Main extends React.Component {
 
     render() {
         const {left, animation, marginTop} = this.state;
-        const {mapCells, mapSize} = this.props;
-        const {x: sizeX, y: sizeY} = mapSize;
         return (
             <OuterWrapper marginTop={marginTop}>
                 <InnerWrapper>
-                    {new Array(sizeY).fill('').map((v, i) => {
-                        return <String>
-                            {new Array(sizeX).fill('').map(() => {
-                                return <Cell>{i}</Cell>
-                            })}
-                        </String>
-                    })}
+                    <BackGround/>
                     <CharCell left={left}
                               animation={animation}
                               callback={this._onKeyDownHandler}
@@ -98,7 +79,6 @@ class Main extends React.Component {
 
 export default connect(
     (mapStateToProps) => ({
-            mapCells: mapStateToProps.mapCells,
             mapSize: mapStateToProps.character.mapSize
         })
 )(Main);

@@ -46,3 +46,13 @@ export const throttle = (func, ms) => {
 
     return wrapper;
 }
+
+export const getTileCollage = (cell) => {
+    if (!cell || !cell.terrains || !cell.terrains.length === 0) {
+        return '';
+    }
+    return cell.terrains
+        .map(({fileName}) => atrTerrainsPath(fileName))
+        .reverse()
+        .join(', ');
+};

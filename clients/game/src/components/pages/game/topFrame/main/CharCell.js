@@ -28,7 +28,7 @@ class CharCell extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            top: 64,
+            top: 128,
             left: 64,
             image: atrCharPath('char_front.png'),
             animation: '',
