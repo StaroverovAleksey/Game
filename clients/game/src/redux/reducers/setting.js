@@ -1,4 +1,4 @@
-import {SET_ERROR, SET_ROUTER} from "../actions";
+import {SET_ERROR, SET_ROUTER, SET_SOCKET} from "../actions";
 import {ROUT_ERROR, ROUT_LOGIN, ROUT_MAIN} from "../../tools/routing";
 
 const defaultState = {
@@ -8,6 +8,9 @@ const defaultState = {
 
 export default function reducer(state = defaultState, action) {
   switch (action.type) {
+    case SET_SOCKET:
+      console.log(action.payload);
+      return { ...state, socket: action.payload };
     case SET_ROUTER:
       return { ...state, routing: action.payload };
     case SET_ERROR:

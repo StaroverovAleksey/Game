@@ -1,3 +1,16 @@
+export  const SET_SOCKET = 'SET_SOCKET';
+
+
+
+
+
+
+
+
+
+
+
+
 /** **********************************************      SETTINGS      */
 export const SET_ROUTER = 'SET_ROUTER';
 export const setRout = (rout) => ({ type: SET_ROUTER, payload: rout });
