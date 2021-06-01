@@ -12,7 +12,6 @@ import Error from "./pages/Error";
 import "../i18n/index";
 import config from "../../config.json";
 import {io} from "socket.io-client";
-import {SET_SOCKET} from "../redux/actions";
 
 
 class App extends React.Component {
@@ -21,9 +20,10 @@ class App extends React.Component {
         this.address = process.env.NODE_ENV === 'development' ? config.develop.serverAddress : config.production.serverAddress;
         this.socket = io(this.address);
         this.socket.onAny((event, data) => {
+            console.log(event, data);
             this.props.dispatch({ type: event, payload: data });
         });
-        this.props.dispatch({ type: SET_SOCKET, payload: this.socket });
+        this.props.dispatch({ type: 'SETTINGS_SET_SOCKET', payload: this.socket });
     }
 
     render() {
@@ -39,7 +39,7 @@ class App extends React.Component {
 
 export default connect(
   (mapStateToProps) => ({
-      routing: mapStateToProps.setting.routing,
-      error: mapStateToProps.setting.error
+      routing: mapStateToProps.settings.routing,
+      error: mapStateToProps.settings.error
   }),
 )(App);

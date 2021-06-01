@@ -1,9 +1,10 @@
 const defaultState = {};
 
 export default function reducer(state = defaultState, action) {
+  const newState = JSON.parse(JSON.stringify(state));
   switch (action.type) {
-    case 'MAP_CELLS_INITIAL':
-      return { ...action.payload };
+    case 'MAIN_CHAR_INITIAL':
+      return { ...state, ...action.payload };
     default: return { ...state };
   }
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import CmdButton from "../../../atomic/CmdButton";
-import {ROUT_INVENTORY, ROUT_LOGIN, ROUT_MAIN, ROUT_SETTINGS, ROUT_SKILLS} from "../../../../tools/routing";
+import {ROUT_INVENTORY, ROUT_MAIN, ROUT_SETTINGS, ROUT_SKILLS} from "../../../../tools/routing";
 import {connect} from "react-redux";
 import {setRout} from "../../../../redux/actions";
 import i18n from "i18next";
@@ -24,7 +24,7 @@ class MainMenu extends React.Component {
   }
 
   render() {
-      const {setRout, routing} = this.props;
+      const {routing, socket} = this.props;
     return (
       <Wrapper>
           {routing !== ROUT_MAIN ?
@@ -52,7 +52,7 @@ class MainMenu extends React.Component {
           <CmdButton
               margin={'0 10px 0 10px'}
               text={i18n.t('goOut')}
-              onClick={() => setRout(ROUT_LOGIN)}
+              onClick={() => socket.emit('auth/exit', '')}
           />
       </Wrapper>
     );
@@ -61,9 +61,7 @@ class MainMenu extends React.Component {
 
 export default connect(
     (mapStateToProps) => ({
-        routing: mapStateToProps.setting.routing
-    }),
-    (mapDispatchToProps) => ({
-        setRout: (data) => mapDispatchToProps(setRout(data)),
-    }),
+        routing: mapStateToProps.settings.routing,
+        socket: mapStateToProps.settings.socket,
+    })
 )(MainMenu);

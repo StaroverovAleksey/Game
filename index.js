@@ -2,8 +2,8 @@ const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
 const socket = require('socket.io');
-const {qwerty} = require('./src/socket/socket');
 const cookieParser = require("cookie-parser");
+const game = require('./src/main/game');
 require('dotenv').config();
 
 const app = express();
@@ -49,18 +49,26 @@ async function start() {
         const server = app.listen(process.env.APP_PORT, () => console.log(`App has been started on port ${process.env.APP_PORT}`));
 
 
-        const io = socket(server, {
+        process.io = socket(server, {
             cors: {
                 origin: "*",
                 methods: ["GET", "POST"]
             }
         });
-        io.on('connection', (socket) => {
-            console.log(socket.id);
-            socket.use(qwerty);
-            socket.emit("SET_CHARACTER1", "world");
-        });
+        process.io.on('connection', (socket) => {
+            socket.use(([event, body]) => {
+                try {
+                    const [resource, method] = event.split('/');
+                    require(`./src/socket/${resource}`)[method](body, socket);
+                } catch (e) {
+                    socket.emit('RESOURCE_NOT_FOUND', '');
+                }
+            });
 
+            socket.on('disconnect', () => {
+                game.removeChar(socket.id);
+            })
+        });
 
     } catch (e) {
         console.log('Connection error', e.message);

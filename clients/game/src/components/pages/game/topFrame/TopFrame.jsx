@@ -55,7 +55,7 @@ class TopFrame extends React.Component {
 
 export default connect(
     (mapStateToProps) => ({
-      routing: mapStateToProps.setting.routing
+      routing: mapStateToProps.settings.routing
     }),
     undefined,
 )(TopFrame);

@@ -1,8 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import {connect} from "react-redux";
-import CharCell from "./CharCell";
 import BackGround from "./BackGround";
+import MainCharCell from "./MainCharCell";
+import CharCell from "./CharCell";
 
 const OuterWrapper = styled.div`
   display: inline-flex;
@@ -29,8 +30,6 @@ class Main extends React.Component {
         super(props);
         this.state = {
             marginTop: 0,
-            left: 64,
-            animation: ''
         }
     }
 
@@ -40,7 +39,8 @@ class Main extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (prevProps.topFrameHeight !== this.props.topFrameHeight) {
+        const {topFrameHeight, mapSize} = this.props;
+        if (prevProps.topFrameHeight !== topFrameHeight || prevProps.mapSize !== mapSize) {
             this._verticalAlignment();
         }
     }
@@ -50,15 +50,16 @@ class Main extends React.Component {
     }
 
     render() {
-        const {left, animation, marginTop} = this.state;
+        const {marginTop} = this.state;
+        const {chars} = this.props;
         return (
             <OuterWrapper marginTop={marginTop}>
                 <InnerWrapper>
                     <BackGround/>
-                    <CharCell left={left}
-                              animation={animation}
-                              callback={this._onKeyDownHandler}
-                    />
+                    <MainCharCell/>
+                    {Object.keys(chars).map((id) => {
+                        return <CharCell id={id}/>;
+                    })}
                 </InnerWrapper>
             </OuterWrapper>
         );
@@ -79,6 +80,7 @@ class Main extends React.Component {
 
 export default connect(
     (mapStateToProps) => ({
-            mapSize: mapStateToProps.character.mapSize
+            mapSize: mapStateToProps.settings.mapSize,
+            chars: mapStateToProps.chars,
         })
 )(Main);

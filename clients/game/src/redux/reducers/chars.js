@@ -1,14 +1,15 @@
-import {SET_CHARACTER} from "../actions";
-
 const defaultState = {};
 
 export default function reducer(state = defaultState, action) {
+  const newState = JSON.parse(JSON.stringify(state));
   switch (action.type) {
-    case SET_CHARACTER:
+    case 'CHARS_INITIAL':
       return { ...state, ...action.payload };
-    case "SET_CHARACTER1":
-      console.log(action.payload, 7777777777777);
+    case "CHARS_ADD":
       return { ...state, ...action.payload };
+    case "CHARS_REMOVE":
+      delete newState[action.payload];
+      return { ...newState };
     default: return { ...state };
   }
 }

@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import {atrCharPath} from "../../../../../tools/utils";
+import {connect} from "react-redux";
 
 const Qwerty = styled.div`
   position: absolute;
@@ -37,67 +38,21 @@ class CharCell extends React.Component {
         }
     }
 
-    componentDidMount() {
-        window.document.addEventListener("keydown", this._onKeyDownHandler);
-    }
-
-    componentWillUnmount() {
-        window.document.removeEventListener("keydown", this._onKeyDownHandler);
-    }
-
     render() {
-        const {top, left, image, animation} = this.state;
+        const {image, animation} = this.state;
+        const {id} = this.props;
+        const {x: left, y: top} = this.props.mainChar.location;
         return <Qwerty
-            top={top}
-            left={left}
+            top={top * 64}
+            left={left * 64}
             image={image}
             animation={animation}
         />
     }
-
-    _onKeyDownHandler = (event) => {
-        const {top, left, direction, animating} = this.state;
-        if (animating) {
-            return;
-        }
-        if (event.code === 'ArrowUp') {
-            if (direction === 'back') {
-                this.setState({top: top - 64, animation: 'load .5s steps(9, end) infinite', animating: true}, () => {
-                    setTimeout(() => this.setState({animation: '', animating: false}), 1000);
-                });
-            } else {
-                this.setState({image: atrCharPath('char_back.png'), direction: 'back'});
-            }
-        }
-        if (event.code === 'ArrowRight') {
-            if (direction === 'right') {
-                this.setState({left: left + 64, animation: 'load .5s steps(9, end) infinite', animating: true}, () => {
-                    setTimeout(() => this.setState({animation: '', animating: false}), 1000);
-                });
-            } else {
-                this.setState({image: atrCharPath('char_right.png'), direction: 'right'});
-            }
-        }
-        if (event.code === 'ArrowDown') {
-            if (direction === 'front') {
-                this.setState({top: top + 64, animation: 'load .5s steps(9, end) infinite', animating: true}, () => {
-                    setTimeout(() => this.setState({animation: '', animating: false}), 1000);
-                });
-            } else {
-                this.setState({image: atrCharPath('char_front.png'), direction: 'front'});
-            }
-        }
-        if (event.code === 'ArrowLeft') {
-            if (direction === 'left') {
-                this.setState({left: left - 64, animation: 'load .5s steps(9, end) infinite', animating: true}, () => {
-                    setTimeout(() => this.setState({animation: '', animating: false}), 1000);
-                });
-            } else {
-                this.setState({image: atrCharPath('char_left.png'), direction: 'left'});
-            }
-
-        }
-    }
 }
 
-export default CharCell;
+export default connect(
+    (mapStateToProps) => ({
+        chars: mapStateToProps.chars,
+    })
+)(CharCell);

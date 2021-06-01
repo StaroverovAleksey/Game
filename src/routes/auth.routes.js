@@ -77,8 +77,8 @@ router.post('/registration', [
             });
         }
 
-        const startMap = await Map.findOne({start: true});
-        const character = new Character({name, map: startMap.id, mapSize: startMap.size, location: START_LOCATION});
+        const startMap = await Map.findOne();
+        const character = new Character({name, map: startMap.id, direction: 'front', location: START_LOCATION});
         await character.save();
 
         const hashedPassword = await bcrypt.hash(password, 12);

@@ -10,6 +10,7 @@ export default {
     entryForm: "Форма входа",
     registrationSuccess: "Регистрация прошла успешно!",
     entryWithPassword: "Войти с паролем",
+    incorrectAuthData: "Неверный email или пароль",
     back: "Назад",
     inventory: "Инвентарь",
     skills: "Умения",

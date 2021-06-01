@@ -45,6 +45,6 @@ class BackGround extends React.Component {
 export default connect(
     (mapStateToProps) => ({
             mapCells: mapStateToProps.mapCells,
-            mapSize: mapStateToProps.character.mapSize
+            mapSize: mapStateToProps.settings.mapSize
         })
 )(BackGround);

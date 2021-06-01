@@ -1,12 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
-import {API_AUTH_LOGIN, ROUT_MAIN, ROUT_REGISTRATION} from "../../tools/routing";
+import {ROUT_REGISTRATION} from "../../tools/routing";
 import WithRequest from "../shells/ShellRequest";
 import Field from "../atomic/Field";
 import Form from "../atomic/Form";
 import Input from "../atomic/Input";
 import Button from "../atomic/Button";
-import {setError, setRout} from "../../redux/actions";
 import {connect} from "react-redux";
 import i18n from "i18next";
 
@@ -35,6 +34,13 @@ class Login extends WithRequest {
     this.state = {
       errors: [],
     };
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    const {error} = this.props;
+    if(prevProps.error !== error) {
+      this.setState({errors: [{param: 'password', msg: i18n.t(error.msg)}]});
+    }
   }
 
   render() {
@@ -77,21 +83,14 @@ class Login extends WithRequest {
   }
 
   _onSubmit = async (data) => {
-    const {setRout} = this.props;
-
-    const answer = await this.POST(API_AUTH_LOGIN, JSON.stringify(data));
-    if(answer.errors) {
-      this.setState({errors: answer.errors});
-    } else {
-      setRout(ROUT_MAIN);
-    }
+    const {socket} = this.props;
+    socket.emit('auth/authorization', data);
   }
 }
 
 export default connect(
-    undefined,
-    (mapDispatchToProps) => ({
-      setError: (data) => mapDispatchToProps(setError(data)),
-      setRout: (data) => mapDispatchToProps(setRout(data)),
-    }),
+    (mapStateToProps) => ({
+      socket: mapStateToProps.settings.socket,
+      error: mapStateToProps.settings.error,
+    })
 )(Login);

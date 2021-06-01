@@ -1,10 +1,12 @@
 import { combineReducers } from 'redux';
-import setting from './setting';
+import settings from './settings';
 import mapCells from './mapCells';
-import character from './character';
+import mainChar from './mainChar';
+import chars from './chars';
 
 export default combineReducers({
-  setting,
+  settings,
   mapCells,
-  character,
+  mainChar,
+  chars,
 });
