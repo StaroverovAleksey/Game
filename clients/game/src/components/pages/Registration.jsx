@@ -7,7 +7,6 @@ import Form from "../atomic/Form";
 import Input from "../atomic/Input";
 import Button from "../atomic/Button";
 import WithRequest from "../shells/ShellRequest";
-import {setError, setRout} from "../../redux/actions";
 import i18n from "i18next";
 
 const OuterWrapper = styled.div`
@@ -40,7 +39,7 @@ class Registration extends WithRequest {
 
   render() {
     const {successReg} = this.state;
-    const {setRout} = this.props;
+    const {dispatch} = this.props;
     return (
       <OuterWrapper>
         <Field>
@@ -81,14 +80,14 @@ class Registration extends WithRequest {
                   text={i18n.t('send')}
                   width="100px"
                 />
-                <a style={{ paddingTop: '10px' }} href={'#'} onClick={() => setRout(ROUT_LOGIN)}>{i18n.t('entryForm')}</a>
+                <a style={{ paddingTop: '10px' }} href={'#'} onClick={() => dispatch({ type: 'SETTINGS_CHANGE_ROUTER', payload: ROUT_LOGIN })}>{i18n.t('entryForm')}</a>
               </InnerWrapper>
 
             </Form>
 
           : <React.Fragment>
                 <p>{i18n.t('registrationSuccess')}</p>
-                <a href={'#'} onClick={() => setRout(ROUT_LOGIN)}>{i18n.t('entryWithPassword')}</a>
+                <a href={'#'} onClick={() => dispatch({ type: 'SETTINGS_CHANGE_ROUTER', payload: ROUT_LOGIN })}>{i18n.t('entryWithPassword')}</a>
             </React.Fragment>}
 
 
@@ -109,10 +108,4 @@ class Registration extends WithRequest {
   }
 }
 
-export default connect(
-  undefined,
-  (mapDispatchToProps) => ({
-    setError: (data) => mapDispatchToProps(setError(data)),
-    setRout: (data) => mapDispatchToProps(setRout(data)),
-  }),
-)(Registration);
+export default connect()(Registration);

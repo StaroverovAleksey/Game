@@ -8,6 +8,8 @@ const defaultState = {
 
 export default function reducer(state = defaultState, action) {
   switch (action.type) {
+    case 'SETTINGS_DEFAULT':
+      return { ...defaultState, socket: state.socket};
     case 'SETTINGS_SET_SOCKET':
       return { ...state, socket: action.payload };
     case 'SETTINGS_CHANGE_ROUTER':

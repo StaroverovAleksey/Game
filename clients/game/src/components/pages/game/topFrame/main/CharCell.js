@@ -20,32 +20,36 @@ const Qwerty = styled.div`
   @keyframes load {
     100.0% {background-position-x: -576px;}
   }
-  @keyframes load1 {
-    100.0% {background-position-x: -576px;}
-  }
 `;
 
 class CharCell extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            top: 128,
-            left: 64,
-            image: atrCharPath('char_front.png'),
-            animation: '',
-            direction: 'front',
-            animating: false
+            animation: ''
+        }
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        const {id} = this.props;
+        const {x, y} = this.props.chars[id].location;
+        const {x: oldX, y: oldY} = prevProps.chars[id].location;
+        if (oldX !== x || oldY !== y) {
+            this.setState({animation: 'load .5s steps(9, end) infinite'}, () => {
+                setTimeout(() => this.setState({animation: ''}), 1000);
+            });
         }
     }
 
     render() {
-        const {image, animation} = this.state;
+        const {animation} = this.state;
         const {id} = this.props;
-        const {x: left, y: top} = this.props.mainChar.location;
+        const {direction} = this.props.chars[id];
+        const {x: left, y: top} = this.props.chars[id].location;
         return <Qwerty
-            top={top * 64}
-            left={left * 64}
-            image={image}
+            top={(top - 1) * 64}
+            left={(left - 1) * 64}
+            image={atrCharPath(`char_${direction}.png`)}
             animation={animation}
         />
     }

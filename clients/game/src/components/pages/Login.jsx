@@ -38,7 +38,7 @@ class Login extends WithRequest {
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     const {error} = this.props;
-    if(prevProps.error !== error) {
+    if(prevProps.error !== error && error.address === 'AUTH') {
       this.setState({errors: [{param: 'password', msg: i18n.t(error.msg)}]});
     }
   }

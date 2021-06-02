@@ -18,16 +18,10 @@ const Cell = styled.div`
 class BackGround extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            marginTop: 0,
-            left: 64,
-            animation: ''
-        }
     }
 
     render() {
         const {mapCells, mapSize} = this.props;
-        console.log(mapCells);
         const {x: sizeX, y: sizeY} = mapSize;
         return <>
             {new Array(sizeY).fill('').map((v, x) => {

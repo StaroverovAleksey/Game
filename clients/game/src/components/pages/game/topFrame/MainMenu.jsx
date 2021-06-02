@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import CmdButton from "../../../atomic/CmdButton";
 import {ROUT_INVENTORY, ROUT_MAIN, ROUT_SETTINGS, ROUT_SKILLS} from "../../../../tools/routing";
 import {connect} from "react-redux";
-import {setRout} from "../../../../redux/actions";
 import i18n from "i18next";
 
 const Wrapper = styled.menu`
@@ -24,30 +23,30 @@ class MainMenu extends React.Component {
   }
 
   render() {
-      const {routing, socket} = this.props;
+      const {routing, socket, dispatch} = this.props;
     return (
       <Wrapper>
           {routing !== ROUT_MAIN ?
               <CmdButton
                   margin={'0 0 0 10px'}
                   text={i18n.t('back')}
-                  onClick={() => setRout(ROUT_MAIN)}
+                  onClick={() => dispatch({ type: 'SETTINGS_CHANGE_ROUTER', payload: ROUT_MAIN })}
               />
           : null}
           <CmdButton
               margin={'0 0 0 10px'}
               text={i18n.t('inventory')}
-              onClick={() => setRout(ROUT_INVENTORY)}
+              onClick={() => dispatch({ type: 'SETTINGS_CHANGE_ROUTER', payload: ROUT_INVENTORY })}
           />
           <CmdButton
               margin={'0 0 0 10px'}
               text={i18n.t('skills')}
-              onClick={() => setRout(ROUT_SKILLS)}
+              onClick={() => dispatch({ type: 'SETTINGS_CHANGE_ROUTER', payload: ROUT_SKILLS })}
           />
           <CmdButton
               margin={'0 0 0 10px'}
               text={i18n.t('settings')}
-              onClick={() => setRout(ROUT_SETTINGS)}
+              onClick={() => dispatch({ type: 'SETTINGS_CHANGE_ROUTER', payload: ROUT_SETTINGS })}
           />
           <CmdButton
               margin={'0 10px 0 10px'}

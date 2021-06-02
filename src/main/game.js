@@ -31,12 +31,48 @@ class Game {
         this.chars[id] = char;
         const data = {};
         data[id] = char;
-        socket.broadcast.emit('CHARS_ADD', data);
+        return data;
     }
 
     removeChar = (id) => {
         delete this.chars[id];
-        process.io.emit('CHARS_REMOVE', id);
+    }
+
+    turn = (direction, socket) => {
+        const {id} = socket;
+        const char = this.chars[id];
+        if (char.busy) {
+            return 'busy';
+        }
+        if (char.direction !== direction) {
+            char.direction = direction;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    step = (direction, socket) => {
+        const {id} = socket;
+        const char = this.chars[id];
+        if (char.busy) {
+            return 'busy';
+        }
+        let newLocation;
+        switch (direction) {
+            case 'up':newLocation = {x: char.location.x, y: char.location.y - 1}; break;
+            case 'down': newLocation = {x: char.location.x, y: char.location.y + 1}; break;
+            case 'right': newLocation = {x: char.location.x + 1, y: char.location.y}; break;
+            case 'left': newLocation = {x: char.location.x - 1, y: char.location.y}; break;
+        }
+        if (this.mapCells.has(`${newLocation.x}_${newLocation.y}`)) {
+            char.location = newLocation;
+            char.busy = true;
+            setTimeout(() => char.busy = false, 1000);
+            return newLocation;
+        } else {
+            return false;
+        }
     }
 }
 

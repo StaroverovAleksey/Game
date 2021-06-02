@@ -21,21 +21,14 @@ const Qwerty = styled.div`
   @keyframes load {
     100.0% {background-position-x: -576px;}
   }
-  @keyframes load1 {
-    100.0% {background-position-x: -576px;}
-  }
 `;
 
 class MainCharCell extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            top: 128,
-            left: 64,
-            image: atrCharPath(`char_${this.props.mainChar.direction}.png`),
             animation: '',
-            direction: 'front',
-            animating: false
+            busy: false
         }
     }
 
@@ -43,65 +36,48 @@ class MainCharCell extends React.Component {
         window.document.addEventListener("keydown", this._onKeyDownHandler);
     }
 
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        const {x, y} = this.props.mainChar.location;
+        const {x: oldX, y: oldY} = prevProps.mainChar.location;
+        if (oldX !== x || oldY !== y) {
+            this.setState({animation: 'load .5s steps(9, end) infinite', busy: true}, () => {
+                    setTimeout(() => this.setState({animation: '', busy: false}), 1000);
+                });
+        }
+    }
+
     componentWillUnmount() {
         window.document.removeEventListener("keydown", this._onKeyDownHandler);
     }
 
     render() {
-        const {image, animation} = this.state;
+        const {animation} = this.state;
+        const {direction} = this.props.mainChar;
         const {x: left, y: top} = this.props.mainChar.location;
         return <Qwerty
-            top={top * 64}
-            left={left * 64}
-            image={image}
+            top={(top - 1) * 64}
+            left={(left - 1) * 64}
+            image={atrCharPath(`char_${direction}.png`)}
             animation={animation}
         />
     }
 
     _onKeyDownHandler = (event) => {
-        const {top, left, animating} = this.state;
-        const {socket, mainChar} = this.state.props;
-        const {direction} = mainChar;
-        if (animating) {
+        const {socket, mainChar, dispatch} = this.props;
+        const {busy} = this.state;
+        if (busy) {
+            dispatch({
+                type: 'SETTINGS_SET_ERROR',
+                payload: {msg: "tooFast", address: "MAIN_CHAR"}
+            });
             return;
         }
-        if (event.code === 'ArrowUp') {
-            if (direction === 'back') {
-                socket.emit('main-char/step', 'up');
-                this.setState({top: top - 64, animation: 'load .5s steps(9, end) infinite', animating: true}, () => {
-                    setTimeout(() => this.setState({animation: '', animating: false}), 1000);
-                });
-            } else {
-                this.setState({image: atrCharPath('char_back.png'), direction: 'back'});
-            }
-        }
-        if (event.code === 'ArrowRight') {
-            if (direction === 'right') {
-                this.setState({left: left + 64, animation: 'load .5s steps(9, end) infinite', animating: true}, () => {
-                    setTimeout(() => this.setState({animation: '', animating: false}), 1000);
-                });
-            } else {
-                this.setState({image: atrCharPath('char_right.png'), direction: 'right'});
-            }
-        }
-        if (event.code === 'ArrowDown') {
-            if (direction === 'front') {
-                this.setState({top: top + 64, animation: 'load .5s steps(9, end) infinite', animating: true}, () => {
-                    setTimeout(() => this.setState({animation: '', animating: false}), 1000);
-                });
-            } else {
-                this.setState({image: atrCharPath('char_front.png'), direction: 'front'});
-            }
-        }
-        if (event.code === 'ArrowLeft') {
-            if (direction === 'left') {
-                this.setState({left: left - 64, animation: 'load .5s steps(9, end) infinite', animating: true}, () => {
-                    setTimeout(() => this.setState({animation: '', animating: false}), 1000);
-                });
-            } else {
-                this.setState({image: atrCharPath('char_left.png'), direction: 'left'});
-            }
-
+        const {direction} = mainChar;
+        switch (event.code) {
+            case 'ArrowUp': direction === 'back' ? socket.emit('mainChar/step', 'up') : socket.emit('mainChar/turn', 'back'); break;
+            case 'ArrowDown': direction === 'front' ? socket.emit('mainChar/step', 'down') : socket.emit('mainChar/turn', 'front'); break;
+            case 'ArrowRight': direction === 'right' ? socket.emit('mainChar/step', 'right') : socket.emit('mainChar/turn', 'right'); break;
+            case 'ArrowLeft': direction === 'left' ? socket.emit('mainChar/step', 'left') : socket.emit('mainChar/turn', 'left'); break;
         }
     }
 }
