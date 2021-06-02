@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "cross-env NODE_ENV=production node index.js",
+    "start": "cross-env --experimental-modules NODE_ENV=production node index.js",
     "server": "nodemon index.js",
     "clientAdm": "npm run start --prefix clients/gameCreator",
     "clientGame": "npm run start --prefix clients/game",
