@@ -1,48 +1,45 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import styled from 'styled-components';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import Login from './pages/Login';
 import Registration from './pages/Registration';
-import { PATH_LOGIN, PATH_REGISTRATION } from '../tools/routing';
+import {
+    ROUT_ERROR,
+    ROUT_LOGIN,
+    ROUT_REGISTRATION
+} from '../tools/routing';
 import Game from './pages/game/Game';
-import Empty from './pages/Empty';
+import Error from "./pages/Error";
+import "../i18n/index";
+import config from "../../config.json";
+import {io} from "socket.io-client";
 
-const Error = styled.p`
-  font-size: 36px;
-  text-align: center;
-`;
 
 class App extends React.Component {
-  render() {
-    const { error } = this.props;
-    return error ? (
-      <Error>
-        {`Косяк. Код ошибки: ${error.status}`}
-        <br />
-        Обнови страницу, может быть, поможет.
-      </Error>
-    ) : (
-      <BrowserRouter>
-        <Switch>
-          <Route exact path="/" component={Game} />
-          <Route path={PATH_LOGIN} component={Login} />
-          <Route path={PATH_REGISTRATION} component={Registration} />
-          <Route component={Empty} />
-        </Switch>
-      </BrowserRouter>
-    );
+
+    componentDidMount() {
+        this.address = process.env.NODE_ENV === 'development' ? config.develop.serverAddress : config.production.serverAddress;
+        this.socket = io(this.address);
+        this.socket.onAny((event, data) => {
+            console.log(event, data);
+            this.props.dispatch({ type: event, payload: data });
+        });
+        this.props.dispatch({ type: 'SETTINGS_SET_SOCKET', payload: this.socket });
+    }
+
+    render() {
+    const { routing, error } = this.props;
+    switch (routing) {
+        case ROUT_LOGIN: return <Login/>;
+        case ROUT_REGISTRATION: return <Registration/>;
+        case ROUT_ERROR: return <Error error={error}/>;
+        default: return <Game/>;
+    }
   }
 }
 
-App.propTypes = {
-  error: PropTypes.any.isRequired,
-};
-
 export default connect(
-  (mapStateToProps) => (
-    { error: mapStateToProps.setting.error }
-  ),
-  undefined,
+  (mapStateToProps) => ({
+      routing: mapStateToProps.settings.routing,
+      error: mapStateToProps.settings.error
+  }),
 )(App);

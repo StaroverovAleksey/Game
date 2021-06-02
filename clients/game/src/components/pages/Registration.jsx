@@ -1,14 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
-import { NavLink } from 'react-router-dom';
-import {API_AUTH_REGISTRATION} from "../../tools/routing";
+import {API_AUTH_REGISTRATION, ROUT_LOGIN} from "../../tools/routing";
 import {connect} from "react-redux";
 import Field from "../atomic/Field";
 import Form from "../atomic/Form";
 import Input from "../atomic/Input";
 import Button from "../atomic/Button";
 import WithRequest from "../shells/ShellRequest";
-import {setError} from "../../../../gameCreator/src/redux/actions";
+import i18n from "i18next";
 
 const OuterWrapper = styled.div`
   display: flex;
@@ -40,36 +39,37 @@ class Registration extends WithRequest {
 
   render() {
     const {successReg} = this.state;
+    const {dispatch} = this.props;
     return (
       <OuterWrapper>
         <Field>
-          <Title>Регистрация</Title>
+          <Title>{i18n.t('registration')}</Title>
           {!successReg ?
             <Form onSubmit={this._onSubmit} errors={this.state.errors}>
 
               <Input
-                title="Почта"
+                title={i18n.t('mail')}
                 name="email"
                 width="250px"
                 margin="0 0 26px 0"
                 rules={{ required: true, minLength: 3, maxLength: 64 }}
               />
               <Input
-                title="Имя персонажа"
+                title={i18n.t('characterName')}
                 name="name"
                 width="100%"
                 margin="0 0 26px 0"
                 rules={{ required: true, minLength: 3, maxLength: 46 }}
               />
               <Input
-                title="Пароль"
+                title={i18n.t('password')}
                 name="password"
                 width="100%"
                 margin="0 0 26px 0"
                 rules={{ required: true, minLength: 6, maxLength: 64 }}
               />
               <Input
-                title="Повторите пароль"
+                title={i18n.t('passwordRepeat')}
                 name="passwordRepeat"
                 width="100%"
                 margin="0 0 26px 0"
@@ -77,17 +77,17 @@ class Registration extends WithRequest {
               />
               <InnerWrapper>
                 <Button
-                  text="Отправить"
+                  text={i18n.t('send')}
                   width="100px"
                 />
-                <NavLink style={{ paddingTop: '10px' }} to="/">Форма входа</NavLink>
+                <a style={{ paddingTop: '10px' }} href={'#'} onClick={() => dispatch({ type: 'SETTINGS_CHANGE_ROUTER', payload: ROUT_LOGIN })}>{i18n.t('entryForm')}</a>
               </InnerWrapper>
 
             </Form>
 
           : <React.Fragment>
-              <p>Регистрация прошла успешно!</p>
-              <NavLink to="/">Войти с паролем</NavLink>
+                <p>{i18n.t('registrationSuccess')}</p>
+                <a href={'#'} onClick={() => dispatch({ type: 'SETTINGS_CHANGE_ROUTER', payload: ROUT_LOGIN })}>{i18n.t('entryWithPassword')}</a>
             </React.Fragment>}
 
 
@@ -108,9 +108,4 @@ class Registration extends WithRequest {
   }
 }
 
-export default connect(
-  undefined,
-  (mapDispatchToProps) => ({
-    addError: (data) => mapDispatchToProps(setError(data)),
-  }),
-)(Registration);
+export default connect()(Registration);

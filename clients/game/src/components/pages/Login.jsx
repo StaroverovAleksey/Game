@@ -1,15 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
-import {NavLink, Redirect} from 'react-router-dom';
-import {API_AUTH_CHECK, API_AUTH_LOGIN, PATH_REGISTRATION} from "../../tools/routing";
-import {connect} from "react-redux";
-import Loading from "./Loading";
+import {ROUT_REGISTRATION} from "../../tools/routing";
 import WithRequest from "../shells/ShellRequest";
 import Field from "../atomic/Field";
 import Form from "../atomic/Form";
 import Input from "../atomic/Input";
 import Button from "../atomic/Button";
-import {setError} from "../../../../gameCreator/src/redux/actions";
+import {connect} from "react-redux";
+import i18n from "i18next";
 
 const OuterWrapper = styled.div`
   display: flex;
@@ -34,33 +32,27 @@ class Login extends WithRequest {
   constructor(props) {
     super(props);
     this.state = {
-      loading: true,
-      isAuth: null,
+      errors: [],
     };
   }
 
-  async componentDidMount() {
-    const isAuth = await this.GET(API_AUTH_CHECK);
-    console.log(isAuth);
-    this.setState({isAuth, loading: false});
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    const {error} = this.props;
+    if(prevProps.error !== error && error.address === 'AUTH') {
+      this.setState({errors: [{param: 'password', msg: i18n.t(error.msg)}]});
+    }
   }
 
   render() {
-    const {isAuth, loading} = this.state;
-    if (loading) {
-      return <Loading />
-    }
-    if(isAuth) {
-      return <Redirect to="/"/>
-    }
+    const {setRout} = this.props;
     return (
       <OuterWrapper>
         <Field>
-          <Title>Авторизация</Title>
+          <Title>{i18n.t('authorization')}</Title>
           <Form onSubmit={this._onSubmit} errors={this.state.errors}>
 
             <Input
-              title="Почта"
+              title={i18n.t('mail')}
               name="email"
               width="250px"
               margin="0 0 26px 0"
@@ -68,7 +60,7 @@ class Login extends WithRequest {
               rules={{ required: true, minLength: 3, maxLength: 64 }}
             />
             <Input
-              title="Пароль"
+              title={i18n.t('password')}
               name="password"
               width="100%"
               margin="0 0 26px 0"
@@ -77,10 +69,10 @@ class Login extends WithRequest {
             />
             <InnerWrapper>
               <Button
-                text="Войти"
+                text={i18n.t('comeIn')}
                 width="100px"
               />
-              <NavLink style={{ paddingTop: '10px' }} to={PATH_REGISTRATION}>Регистрация</NavLink>
+              <a style={{ paddingTop: '10px' }} href={'#'} onClick={() => setRout(ROUT_REGISTRATION)}>{i18n.t('registration')}</a>
             </InnerWrapper>
 
           </Form>
@@ -91,20 +83,14 @@ class Login extends WithRequest {
   }
 
   _onSubmit = async (data) => {
-    this.setState({errors: [], reset: false});
-
-    const answer = await this.POST(API_AUTH_LOGIN, JSON.stringify(data));
-    if(answer.errors) {
-      this.setState({errors: answer.errors});
-    } else {
-      this.setState({isAuth: true, loading: false});
-    }
+    const {socket} = this.props;
+    socket.emit('auth/authorization', data);
   }
 }
 
 export default connect(
-  undefined,
-  (mapDispatchToProps) => ({
-    addError: (data) => mapDispatchToProps(setError(data)),
-  }),
+    (mapStateToProps) => ({
+      socket: mapStateToProps.settings.socket,
+      error: mapStateToProps.settings.error,
+    })
 )(Login);

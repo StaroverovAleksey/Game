@@ -9,10 +9,11 @@ export default function reducer(state = { }, action) {
 
     case ADD_MAP_CELLS:
       Object.keys(action.payload).forEach((key) => {
-        if (newState[key]) {
-          newState[key] = Object.assign(newState[key], action.payload[key]);
+        if (newState[key] && newState[key].terrains) {
+          newState[key].terrains.push(action.payload[key]);
         } else {
-          newState[key] = action.payload[key];
+          newState[key] = {};
+          newState[key].terrains = [action.payload[key]];
         }
       });
       return { ...newState };
