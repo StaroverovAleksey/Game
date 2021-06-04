@@ -2,8 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 import {atrCharPath} from "../../../../../tools/utils";
 import {connect} from "react-redux";
+import InfoBlock from "./InfoBclock";
 
-const Qwerty = styled.div`
+const Cell = styled.div`
   position: absolute;
   top: ${({top}) => top}px;
   left: ${({left}) => left}px;
@@ -37,12 +38,22 @@ class MainCharCell extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
+        const {busy} = this.state;
+        const {error} = this.props;
         const {x, y} = this.props.mainChar.location;
         const {x: oldX, y: oldY} = prevProps.mainChar.location;
         if (oldX !== x || oldY !== y) {
             this.setState({animation: 'load .5s steps(9, end) infinite', busy: true}, () => {
                     setTimeout(() => this.setState({animation: '', busy: false}), 1000);
                 });
+        }
+        if(prevProps.error !== error
+            && error.address === 'MAIN_CHAR'
+            && error.msg === 'doNotPass'
+            && !busy) {
+            this.setState({busy: true}, () => {
+                setTimeout(() => this.setState({busy: false}), 1000);
+            });
         }
     }
 
@@ -54,22 +65,20 @@ class MainCharCell extends React.Component {
         const {animation} = this.state;
         const {direction} = this.props.mainChar;
         const {x: left, y: top} = this.props.mainChar.location;
-        return <Qwerty
+        return <Cell
             top={(top - 1) * 64}
             left={(left - 1) * 64}
             image={atrCharPath(`char_${direction}.png`)}
             animation={animation}
-        />
+        >
+            <InfoBlock/>
+        </Cell>
     }
 
     _onKeyDownHandler = (event) => {
         const {socket, mainChar, dispatch} = this.props;
         const {busy} = this.state;
         if (busy) {
-            dispatch({
-                type: 'SETTINGS_SET_ERROR',
-                payload: {msg: "tooFast", address: "MAIN_CHAR"}
-            });
             return;
         }
         const {direction} = mainChar;
@@ -84,6 +93,7 @@ class MainCharCell extends React.Component {
 
 export default connect(
     (mapStateToProps) => ({
+        error: mapStateToProps.settings.error,
         socket: mapStateToProps.settings.socket,
         mainChar: mapStateToProps.mainChar,
     })

@@ -3,7 +3,7 @@ const path = require('path');
 const mongoose = require('mongoose');
 const socket = require('socket.io');
 const cookieParser = require("cookie-parser");
-const game = require('./src/main/game');
+const game = require('./src/main/Game');
 require('dotenv').config();
 
 const app = express();

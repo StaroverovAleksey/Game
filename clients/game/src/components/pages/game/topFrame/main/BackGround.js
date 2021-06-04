@@ -25,10 +25,14 @@ class BackGround extends React.Component {
         const {x: sizeX, y: sizeY} = mapSize;
         return <>
             {new Array(sizeY).fill('').map((v, x) => {
-                return <String>
+                return <String key={x}>
                     {new Array(sizeX).fill('').map((vv, y) => {
                         const name = (y + 1) + '_' + (x + 1);
-                        return <Cell backGrColor={getTileCollage(mapCells[name])}>{}</Cell>
+                        return <Cell
+                            key={name}
+                            id={name}
+                            backGrColor={getTileCollage(mapCells[name])}
+                        >{}</Cell>
                     })}
                 </String>
             })}

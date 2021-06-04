@@ -1,12 +1,11 @@
 const User = require('../models/User');
-const Character = require('../models/Character');
-const game = require('../main/game');
+const game = require('../main/Game');
 const bcrypt = require("bcrypt");
 
 module.exports = {
     async authorization (body, socket) {
         const {email, password} = body;
-        const user = await User.findOne({email});
+        const user = await User.findOne({email}, 'password character');
         if(!user) {
             socket.emit('SETTINGS_SET_ERROR', {
                 msg: "incorrectAuthData",
@@ -22,10 +21,9 @@ module.exports = {
             });
             return;
         }
-        const char = await Character.findById(user.character);
-        const newChar = game.setChar(char, socket);
+        const char = await game.setChar(user.character, socket.id);
 
-        socket.broadcast.emit('CHARS_ADD', newChar);
+        socket.broadcast.emit('CHARS_ADD', {[socket.id]: char});
         socket.emit('SETTINGS_CHANGE_ROUTER', 'main');
         socket.emit('MAIN_CHAR_INITIAL', char);
         socket.emit('CHARS_INITIAL', game.getCharsExceptSelf(socket.id));

@@ -1,9 +1,9 @@
-const game = require('../main/game');
+const game = require('../main/Game');
 
 module.exports = {
     turn (direction, socket) {
         const {id} = socket;
-        const result = game.turn(direction, socket);
+        const result = game.chars[id].turn(direction);
         if (result === 'busy') {
             socket.emit('SETTINGS_SET_ERROR', {
                 msg: "tooFast",
@@ -23,7 +23,8 @@ module.exports = {
     },
 
     step (direction, socket) {
-        const result = game.step(direction, socket);
+        const {id} = socket;
+        const result = game.chars[id].step(direction, game.mapCells);
         if (result === 'busy') {
             socket.emit('SETTINGS_SET_ERROR', {
                 msg: "tooFast",
@@ -33,7 +34,7 @@ module.exports = {
         }
         if (result) {
             socket.emit('MAIN_CHAR_STEP', result);
-            socket.broadcast.emit('CHARS_STEP', {id: socket.id, location: result });
+            socket.broadcast.emit('CHARS_STEP', {id, location: result });
         } else {
             socket.emit('SETTINGS_SET_ERROR', {
                 msg: "doNotPass",

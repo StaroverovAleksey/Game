@@ -4,6 +4,7 @@ import {connect} from "react-redux";
 import BackGround from "./BackGround";
 import MainCharCell from "./MainCharCell";
 import CharCell from "./CharCell";
+import {atrUtilsPath} from "../../../../../../../gameCreator/src/tools/utils";
 
 const OuterWrapper = styled.div`
   display: inline-flex;
@@ -15,6 +16,7 @@ const OuterWrapper = styled.div`
   overflow: hidden;
   box-sizing: border-box;
   padding-top: ${({marginTop}) => `${marginTop}px`};
+  background-image: ${() => `${atrUtilsPath('black.png')}`};
 `;
 
 const InnerWrapper = styled.div`
@@ -30,12 +32,15 @@ class Main extends React.Component {
         super(props);
         this.state = {
             marginTop: 0,
+            mouseOverCell: '',
         }
+        this.ref = React.createRef();
     }
 
     componentDidMount() {
         this._verticalAlignment();
         window.addEventListener("resize", this._onResizeHandler);
+        this.ref.current.addEventListener("mouseover", this._onMouseOverHandler);
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -50,15 +55,19 @@ class Main extends React.Component {
     }
 
     render() {
-        const {marginTop} = this.state;
+        const {marginTop, mouseOverCell} = this.state;
         const {chars} = this.props;
         return (
             <OuterWrapper marginTop={marginTop}>
-                <InnerWrapper>
+                <InnerWrapper ref={this.ref}>
                     <BackGround/>
                     <MainCharCell/>
-                    {Object.keys(chars).map((id) => {
-                        return <CharCell id={id}/>;
+                    {Object.keys(chars).map((id, index) => {
+                        return <CharCell
+                            id={id}
+                            key={`char_cell${index}`}
+                            mouseOver={mouseOverCell}
+                        />;
                     })}
                 </InnerWrapper>
             </OuterWrapper>
@@ -75,6 +84,11 @@ class Main extends React.Component {
 
     _onResizeHandler = () => {
         this._verticalAlignment();
+    }
+
+    _onMouseOverHandler = (event) => {
+        console.log(event.target);
+        this.setState({mouseOverCell: event.target.id});
     }
 }
 

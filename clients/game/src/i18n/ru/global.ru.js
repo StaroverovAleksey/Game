@@ -16,4 +16,6 @@ export default {
     skills: "Умения",
     settings: "Настройки",
     goOut: "Выйти",
+    doNotPass: "Не пройти",
+    tooFast: "Слишком быстро",
 }
