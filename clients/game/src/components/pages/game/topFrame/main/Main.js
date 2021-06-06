@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import {connect} from "react-redux";
 import BackGround from "./BackGround";
 import MainCharCell from "./MainCharCell";
-import CharCell from "./CharCell";
+import CharCell from "./CharCell/CharCell";
 import {atrUtilsPath} from "../../../../../../../gameCreator/src/tools/utils";
 
 const OuterWrapper = styled.div`
@@ -87,8 +87,7 @@ class Main extends React.Component {
     }
 
     _onMouseOverHandler = (event) => {
-        console.log(event.target);
-        this.setState({mouseOverCell: event.target.id});
+        this.setState({mouseOverCell: event.target});
     }
 }
 
