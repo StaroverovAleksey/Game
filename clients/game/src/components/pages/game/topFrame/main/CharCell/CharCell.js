@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import {atrCharPath} from "../../../../../../tools/utils";
+import {atrCharPath, atrUtilsPath} from "../../../../../../tools/utils";
 import {connect} from "react-redux";
 import HoverMenu from "./HoverMenu";
 
@@ -46,15 +46,16 @@ class CharCell extends React.Component {
 
     render() {
         const {animation} = this.state;
-        const {id, mouseOver} = this.props;
+        const {id, mouseOver, target} = this.props;
         const {direction} = this.props.chars[id];
         const {x: left, y: top} = this.props.chars[id].location;
         return <Cell
             top={(top - 1) * 64}
             left={(left - 1) * 64}
-            image={atrCharPath(`char_${direction}.png`)}
+            image={target === id ? `${atrCharPath(`char_${direction}.png`)}, ${atrUtilsPath(`targetGreen.png`)}` : atrCharPath(`char_${direction}.png`)}
             animation={animation}
             ref={this.ref}
+            onClick={this._changeTarget}
         >
             {this.ref.current && mouseOver && this.ref.current.contains(mouseOver) ?
                 <HoverMenu/>
@@ -62,10 +63,16 @@ class CharCell extends React.Component {
 
         </Cell>
     }
+
+    _changeTarget = () => {
+        const {id, dispatch} = this.props;
+        dispatch({type: 'MAIN_CHAR_CHANGE_TARGET', payload: id});
+    }
 }
 
 export default connect(
     (mapStateToProps) => ({
         chars: mapStateToProps.chars,
+        target: mapStateToProps.mainChar.target,
     })
 )(CharCell);

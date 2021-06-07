@@ -11,6 +11,10 @@ export const pathToArt = () => {
     return process.env.NODE_ENV === 'development' ? config.develop.pathToArts : config.production.pathToArts;
 };
 
+export const atrUtilsPath = (name) => {
+    return `url(${pathToArt()}utils/${name})`;
+};
+
 export const atrTerrainsPath = (name) => {
     return `url(${pathToArt()}terrains/${name})`;
 };

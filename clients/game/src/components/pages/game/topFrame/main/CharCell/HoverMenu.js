@@ -1,25 +1,15 @@
 import React from 'react';
 import styled from 'styled-components';
-import {atrCharPath} from "../../../../../../tools/utils";
-import {connect} from "react-redux";
+import InfoButton from "../../../../../icons/InfoButton";
+import CrowdButton from "../../../../../icons/CrowdButton";
+import InviteButton from "../../../../../icons/InviteButton";
+import DialogButton from "../../../../../icons/DialogButton";
+import AttackButton from "../../../../../icons/Attack";
 
 const Wrapper = styled.div`
   position: absolute;
-  width: 100%;
-  height: 100%;
-`;
-
-const Qwerty = styled.div`
-  position: absolute;
   right: 0;
-  width: 15px;
-  height: 15px;
-  background-color: red;
-  
-  :hover {
-    background-color: green;
-  }
-`
+`;
 
 class HoverMenu extends React.Component {
     constructor(props) {
@@ -30,7 +20,11 @@ class HoverMenu extends React.Component {
 
     render() {
         return <Wrapper>
-            <Qwerty/>
+            <InfoButton/>
+            {/*<CrowdButton value={99}/>*/}
+            <DialogButton/>
+            <InviteButton/>
+            <AttackButton/>
         </Wrapper>
     }
 }

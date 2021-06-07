@@ -12,6 +12,7 @@ import {
 import Inventory from "./Inventory";
 import Skills from "./Skills";
 import Settings from "./Settings";
+import CharStatus from "./CharStatus";
 
 const Wrapper = styled.div`
   display: flex;
@@ -32,10 +33,18 @@ class TopFrame extends React.Component {
   }
 
   render() {
+    const {mainChar, chars} = this.props;
+    const {target} = mainChar;
 
     return (
       <Wrapper>
         {this._getRout()}
+        <CharStatus data={mainChar}/>
+
+        {target ?
+            <CharStatus data={chars[target]} left={'400px'}/>
+        : null}
+
         <MainMenu/>
       </Wrapper>
     );
@@ -55,6 +64,8 @@ class TopFrame extends React.Component {
 
 export default connect(
     (mapStateToProps) => ({
+      mainChar: mapStateToProps.mainChar,
+      chars: mapStateToProps.chars,
       routing: mapStateToProps.settings.routing
     }),
     undefined,

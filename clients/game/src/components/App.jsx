@@ -24,6 +24,11 @@ class App extends React.Component {
             this.props.dispatch({ type: event, payload: data });
         });
         this.props.dispatch({ type: 'SETTINGS_SET_SOCKET', payload: this.socket });
+        window.document.addEventListener("keydown", this._onKeyDownHandler);
+    }
+
+    componentWillUnmount() {
+        window.document.removeEventListener("keydown", this._onKeyDownHandler);
     }
 
     render() {
@@ -35,6 +40,13 @@ class App extends React.Component {
         default: return <Game/>;
     }
   }
+
+    _onKeyDownHandler = (event) => {
+        const {dispatch} = this.props;
+        switch (event.code) {
+            case 'Escape': dispatch({type: 'MAIN_CHAR_CHANGE_TARGET', payload: undefined}); break;
+        }
+    }
 }
 
 export default connect(

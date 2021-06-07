@@ -18,6 +18,7 @@ const Cell = styled.div`
   transition-property: top, left;
   transition-duration: 1s;
   transition-timing-function: cubic-bezier(1, 1, 0, 0);
+  z-index: 1;
 
   @keyframes load {
     100.0% {background-position-x: -576px;}
@@ -76,7 +77,7 @@ class MainCharCell extends React.Component {
     }
 
     _onKeyDownHandler = (event) => {
-        const {socket, mainChar, dispatch} = this.props;
+        const {socket, mainChar} = this.props;
         const {busy} = this.state;
         if (busy) {
             return;

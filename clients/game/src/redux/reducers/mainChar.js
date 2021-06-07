@@ -13,6 +13,9 @@ export default function reducer(state = defaultState, action) {
     case 'MAIN_CHAR_STEP':
       newState.location = action.payload;
       return { ...newState };
+    case 'MAIN_CHAR_CHANGE_TARGET':
+      newState.target = action.payload;
+      return { ...newState };
     default: return { ...state };
   }
 }
