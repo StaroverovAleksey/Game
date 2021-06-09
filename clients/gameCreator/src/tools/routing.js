@@ -8,6 +8,10 @@ export const API_GET_TERRAIN = pathAPI('/terrains/read');
 export const API_UPDATE_TERRAIN = pathAPI('/terrains/update');
 export const API_DELETE_TERRAIN = pathAPI('/terrains/delete');
 
+/** *STRUCTURE */
+export const API_CREATE_STRUCTURE = pathAPI('/structures/create');
+export const API_GET_STRUCTURES = pathAPI('/structures/read');
+
 /** *MAP */
 export const API_CREATE_MAP = pathAPI('/maps/create');
 export const API_GET_MAPS = pathAPI('/maps/read');

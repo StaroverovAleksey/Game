@@ -8,6 +8,10 @@ export const updateTerrain = (terrain) => ({ type: UPDATE_TERRAIN, payload: terr
 export const DELETE_TERRAIN = 'DELETE_TERRAIN';
 export const deleteTerrain = (number) => ({ type: DELETE_TERRAIN, payload: number });
 
+/** **********************************************      STRUCTURES      */
+export const SET_ONE_STRUCTURE = 'SET_ONE_STRUCTURE';
+export const setStructure = (structure) => ({ type: SET_ONE_STRUCTURE, payload: structure });
+
 /** **********************************************      MAPS      */
 export const SET_MAPS = 'SET_MAPS';
 export const setMaps = (maps) => ({ type: SET_MAPS, payload: maps });

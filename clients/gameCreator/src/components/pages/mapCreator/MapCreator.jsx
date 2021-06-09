@@ -9,7 +9,7 @@ import {
   loadingMapSells,
   setError, setMapCells, setMaps, setSelectedMap, setTerrains,
 } from '../../../redux/actions';
-import { API_GET_MAP_CELL, API_GET_MAPS, API_GET_TERRAIN } from '../../../tools/routing';
+import {API_GET_MAP_CELL, API_GET_MAPS, API_GET_STRUCTURES, API_GET_TERRAIN} from '../../../tools/routing';
 import WithRequest from '../../shells/ShellRequest';
 import RightPart from './rightPart/RightPart';
 import Loading from '../Loading';
@@ -39,13 +39,14 @@ class MapCreator extends WithRequest {
     const {
       addTerrains, addMaps, addSelectedMap, addMapCells,
     } = this.props;
-    const [terrains, maps] = await this.GET([API_GET_TERRAIN, API_GET_MAPS]);
+
+    const [terrains, maps, structures] = await this.GET([API_GET_TERRAIN, API_GET_MAPS, API_GET_STRUCTURES]);
     addTerrains(terrains);
     addMaps(maps);
 
     if (maps.maps.length > 0) {
       const storageMap = JSON.parse(localStorage.getItem('selectedMap'));
-      const checkStorageMap = maps.maps.findIndex((map) => map._id === storageMap._id);
+      const checkStorageMap = maps.maps.findIndex((map) => storageMap && map._id === storageMap._id);
       const selectedMap = storageMap && checkStorageMap > -1 ? storageMap : maps.maps[0];
       const [mapCells] = await this.GET([`${API_GET_MAP_CELL}/?_id=${selectedMap._id}`]);
       addSelectedMap(selectedMap);

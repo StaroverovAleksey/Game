@@ -105,8 +105,8 @@ router.post('/create', multiparty, [
 
 router.get('/read', async (req, res) => {
     try {
-        const terrains = await Structure.find().exec();
-        res.status(200).json({terrains});
+        const structures = await Structure.find().exec();
+        res.status(200).json({structures});
     } catch (error) {
         res.status(500).json({massage: 'server error'});
     }

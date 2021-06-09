@@ -6,6 +6,7 @@ import AddMap from './AddMap';
 import { fonBlue } from '../../../../tools/palette';
 import AddTerrain from './AddTerrain';
 import MapSelection from './MapSelection/MapSelection';
+import AddStructure from "./AddStructure";
 
 const Wrapper = styled.aside`
   display: ${({ open }) => (open ? 'flex' : 'none')};
@@ -39,6 +40,7 @@ class LeftPart extends React.Component {
         <MapSelection />
         <AddMap />
         <AddTerrain />
+        <AddStructure />
 
       </Wrapper>
     );
