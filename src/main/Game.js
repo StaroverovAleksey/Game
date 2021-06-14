@@ -28,6 +28,7 @@ class Game {
         for (let key in this.chars) {
             if (key === socketId || this.chars[key].name === char.name) {
                 this.removeChar(key);
+                return key;
             }
         }
         this.chars[socketId] = char;

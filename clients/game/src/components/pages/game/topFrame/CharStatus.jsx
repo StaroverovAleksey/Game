@@ -49,8 +49,6 @@ const ManaWrapper = styled.div`
   border-radius: 3px;
 `;
 
-
-
 class CharStatus extends React.Component {
   constructor(props) {
     super(props);

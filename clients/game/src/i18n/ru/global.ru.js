@@ -11,6 +11,7 @@ export default {
     registrationSuccess: "Регистрация прошла успешно!",
     entryWithPassword: "Войти с паролем",
     incorrectAuthData: "Неверный email или пароль",
+    loginIsExist: "Аккаунт уже был авторизован",
     back: "Назад",
     inventory: "Инвентарь",
     skills: "Умения",

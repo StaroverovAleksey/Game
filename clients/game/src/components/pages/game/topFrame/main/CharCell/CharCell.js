@@ -57,9 +57,8 @@ class CharCell extends React.Component {
             ref={this.ref}
             onClick={this._changeTarget}
         >
-            {this.ref.current && mouseOver && this.ref.current.contains(mouseOver) ?
+            {/*{this.ref.current && mouseOver && this.ref.current.contains(mouseOver) ?*/}
                 <HoverMenu/>
-            : null}
 
         </Cell>
     }

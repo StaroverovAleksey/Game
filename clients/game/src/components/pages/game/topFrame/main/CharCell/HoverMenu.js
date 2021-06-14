@@ -20,11 +20,11 @@ class HoverMenu extends React.Component {
 
     render() {
         return <Wrapper>
-            <InfoButton/>
-            {/*<CrowdButton value={99}/>*/}
+            <CrowdButton value={99}/>
+            {/*<InfoButton/>
             <DialogButton/>
             <InviteButton/>
-            <AttackButton/>
+            <AttackButton/>*/}
         </Wrapper>
     }
 }

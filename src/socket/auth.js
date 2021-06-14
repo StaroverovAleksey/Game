@@ -23,12 +23,24 @@ module.exports = {
         }
         const char = await game.setChar(user.character, socket.id);
 
-        socket.broadcast.emit('CHARS_ADD', {[socket.id]: char});
-        socket.emit('SETTINGS_CHANGE_ROUTER', 'main');
-        socket.emit('MAIN_CHAR_INITIAL', char);
-        socket.emit('CHARS_INITIAL', game.getCharsExceptSelf(socket.id));
-        socket.emit('MAP_CELLS_INITIAL', game.mapCells);
-        socket.emit('SETTINGS_SET_MAP_SIZE', game.mapSize);
+        if (typeof char === 'string') {
+            socket.emit('SETTINGS_SET_ERROR', {
+                msg: "loginIsExist",
+                address: "AUTH",
+            });
+            socket.to(char).emit('SETTINGS_DEFAULT', '');
+            socket.to(char).emit('MAP_CELLS_DEFAULT', '');
+            socket.to(char).emit('MAIN_CHAR_DEFAULT', '');
+            socket.to(char).emit('CHARS_DEFAULT', '');
+            process.io.emit('CHARS_REMOVE', char);
+        } else {
+            socket.broadcast.emit('CHARS_ADD', {[socket.id]: char});
+            socket.emit('SETTINGS_CHANGE_ROUTER', 'main');
+            socket.emit('MAIN_CHAR_INITIAL', char);
+            socket.emit('CHARS_INITIAL', game.getCharsExceptSelf(socket.id));
+            socket.emit('MAP_CELLS_INITIAL', game.mapCells);
+            socket.emit('SETTINGS_SET_MAP_SIZE', game.mapSize);
+        }
     },
 
     exit (body, socket) {
