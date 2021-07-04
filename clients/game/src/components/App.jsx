@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import Login from './pages/Login';
 import Registration from './pages/Registration';
 import {
+    ROUT_CHOICE_CHAR, ROUT_CREATE_CHAR,
     ROUT_ERROR,
     ROUT_LOGIN,
     ROUT_REGISTRATION
@@ -12,6 +13,8 @@ import Error from "./pages/Error";
 import "../i18n/index";
 import config from "../../config.json";
 import {io} from "socket.io-client";
+import ChoiceChar from "./pages/ChoiceChar";
+import CreateChar from "./pages/CreateChar";
 
 
 class App extends React.Component {
@@ -35,6 +38,8 @@ class App extends React.Component {
     const { routing, error } = this.props;
     switch (routing) {
         case ROUT_LOGIN: return <Login/>;
+        case ROUT_CHOICE_CHAR: return <ChoiceChar/>;
+        case ROUT_CREATE_CHAR: return <CreateChar/>;
         case ROUT_REGISTRATION: return <Registration/>;
         case ROUT_ERROR: return <Error error={error}/>;
         default: return <Game/>;

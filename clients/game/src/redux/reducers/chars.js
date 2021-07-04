@@ -5,6 +5,8 @@ export default function reducer(state = defaultState, action) {
   switch (action.type) {
     case 'CHARS_DEFAULT':
       return { ...defaultState };
+    case 'CHARS_VISIBLE':
+      return { ...defaultState };
     case 'CHARS_INITIAL':
       return { ...state, ...action.payload };
     case "CHARS_ADD":

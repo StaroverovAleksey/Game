@@ -22,6 +22,16 @@ class Game {
         return copyChars;
     }
 
+    setUser = async (email, socketId) => {
+        for (let key in this.chars) {
+            if (key === socketId || this.chars[key].email === email) {
+                this.removeChar(key);
+                return key;
+            }
+        }
+        this.chars[socketId] = {email};
+    }
+
     setChar = async (charId, socketId) => {
         const char = await new Char();
         await char.initial(charId);

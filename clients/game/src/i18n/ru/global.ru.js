@@ -19,4 +19,11 @@ export default {
     goOut: "Выйти",
     doNotPass: "Не пройти",
     tooFast: "Слишком быстро",
+    create: "Создать",
+    choiceChar: "Выбор персонажа",
+    createChar: "Создание персонажа",
+    sex: "Пол",
+    bodyColor: "Цвет кожи",
+    hairType: "Прическа",
+    hairColor: "Цвет волос",
 }

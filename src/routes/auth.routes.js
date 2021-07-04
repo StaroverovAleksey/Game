@@ -77,12 +77,12 @@ router.post('/registration', [
             });
         }
 
-        const startMap = await Map.findOne();
+        /*const startMap = await Map.findOne();
         const character = new Character({name, map: startMap.id, direction: 'front', location: START_LOCATION});
-        await character.save();
+        await character.save();*/
 
         const hashedPassword = await bcrypt.hash(password, 12);
-        const user = new User({email, password: hashedPassword, character: character.id});
+        const user = new User({email, password: hashedPassword});
         await user.save();
 
         res.status(200).json({});

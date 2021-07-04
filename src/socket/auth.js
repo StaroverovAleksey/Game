@@ -5,6 +5,42 @@ const bcrypt = require("bcrypt");
 module.exports = {
     async authorization (body, socket) {
         const {email, password} = body;
+        const user = await User.findOne({email}, 'password characters');
+        if(!user) {
+            socket.emit('SETTINGS_SET_ERROR', {
+                msg: "incorrectAuthData",
+                address: "AUTH",
+            });
+            return;
+        }
+        const isMatch = await bcrypt.compare(password,user.password);
+        if (!isMatch) {
+            socket.emit('SETTINGS_SET_ERROR', {
+                msg: "incorrectAuthData",
+                address: "AUTH",
+            });
+            return;
+        }
+        //const char = await game.setChar(user.character, socket.id);
+        const checkIsAuth = await game.setUser(email, socket.id)
+
+        if (checkIsAuth) {
+            socket.emit('SETTINGS_SET_ERROR', {
+                msg: "loginIsExist",
+                address: "AUTH",
+            });
+            socket.to(checkIsAuth).emit('SETTINGS_DEFAULT', '');
+            socket.to(checkIsAuth).emit('MAP_CELLS_DEFAULT', '');
+            socket.to(checkIsAuth).emit('MAIN_CHAR_DEFAULT', '');
+            socket.to(checkIsAuth).emit('CHARS_DEFAULT', '');
+        } else {
+            socket.emit('SETTINGS_CHANGE_ROUTER', 'choiceChar');
+            socket.emit('CHOICE_CHAR_INITIAL', user.characters);
+        }
+    },
+
+    /*async authorization (body, socket) {
+        const {email, password} = body;
         const user = await User.findOne({email}, 'password character');
         if(!user) {
             socket.emit('SETTINGS_SET_ERROR', {
@@ -42,7 +78,7 @@ module.exports = {
             socket.emit('SETTINGS_SET_MAP_SIZE', game.mapSize);
         }
     },
-
+*/
     exit (body, socket) {
         const {id} = socket;
         game.removeChar(id);

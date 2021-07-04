@@ -5,6 +5,8 @@ const pathAPI = (method) => `${process.env.NODE_ENV === 'development' ? config.d
 /** *PATH */
 export const ROUT_MAIN = 'main';
 export const ROUT_LOGIN = 'login';
+export const ROUT_CHOICE_CHAR = 'choiceChar';
+export const ROUT_CREATE_CHAR = 'createChar';
 export const ROUT_REGISTRATION = 'registration';
 export const ROUT_INVENTORY = 'inventory';
 export const ROUT_SKILLS = 'skills';

@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import {ROUT_REGISTRATION} from "../../tools/routing";
+import {ROUT_MAIN, ROUT_REGISTRATION} from "../../tools/routing";
 import WithRequest from "../shells/ShellRequest";
 import Field from "../atomic/Field";
 import Form from "../atomic/Form";
@@ -44,7 +44,7 @@ class Login extends WithRequest {
   }
 
   render() {
-    const {setRout} = this.props;
+    const {dispatch} = this.props;
     return (
       <OuterWrapper>
         <Field>
@@ -72,7 +72,9 @@ class Login extends WithRequest {
                 text={i18n.t('comeIn')}
                 width="100px"
               />
-              <a style={{ paddingTop: '10px' }} href={'#'} onClick={() => setRout(ROUT_REGISTRATION)}>{i18n.t('registration')}</a>
+              <a style={{ paddingTop: '10px' }} href={'#'} onClick={() => dispatch({ type: 'SETTINGS_CHANGE_ROUTER', payload: ROUT_REGISTRATION })}>
+                {i18n.t('registration')}
+              </a>
             </InnerWrapper>
 
           </Form>
