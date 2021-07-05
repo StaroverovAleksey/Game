@@ -14,7 +14,7 @@ import "../i18n/index";
 import config from "../../config.json";
 import {io} from "socket.io-client";
 import ChoiceChar from "./pages/ChoiceChar";
-import CreateChar from "./pages/CreateChar";
+import CreateChar from "./pages/createChar/CreateChar";
 
 
 class App extends React.Component {
