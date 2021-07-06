@@ -22,14 +22,14 @@ class Game {
         return copyChars;
     }
 
-    setUser = async (email, socketId) => {
+    setUser = async (userId, socketId) => {
         for (let key in this.chars) {
-            if (key === socketId || this.chars[key].email === email) {
+            if (key === socketId || this.chars[key].userId === userId) {
                 this.removeChar(key);
                 return key;
             }
         }
-        this.chars[socketId] = {email};
+        this.chars[socketId] = {userId};
     }
 
     setChar = async (charId, socketId) => {

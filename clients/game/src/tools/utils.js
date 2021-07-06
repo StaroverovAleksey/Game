@@ -23,6 +23,27 @@ export const atrCharPath = (name) => {
     return `url(${pathToArt()}character/${name})`;
 };
 
+export const atrChar = ({sex, bodyColor, hairType, hairColor}) => {
+    return `url(${pathToArt()}character/${sex}/hair/${hairType}/${hairColor}.png), url(${pathToArt()}character/${sex}/body/${bodyColor}.png)`;
+};
+
+export const getAnimation = (animation, direction) => {
+    let shift;
+    switch (parseInt(animation)) {
+        case 1: shift = 0; break;
+        case 2: shift = -256; break;
+        case 3: shift = -512; break;
+        case 4: shift = -768; break;
+        case 5: shift = -1024; break;
+    }
+    switch (direction) {
+        case 'front': shift = shift - 128; break;
+        case 'right': shift = shift - 192; break;
+        case 'left': shift = shift - 64; break;
+    }
+    return `${shift}px`;
+};
+
 export const throttle = (func, ms) => {
 
     let isThrottled = false, savedArgs, savedThis;
