@@ -26,4 +26,5 @@ export default {
     bodyColor: "Цвет кожи",
     hairType: "Прическа",
     hairColor: "Цвет волос",
+    nameIsTaken: "Имя занято",
 }

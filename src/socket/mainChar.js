@@ -8,6 +8,15 @@ module.exports = {
     async create ({login, sex, bodyColor, hairType, hairColor}, socket) {
         const {id} = socket;
         const {userId} = game.chars[id];
+        const {characters} = await User.findById(userId, 'characters');
+        const checkNickname = await Character.findOne({name: login});
+        if (checkNickname) {
+            socket.emit('SETTINGS_SET_ERROR', {
+                msg: "nameIsTaken",
+                address: "MAIN_CHAR",
+            });
+            return;
+        }
         const startMap = await Map.findOne();
         const character = new Character({
             name: login,
@@ -17,9 +26,9 @@ module.exports = {
             location: START_LOCATION});
         await character.save();
 
-        const {characters} = await User.findById(userId, 'characters');
         characters.push(character);
         await User.findByIdAndUpdate(userId, {characters}).exec();
+        socket.emit('SETTINGS_CHANGE_ROUTER', 'choiceChar');
     },
 
     turn (direction, socket) {

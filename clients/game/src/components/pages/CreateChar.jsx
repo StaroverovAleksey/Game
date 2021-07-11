@@ -1,13 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
-import WithRequest from "../../shells/ShellRequest";
+import WithRequest from "../shells/ShellRequest";
 import i18n from "i18next";
 import {connect} from "react-redux";
-import {atrChar, getAnimation} from "../../../tools/utils";
-import Input from "../../atomic/Input";
-import Form from "../../atomic/Form";
-import Button from "../../atomic/Button";
-import {ROUT_CHOICE_CHAR} from "../../../tools/routing";
+import {atrChar, getAnimation} from "../../tools/utils";
+import Input from "../atomic/Input";
+import Form from "../atomic/Form";
+import Button from "../atomic/Button";
+import {ROUT_CHOICE_CHAR} from "../../tools/routing";
 
 const OuterWrapper = styled.div`
   position: relative;
@@ -15,6 +15,10 @@ const OuterWrapper = styled.div`
   height: 100%;
   padding-left: 20px;
   box-sizing: border-box;
+`;
+
+const PageTitle = styled.h2`
+  text-align: center;
 `;
 
 const Title = styled.h2`
@@ -58,9 +62,7 @@ const Display = styled.div`
   }
 `;
 
-
-
-class Interface extends WithRequest {
+class ChoiceChar extends WithRequest {
   constructor(props) {
     super(props);
     this.variants = {
@@ -71,6 +73,7 @@ class Interface extends WithRequest {
     }
 
     this.state = {
+      errors: [],
       animation: getAnimation(4, 'front'),
       sex: this.variants.sex[0],
       bodyColor: this.variants.bodyColor[0],
@@ -79,11 +82,24 @@ class Interface extends WithRequest {
     }
   }
 
+  componentDidUpdate(prevProps) {
+    const {error} = this.props;
+    if (prevProps.error !== error && error.msg === 'nameIsTaken') {
+      const errors = [{
+        param: 'login',
+        msg: i18n.t(error.msg)
+      }]
+      this.setState({errors});
+    }
+  }
+
   render() {
     const {sex, bodyColor, hairType, hairColor} = this.state;
     const {dispatch} = this.props;
 
-    return <OuterWrapper>
+    return <>
+      <PageTitle>{i18n.t('createChar')}</PageTitle>
+      <OuterWrapper>
 
       {Object.entries(this.variants).map(([key, values]) => {
         return <>
@@ -148,7 +164,7 @@ class Interface extends WithRequest {
       </Display>
 
     </OuterWrapper>
-
+    </>
   }
 
   changeParam = (event) => {
@@ -169,4 +185,4 @@ export default connect(
       socket: mapStateToProps.settings.socket,
       error: mapStateToProps.settings.error,
     })
-)(Interface);
+)(ChoiceChar);
