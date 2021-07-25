@@ -36,7 +36,7 @@ class Button extends React.Component {
 
   render() {
     const {
-      text, width, margin, onClick, disabled,
+      text, width, margin, onClick, disabled, type = 'submit'
     } = this.props;
     return (
       <ButtonCommon
@@ -44,6 +44,7 @@ class Button extends React.Component {
         margin={margin}
         onClick={onClick}
         disabled={disabled}
+        type={type}
         ref={this.ref}
       >
         {text}

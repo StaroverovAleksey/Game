@@ -27,4 +27,5 @@ export default {
     hairType: "Прическа",
     hairColor: "Цвет волос",
     nameIsTaken: "Имя занято",
+    random: "Случайно",
 }

@@ -39,6 +39,13 @@ module.exports = {
         }
     },
 
+    async getMainCharList (body, socket) {
+        const {id} = socket;
+        console.log(body);
+        console.log(game);
+        console.log(game.chars[id]);
+    },
+
     /*async authorization (body, socket) {
         const {email, password} = body;
         const user = await User.findOne({email}, 'password character');

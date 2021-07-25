@@ -30,6 +30,11 @@ class ChoiceChar extends WithRequest {
     }
   }
 
+  componentDidMount() {
+    const {socket} = this.props;
+    socket.emit('auth/getMainCharList');
+  }
+
   render() {
     const {choiceChar} = this.state;
     const {dispatch} = this.props;
@@ -55,6 +60,7 @@ class ChoiceChar extends WithRequest {
 
 export default connect(
     (mapStateToProps) => ({
+      socket: mapStateToProps.settings.socket,
       chars: mapStateToProps.choiceChar,
     })
 )(ChoiceChar);

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import WithRequest from "../shells/ShellRequest";
 import i18n from "i18next";
 import {connect} from "react-redux";
-import {atrChar, getAnimation} from "../../tools/utils";
+import {atrChar, getAnimation, randomElem} from "../../tools/utils";
 import Input from "../atomic/Input";
 import Form from "../atomic/Form";
 import Button from "../atomic/Button";
@@ -102,15 +102,16 @@ class ChoiceChar extends WithRequest {
       <OuterWrapper>
 
       {Object.entries(this.variants).map(([key, values]) => {
-        return <>
+        return <div key={`variants_${key}`}>
           <Title>{i18n.t(key)}</Title>
           <InnerWrapper id={key}>
 
             {values.map((value) => {
               return <ChoiceBlock
                   id={value}
+                  key={`choice_block_${value}`}
                   choice={this.state[key] === value}
-                  onClick={this.changeParam}
+                  onClick={this._changeParam}
                   image={atrChar({
                     sex: key === 'sex' ? value : sex,
                     bodyColor: key === 'bodyColor' ? value : bodyColor,
@@ -122,15 +123,25 @@ class ChoiceChar extends WithRequest {
             })}
 
           </InnerWrapper>
-        </>
+        </div>
       })}
 
       <Display>
+
+        <Button
+            text={i18n.t('random')}
+            width="100px"
+            type="button"
+            margin="30px auto 30px auto"
+            onClick={this._random}
+        />
+
         <div>
           {new Array(4).fill('').map((value, index) => {
             return <ChoiceBlock
                 id={value}
-                onClick={this.changeParam}
+                key={`display_${index}`}
+                onClick={this._changeParam}
                 image={atrChar({sex, bodyColor, hairType, hairColor})}
                 animation={`-${ 64 * index + 1}px`}
             />
@@ -154,6 +165,7 @@ class ChoiceChar extends WithRequest {
             <Button
                 text={i18n.t('back')}
                 width="100px"
+                type="button"
                 margin="0 0 0 50px"
                 onClick={() => dispatch({ type: 'SETTINGS_CHANGE_ROUTER', payload: ROUT_CHOICE_CHAR })}
             />
@@ -167,7 +179,16 @@ class ChoiceChar extends WithRequest {
     </>
   }
 
-  changeParam = (event) => {
+  _random = () => {
+    this.setState({
+      sex: randomElem(this.variants.sex),
+      bodyColor: randomElem(this.variants.bodyColor),
+      hairType: randomElem(this.variants.hairType),
+      hairColor: randomElem(this.variants.hairColor)
+    })
+  }
+
+  _changeParam = (event) => {
     const value = event.target.id;
     const name = event.target.parentNode.id;
     this.setState({[name]: value});

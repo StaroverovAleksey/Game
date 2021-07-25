@@ -1,4 +1,5 @@
 import config from "../../config.json";
+import {array} from "prop-types";
 
 export const isEmpty = (obj) => {
     for (const key in obj) {
@@ -81,3 +82,7 @@ export const getTileCollage = (cell) => {
         .reverse()
         .join(', ');
 };
+
+export const randomElem = (array) => {
+    return array[Math.floor(Math.random() * array.length)];
+}
