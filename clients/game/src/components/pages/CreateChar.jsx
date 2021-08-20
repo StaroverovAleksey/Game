@@ -3,11 +3,12 @@ import styled from 'styled-components';
 import WithRequest from "../shells/ShellRequest";
 import i18n from "i18next";
 import {connect} from "react-redux";
-import {atrChar, getAnimation, randomElem} from "../../tools/utils";
+import {atrChar, randomElem} from "../../tools/utils";
 import Input from "../atomic/Input";
 import Form from "../atomic/Form";
 import Button from "../atomic/Button";
 import {ROUT_CHOICE_CHAR} from "../../tools/routing";
+import {getPosition} from "../../tools/animations";
 
 const OuterWrapper = styled.div`
   position: relative;
@@ -74,7 +75,7 @@ class ChoiceChar extends WithRequest {
 
     this.state = {
       errors: [],
-      animation: getAnimation(4, 'front'),
+      animation: getPosition(4, 'front'),
       sex: this.variants.sex[0],
       bodyColor: this.variants.bodyColor[0],
       hairType: this.variants.hairType[0],
@@ -98,7 +99,7 @@ class ChoiceChar extends WithRequest {
     const {dispatch} = this.props;
 
     return <>
-      <PageTitle>{i18n.t('createChar')}</PageTitle>
+      <PageTitle>{i18n.t('creationChar')}</PageTitle>
       <OuterWrapper>
 
       {Object.entries(this.variants).map(([key, values]) => {

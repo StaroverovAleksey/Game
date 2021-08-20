@@ -22,12 +22,18 @@ module.exports = {
             name: login,
             appearance: {sex, bodyColor, hairType, hairColor},
             map: startMap.id,
-            direction: 'front',
             location: START_LOCATION});
         await character.save();
 
         characters.push(character);
         await User.findByIdAndUpdate(userId, {characters}).exec();
+        socket.emit('CHOICE_CHAR_LIST_ADD', {
+            direction: character.direction,
+            level: character.level,
+            _id: character.id,
+            name: character.name,
+            appearance: character.appearance
+        });
         socket.emit('SETTINGS_CHANGE_ROUTER', 'choiceChar');
     },
 

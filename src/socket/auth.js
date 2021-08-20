@@ -5,7 +5,7 @@ const bcrypt = require("bcrypt");
 module.exports = {
     async authorization (body, socket) {
         const {email, password} = body;
-        const user = await User.findOne({email}, 'password characters id').populate('characters', 'name level appearance');
+        const user = await User.findOne({email}, 'password characters id').populate('characters', 'name level appearance direction');
         if(!user) {
             socket.emit('SETTINGS_SET_ERROR', {
                 msg: "incorrectAuthData",
@@ -22,7 +22,7 @@ module.exports = {
             return;
         }
         //const char = await game.setChar(user.character, socket.id);
-        const checkIsAuth = await game.setUser(user.id, socket.id)
+        const checkIsAuth = await game.setUser(user.id, socket.id);
 
         if (checkIsAuth) {
             socket.emit('SETTINGS_SET_ERROR', {
@@ -35,7 +35,7 @@ module.exports = {
             socket.to(checkIsAuth).emit('CHARS_DEFAULT', '');
         } else {
             socket.emit('SETTINGS_CHANGE_ROUTER', 'choiceChar');
-            socket.emit('CHOICE_CHAR_INITIAL', user.characters);
+            socket.emit('CHOICE_CHAR_LIST_INITIAL', user.characters);
         }
     },
 
