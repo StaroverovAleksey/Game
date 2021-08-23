@@ -1,15 +1,12 @@
 const game = require('../main/Game');
-const User = require('../models/User');
-const Map = require('../models/Map');
-const Character = require('../models/Character');
+const UserModel = require('../models/User.model');
+const MapModel = require('../models/Map.model');
+const CharModel = require('../models/Char.model');
 const {START_LOCATION} = require("../utils/constants");
 
 module.exports = {
     async create ({login, sex, bodyColor, hairType, hairColor}, socket) {
-        const {id} = socket;
-        const {userId} = game.chars[id];
-        const {characters} = await User.findById(userId, 'characters');
-        const checkNickname = await Character.findOne({name: login});
+        const checkNickname = await CharModel.findOne({name: login});
         if (checkNickname) {
             socket.emit('SETTINGS_SET_ERROR', {
                 msg: "nameIsTaken",
@@ -17,16 +14,19 @@ module.exports = {
             });
             return;
         }
-        const startMap = await Map.findOne();
-        const character = new Character({
+        const startMap = await MapModel.findOne();
+        const character = new CharModel({
             name: login,
             appearance: {sex, bodyColor, hairType, hairColor},
             map: startMap.id,
             location: START_LOCATION});
         await character.save();
 
-        characters.push(character);
-        await User.findByIdAndUpdate(userId, {characters}).exec();
+
+        const {id} = socket;
+        const userId = game._users[id]._id;
+        const {characters} = await UserModel.findById(userId, 'characters');
+        await UserModel.findByIdAndUpdate(userId, {characters});
         socket.emit('CHOICE_CHAR_LIST_ADD', {
             direction: character.direction,
             level: character.level,

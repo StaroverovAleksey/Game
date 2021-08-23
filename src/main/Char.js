@@ -1,4 +1,4 @@
-const Character = require('../models/Character');
+const CharModel = require('../models/Char.model');
 
 module.exports = class Char {
     constructor() {
@@ -6,7 +6,7 @@ module.exports = class Char {
     }
 
     initial = async (id) => {
-        const char = await Character.findById(id);
+        const char = await CharModel.findById(id);
         Object.keys(char['_doc']).forEach((key) => {
             this[key] = char[key];
         })

@@ -93,13 +93,10 @@ class AddStructure extends WithRequest {
   _onSubmit = async (data) => {
     this.setState({errors: [], reset: false});
     const formData = new FormData();
-    console.log(data);
-    console.log(Object.keys(data));
     Object.keys(data).forEach((key) => {
       formData.append(key, data[key]);
     });
     const answer = await this.POST_FORM(API_CREATE_STRUCTURE, formData);
-    console.log(answer);
     if(answer.errors) {
       this.setState({errors: answer.errors});
     } else {

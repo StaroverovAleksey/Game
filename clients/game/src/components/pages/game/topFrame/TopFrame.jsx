@@ -13,6 +13,7 @@ import Inventory from "./Inventory";
 import Skills from "./Skills";
 import Settings from "./Settings";
 import CharStatus from "./CharStatus";
+import CanvasGame from "./CanvasGame";
 
 const Wrapper = styled.div`
   display: flex;
@@ -38,7 +39,8 @@ class TopFrame extends React.Component {
 
     return (
       <Wrapper>
-        {this._getRout()}
+        {/*{this._getRout()}*/}
+        <CanvasGame/>
         <CharStatus data={mainChar}/>
 
         {target ?

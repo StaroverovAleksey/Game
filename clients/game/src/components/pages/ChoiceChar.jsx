@@ -54,8 +54,7 @@ class ChoiceChar extends WithRequest {
   }
 
   componentDidMount() {
-    const {socket, chars} = this.props;
-    socket.emit('auth/getMainCharList');
+    const {chars} = this.props;
     if (chars && chars.length) {
       this._propsToState();
     }
@@ -80,7 +79,10 @@ class ChoiceChar extends WithRequest {
       {chars.length
           ? <CharsWrapper width={(chars.length + 2) * 64}>
             {chars.map((char, index) => {
-              return <div onClick={this._choice} id={index}>
+              return <div
+                  onClick={this._choice}
+                  id={index}
+                  key={`char_${index}`}>
                 <Charrr char={char}/>
               </div>
             })}
@@ -93,6 +95,7 @@ class ChoiceChar extends WithRequest {
             text={i18n.t('comeIn')}
             width="100px"
             disabled={!choiceChar}
+            onClick={this._enterGame}
         />
         <Button
             text={i18n.t('create')}
@@ -138,7 +141,6 @@ class ChoiceChar extends WithRequest {
 
     } else {
       if (choiceChar) {
-        //this._unChoice(choiceChar);
         charsCopy[choiceChar].location.y = 1;
         charsCopy[choiceChar].direction = 'back';
       }
@@ -146,11 +148,18 @@ class ChoiceChar extends WithRequest {
       charsCopy[id].direction = 'front';
       this.setState({chars: charsCopy, choiceChar: id}, () => setTimeout(() => {
         const charsCopy1 = charsCopy.map((w) => JSON.parse(JSON.stringify(w)));
-        charsCopy1[choiceChar].direction = 'front';
+        if (choiceChar) {
+          charsCopy1[choiceChar].direction = 'front';
+        }
         this.setState({chars: charsCopy1});
       }, 1000));
     }
+  }
 
+  _enterGame = () => {
+    const {socket} = this.props;
+    const {chars, choiceChar} = this.state;
+    socket.emit('auth/enterGame', {id: chars[choiceChar]._id});
   }
 }
 

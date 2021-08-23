@@ -44,6 +44,10 @@ class Charrr extends React.Component {
         }
     }
 
+    componentWillUnmount() {
+        clearTimeout(this.timer);
+    }
+
     render() {
         const {animation} = this.state;
         const {location, appearance, direction} = this.props.char;
@@ -76,7 +80,7 @@ class Charrr extends React.Component {
         }
         const animation = getAnimation(animationName);
         this.setState({animation}, () => {
-            setTimeout(() => {
+            this.timer = setTimeout(() => {
                 this.setState({animation: getAnimation(ANIMATION_FINISH)});
             }, animation.duration);
         });

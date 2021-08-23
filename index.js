@@ -22,12 +22,12 @@ if (process.env.NODE_ENV !== 'production') {
     });
 }
 
-app.use('/api/auth', require('./src/routes/auth.routes'));
-app.use('/api/character', require('./src/routes/character.routes'));
-app.use('/api/terrains', require('./src/routes/terrain.routes'));
-app.use('/api/maps', require('./src/routes/map.routes'));
-app.use('/api/map-cells', require('./src/routes/mapCell.routes'));
-app.use('/api/structures', require('./src/routes/structure.routes'));
+app.use('/api/auth', require('./src/expressRoutes/auth.expressRoutes'));
+app.use('/api/character', require('./src/expressRoutes/character.expressRoutes'));
+app.use('/api/terrains', require('./src/expressRoutes/terrain.expressRoutes'));
+app.use('/api/maps', require('./src/expressRoutes/map.expressRoutes'));
+app.use('/api/map-cells', require('./src/expressRoutes/mapCell.expressRoutes'));
+app.use('/api/structures', require('./src/expressRoutes/structure.expressRoutes'));
 app.use('/', express.static(path.join(__dirname, 'arts')));
 
 if (process.env.NODE_ENV === 'production') {
@@ -56,16 +56,23 @@ async function start() {
             }
         });
         process.io.on('connection', (socket) => {
+
+
             socket.use(([event, body]) => {
+                if (!game.start) {
+                    socket.emit('SERVER_DISCONNECT', '');
+                    return;
+                }
                 try {
                     const [resource, method] = event.split('/');
-                    require(`./src/socket/${resource}`)[method](body, socket);
+                    require(`./src/socketRoutes/${resource}.socketRoutes`)[method](body, socket);
                 } catch (e) {
-                    socket.emit('RESOURCE_NOT_FOUND', '');
+                    socket.emit('RESOURCE_NOT_FOUND', event);
                 }
             });
 
             socket.on('disconnect', () => {
+                game.removeUser(socket.id);
                 game.removeChar(socket.id);
             })
         });

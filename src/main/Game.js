@@ -1,22 +1,57 @@
-const Map = require('../models/Map');
-const Char = require("./Char");
+const MapModel = require('../models/Map.model');
 
 class Game {
     constructor() {
-        this.chars = {};
+        this.start = false;
+        this._users = {};
+        this._chars = {};
+        this._maps = {};
+
         this.mapSize = {x: 0, y: 0};
         this.mapCells = {};
 
-        this._initialMap();
+        this._initialMap().then(() => {
+            this.start = true;
+        });
     }
 
     _initialMap = async () => {
-        const map = await Map.findOne().populate('cells.$*.terrains');
-        this.mapSize = map.size;
-        this.mapCells = map.cells;
+        for await (const map of MapModel.find().populate('cells.$*.terrains')) {
+            this._maps[map.id] = map;
+        }
     }
 
-    getCharsExceptSelf = (id) => {
+    addMap = () => {
+        /***Заглушка на будущее*/
+    }
+
+    removeMap = () => {
+        /***Заглушка на будущее*/
+    }
+
+    addUser = ({user, socketId}) => {
+        this._users[socketId] = user;
+    }
+
+    removeUser = (socketId) => {
+        delete this._users[socketId];
+    };
+
+    checkUserLogged = (userId) => {
+        const entries = Object.entries(this._users);
+        const matchId = entries.findIndex(([key, {_id}]) => _id.toString() === userId.toString());
+        return matchId > -1 ? entries[matchId][0] : false;
+    };
+
+    addChar = ({char, socketId}) => {
+        this._chars[socketId] = char;
+    }
+
+    removeChar = (socketId) => {
+        delete this._chars[socketId];
+    }
+
+    /*getCharsExceptSelf = (id) => {
         const copyChars = JSON.parse(JSON.stringify(this.chars));
         delete copyChars[id];
         return copyChars;
@@ -35,6 +70,8 @@ class Game {
     setChar = async (charId, socketId) => {
         const char = await new Char();
         await char.initial(charId);
+        console.log(this.chars);
+        console.log(char);
         for (let key in this.chars) {
             if (key === socketId || this.chars[key].name === char.name) {
                 this.removeChar(key);
@@ -47,7 +84,7 @@ class Game {
 
     removeChar = (id) => {
         delete this.chars[id];
-    }
+    }*/
 }
 
 module.exports = new Game();

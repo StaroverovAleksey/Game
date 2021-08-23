@@ -1,6 +1,6 @@
 const {Router} = require('express');
 const {validationResult} = require('express-validator');
-const Map = require('../models/Map');
+const MapModel = require('../models/Map.model');
 const {isAdmin} = require("../utils/middleware");
 const {trimCells} = require("../utils/utils");
 const {firstUpper} = require("../utils/utils");
@@ -37,7 +37,7 @@ router.post('/create', [
             });
         }
 
-        const repeat = await Map.findOne({name: firstUpper(req.body.name), group: firstUpper(req.body.group)}).exec();
+        const repeat = await MapModel.findOne({name: firstUpper(req.body.name), group: firstUpper(req.body.group)}).exec();
         if (repeat) {
             return res.status(400).json({
                 errors: [{
@@ -59,7 +59,7 @@ router.post('/create', [
             cells: {}
         }
 
-        const map = await new Map(data);
+        const map = await new MapModel(data);
         const saveMap = await map.save();
 
         res.status(200).json({_id: saveMap._id});
@@ -74,7 +74,7 @@ router.post('/create', [
 
 router.get('/read', async (req, res) => {
     try {
-        const maps = await Map.find({}, 'name size group').exec();
+        const maps = await MapModel.find({}, 'name size group').exec();
         res.status(200).json({maps});
     } catch (error) {
         res.status(500).json({massage: 'server error'});
@@ -116,7 +116,7 @@ router.patch('/update', [
 
         if (req.body.group || req.body.name) {
             try {
-                var repeat = await Map.findOne({name: firstUpper(req.body.name), group: firstUpper(req.body.group)}).exec();
+                var repeat = await MapModel.findOne({name: firstUpper(req.body.name), group: firstUpper(req.body.group)}).exec();
             } catch (e) {}
             if (repeat && repeat._id.toString() !== req.body._id.toString()) {
                 errors.errors.push({
@@ -128,7 +128,7 @@ router.patch('/update', [
         }
 
         try {
-            var oldData = await Map.findById(req.body._id).exec();
+            var oldData = await MapModel.findById(req.body._id).exec();
         } catch (e) {}
         if (!oldData) {
             errors.errors.push({
@@ -165,7 +165,7 @@ router.patch('/update', [
             req.body.cells = trimCells(oldData, req.body.size);
         }
 
-        await Map.findByIdAndUpdate(req.body._id, req.body).exec();
+        await MapModel.findByIdAndUpdate(req.body._id, req.body).exec();
 
         res.status(200).json({});
     } catch (error) {
@@ -192,7 +192,7 @@ router.delete('/delete', [
         }
 
         try {
-            await Map.deleteOne({_id: req.body._id});
+            await MapModel.deleteOne({_id: req.body._id});
         } catch (e) {
             errors.errors.push({
                 'msg': "map not found",
@@ -206,7 +206,7 @@ router.delete('/delete', [
             });
         }
 
-        await Map.deleteOne({_id: req.body._id});
+        await MapModel.deleteOne({_id: req.body._id});
         res.status(200).json({});
     } catch (error) {
         console.log(error);

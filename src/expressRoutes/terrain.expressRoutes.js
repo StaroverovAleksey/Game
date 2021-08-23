@@ -6,7 +6,7 @@ const {CELL_SIZE} = require("../utils/constants");
 const {promisify} = require('util');
 const sizeOf = promisify(require('image-size'));
 const {body} = require("express-validator");
-const Terrain = require('../models/Terrain');
+const TerrainModel = require('../models/Terrain.model');
 const {isAdmin} = require("../utils/middleware");
 const {firstUpper} = require("../utils/utils");
 const {getFileName} = require("../utils/utils");
@@ -50,7 +50,7 @@ router.post('/create', multiparty, [
         }
 
         try {
-            var repeat = await Terrain.findOne({name: firstUpper(req.body.name), group: firstUpper(req.body.group)}).exec();
+            var repeat = await TerrainModel.findOne({name: firstUpper(req.body.name), group: firstUpper(req.body.group)}).exec();
         } catch (e) {}
         if (repeat) {
             errors.errors.push({
@@ -84,7 +84,7 @@ router.post('/create', multiparty, [
 
         await fs.writeFileSync(pathToFile, file);
 
-        const terrain = new Terrain({
+        const terrain = new TerrainModel({
             name, group, fileName, passability
         });
         const saveTerrain = await terrain.save();
@@ -100,7 +100,7 @@ router.post('/create', multiparty, [
 
 router.get('/read', async (req, res) => {
     try {
-        const terrains = await Terrain.find().exec();
+        const terrains = await TerrainModel.find();
         res.status(200).json({terrains});
     } catch (error) {
         res.status(500).json({massage: 'server error'});
@@ -148,7 +148,7 @@ router.patch('/update', multiparty, [
 
         if (req.body.group || req.body.name) {
             try {
-                var repeat = await Terrain.findOne({name: firstUpper(req.body.name), group: firstUpper(req.body.group)}).exec();
+                var repeat = await TerrainModel.findOne({name: firstUpper(req.body.name), group: firstUpper(req.body.group)});
             } catch (e) {}
             if (repeat && repeat._id.toString() !== req.body._id.toString()) {
                 errors.errors.push({
@@ -160,7 +160,7 @@ router.patch('/update', multiparty, [
         }
 
         try {
-            var oldData = await Terrain.findById(req.body._id ).exec();
+            var oldData = await TerrainModel.findById(req.body._id );
         } catch (e) {}
         if (!oldData) {
             errors.errors.push({
@@ -198,7 +198,7 @@ router.patch('/update', multiparty, [
             req.body.fileName = fileName;
         }
 
-        await Terrain.findByIdAndUpdate(req.body._id, req.body).exec();
+        await TerrainModel.findByIdAndUpdate(req.body._id, req.body);
 
         res.status(200).json(fileName ? {fileName} : {});
     } catch (error) {
@@ -229,7 +229,7 @@ router.delete('/delete', [
         }
 
         try {
-            var terrainForDelete = await Terrain.findOne({ _id: req.body._id }).exec();
+            var terrainForDelete = await TerrainModel.findOne({ _id: req.body._id });
         } catch (e) {}
         if (!terrainForDelete) {
             errors.errors.push({
@@ -248,7 +248,7 @@ router.delete('/delete', [
 
         await fs.unlinkSync(path);
 
-        await Terrain.deleteOne({ _id: req.body._id });
+        await TerrainModel.deleteOne({ _id: req.body._id });
         res.status(200).json({});
     } catch (error) {
         res.status(500).json({massage: 'server error'});

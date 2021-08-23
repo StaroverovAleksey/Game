@@ -6,7 +6,7 @@ const {CELL_SIZE} = require("../utils/constants");
 const {promisify} = require('util');
 const sizeOf = promisify(require('image-size'));
 const {body} = require("express-validator");
-const Structure = require('../models/Structure');
+const StructureModel = require('../models/Structure.model');
 const {firstUpper} = require("../utils/utils");
 const {getFileName} = require("../utils/utils");
 const router = Router();
@@ -54,7 +54,7 @@ router.post('/create', multiparty, [
         }
 
         try {
-            var repeat = await Structure.findOne({name: firstUpper(req.body.name), group: firstUpper(req.body.group)}).exec();
+            var repeat = await StructureModel.findOne({name: firstUpper(req.body.name), group: firstUpper(req.body.group)}).exec();
         } catch (e) {}
         if (repeat) {
             errors.errors.push({
@@ -89,7 +89,7 @@ router.post('/create', multiparty, [
 
         await fs.writeFileSync(pathToFile, file);
 
-        const structure = new Structure({
+        const structure = new StructureModel({
             name, group, fileName, passability, description
         });
         const saveStructure = await structure.save();
@@ -105,7 +105,7 @@ router.post('/create', multiparty, [
 
 router.get('/read', async (req, res) => {
     try {
-        const structures = await Structure.find().exec();
+        const structures = await StructureModel.find().exec();
         res.status(200).json({structures});
     } catch (error) {
         res.status(500).json({massage: 'server error'});

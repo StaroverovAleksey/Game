@@ -1,7 +1,7 @@
 const {Router} = require('express');
 const {validationResult} = require('express-validator');
-const Map = require('../models/Map');
-const Terrain = require('../models/Terrain');
+const MapModel = require('../models/Map.model');
+const TerrainModel = require('../models/Terrain.model');
 const {isAdmin, isAuth} = require("../utils/middleware");
 const {SECOND_TERRAIN} = require("../utils/constants");
 const {MAIN_TERRAIN} = require("../utils/constants");
@@ -35,7 +35,7 @@ router.post('/create', [
         }
 
         try {
-            var terrain = await Terrain.findById(req.body.terrain_id).exec();
+            var terrain = await TerrainModel.findById(req.body.terrain_id).exec();
         } catch (e) {}
         if (!terrain) {
             return res.status(400).json({
@@ -49,7 +49,7 @@ router.post('/create', [
         }
 
         try {
-            var map = await Map.findById(req.body.map_id).exec();
+            var map = await MapModel.findById(req.body.map_id).exec();
         } catch (e) {}
         if (!map) {
             return res.status(400).json({
@@ -92,7 +92,7 @@ router.get('/read', [
             });
         }
 
-        const map = await Map.findById(req.query._id)
+        const map = await MapModel.findById(req.query._id)
             .populate('cells.$*.terrains');
         res.status(200).json(map.cells);
     } catch (error) {
@@ -119,7 +119,7 @@ router.delete('/delete', [
         }
 
         try {
-            var map = await Map.findById(req.body._id);
+            var map = await MapModel.findById(req.body._id);
         } catch (e) {}
         if (!map) {
             errors.errors.push({

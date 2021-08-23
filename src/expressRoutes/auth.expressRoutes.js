@@ -1,9 +1,9 @@
 const {Router} = require('express');
 const {validationResult} = require('express-validator');
 const {body} = require("express-validator");
-const Character = require('../models/Character');
-const User = require('../models/User');
-const Map = require('../models/Map');
+const CharModel = require('../models/Char.model');
+const UserModel = require('../models/User.model');
+const MapModel = require('../models/Map.model');
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const {START_LOCATION} = require("../utils/constants");
@@ -53,7 +53,7 @@ router.post('/registration', [
             });
         }
 
-        const checkEmail = await User.findOne({email});
+        const checkEmail = await UserModel.findOne({email});
         if(checkEmail) {
             return res.status(400).json({
                 errors: [{
@@ -65,7 +65,7 @@ router.post('/registration', [
             });
         }
 
-        const checkName = await Character.findOne({name});
+        const checkName = await CharModel.findOne({name});
         if(checkName) {
             return res.status(400).json({
                 errors: [{
@@ -77,12 +77,12 @@ router.post('/registration', [
             });
         }
 
-        /*const startMap = await Map.findOne();
-        const character = new Character({name, map: startMap.id, direction: 'front', location: START_LOCATION});
+        /*const startMap = await MapModel.findOne();
+        const character = new CharModel({name, map: startMap.id, direction: 'front', location: START_LOCATION});
         await character.save();*/
 
         const hashedPassword = await bcrypt.hash(password, 12);
-        const user = new User({email, password: hashedPassword});
+        const user = new UserModel({email, password: hashedPassword});
         await user.save();
 
         res.status(200).json({});
@@ -106,7 +106,7 @@ router.post('/login', [
         const {email, password} = req.body;
         const errors = validationResult(req);
 
-        const user = await User.findOne({email});
+        const user = await UserModel.findOne({email});
         if(!user) {
             errors.errors.push({
                 'msg': "incorrect email or password",

@@ -28,7 +28,22 @@ class App extends React.Component {
         });
         this.props.dispatch({ type: 'SETTINGS_SET_SOCKET', payload: this.socket });
         window.document.addEventListener("keydown", this._onKeyDownHandler);
+
+
+
+        /***Для автоматизации логина********   начало   */
+        this.socket.emit('auth/authorization', {email: 'w@mail.ru', password: 'Cnfhjdthjd1988'});
+        /**********************************    конец    */
     }
+
+    /***Для автоматизации логина********   начало   */
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        const {routing} = this.props;
+        if (prevProps.routing !== this.props.routing && this.props.routing === 'choiceChar') {
+            this.socket.emit('auth/enterGame', {id: '6123c0af9370161bf462e3da'});
+        }
+    }
+    /**********************************    конец    */
 
     componentWillUnmount() {
         window.document.removeEventListener("keydown", this._onKeyDownHandler);
@@ -50,6 +65,10 @@ class App extends React.Component {
         const {dispatch} = this.props;
         switch (event.code) {
             case 'Escape': dispatch({type: 'MAIN_CHAR_CHANGE_TARGET', payload: undefined}); break;
+            case 'Digit1': this.socket.emit('auth/debug', 'all'); break;
+            case 'Digit2': this.socket.emit('auth/debug', 'maps'); break;
+            case 'Digit3': this.socket.emit('auth/debug', 'users'); break;
+            case 'Digit4': this.socket.emit('auth/debug', 'chars'); break;
         }
     }
 }
