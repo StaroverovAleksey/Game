@@ -7,9 +7,6 @@ class Game {
         this._chars = {};
         this._maps = {};
 
-        this.mapSize = {x: 0, y: 0};
-        this.mapCells = {};
-
         this._initialMap().then(() => {
             this.start = true;
         });

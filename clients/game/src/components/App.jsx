@@ -39,8 +39,8 @@ class App extends React.Component {
     /***Для автоматизации логина********   начало   */
     componentDidUpdate(prevProps, prevState, snapshot) {
         const {routing} = this.props;
-        if (prevProps.routing !== this.props.routing && this.props.routing === 'choiceChar') {
-            this.socket.emit('auth/enterGame', {id: '6123c0af9370161bf462e3da'});
+        if (prevProps.routing !== routing && routing === 'choiceChar') {
+            this.socket.emit('auth/enterGame', {id: '6125139a7db66b3e1003e82c'});
         }
     }
     /**********************************    конец    */

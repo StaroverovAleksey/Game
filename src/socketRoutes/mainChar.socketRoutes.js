@@ -26,6 +26,7 @@ module.exports = {
         const {id} = socket;
         const userId = game._users[id]._id;
         const {characters} = await UserModel.findById(userId, 'characters');
+        characters.push(character);
         await UserModel.findByIdAndUpdate(userId, {characters});
         socket.emit('CHOICE_CHAR_LIST_ADD', {
             direction: character.direction,

@@ -54,11 +54,19 @@ module.exports = {
     },
 
     async enterGame ({id}, socket) {
-        const char = await CharModel.findById(id)
-        game.addChar({char, socketId: socket.id});
+        const {id: socketId} = socket;
+        const char = await CharModel.findById(id);
+        const charBelongsUser = game._users[socketId].characters.includes(char.id);
+        if (!char || !charBelongsUser) {
+            socket.emit('SETTINGS_SET_ERROR', {
+                msg: "charDoesNotExist",
+                address: "CHOICE_CHAR",
+            });
+            return;
+        }
 
-
-        socket.broadcast.emit('CHARS_ADD', {[socket.id]: char});
+        game.addChar({char, socketId});
+        socket.broadcast.emit('CHARS_ADD', {[socketId]: char});
         socket.emit('SETTINGS_CHANGE_ROUTER', 'main');
         socket.emit('MAIN_CHAR_INITIAL', char);
         //socketRoutes.emit('CHARS_INITIAL', game.getCharsExceptSelf(socketRoutes.id));

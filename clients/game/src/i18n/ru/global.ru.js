@@ -29,4 +29,5 @@ export default {
     hairColor: "Цвет волос",
     nameIsTaken: "Имя занято",
     random: "Случайно",
+    charDoesNotExist: "Персонаж не существует",
 }

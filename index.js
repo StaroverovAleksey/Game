@@ -44,7 +44,8 @@ async function start() {
         await mongoose.connect(process.env.DB_CONNECT_STRING, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
-            useCreateIndex: true
+            useCreateIndex: true,
+            useFindAndModify: false
         })
         const server = app.listen(process.env.APP_PORT, () => console.log(`App has been started on port ${process.env.APP_PORT}`));
 

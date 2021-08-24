@@ -22,6 +22,7 @@ const Title = styled.p`
 `;
 
 const ButtonWrapper = styled.div`
+  position: relative;
   display: flex;
   justify-content: center;
 `;
@@ -36,7 +37,6 @@ const CharsWrapper = styled.div`
   margin-bottom: 36px;
 `;
 
-
 const NotChar = styled.p`
   font-size: 36px;
   margin-top: 0;
@@ -44,12 +44,22 @@ const NotChar = styled.p`
   color: #cb7a7a;
 `;
 
+const Error = styled.p`
+  position: absolute;
+  top: -24px;
+  left: 0;
+  margin: 0;
+  text-align: center;
+  color: #f85656;
+`;
+
 class ChoiceChar extends WithRequest {
   constructor(props) {
     super(props);
     this.state = {
       choiceChar: false,
-      chars: null
+      chars: null,
+      error: ''
     }
   }
 
@@ -61,14 +71,17 @@ class ChoiceChar extends WithRequest {
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    const {chars} = this.props;
+    const {chars, error} = this.props;
     if (prevProps.chars !== chars) {
       this._propsToState();
+    }
+    if (prevProps.error !== error && error.address === 'CHOICE_CHAR') {
+      this.setState({error: error.msg});
     }
   }
 
   render() {
-    const {choiceChar, chars} = this.state;
+    const {choiceChar, chars, error} = this.state;
     const {dispatch} = this.props;
     if (!chars) {
       return <Loading/>;
@@ -91,6 +104,11 @@ class ChoiceChar extends WithRequest {
       }
 
       <ButtonWrapper>
+
+        {error ?
+            <Error>{i18n.t(error)}</Error>
+            : null}
+
         <Button
             text={i18n.t('comeIn')}
             width="100px"
@@ -166,6 +184,7 @@ class ChoiceChar extends WithRequest {
 export default connect(
     (mapStateToProps) => ({
       socket: mapStateToProps.settings.socket,
+      error: mapStateToProps.settings.error,
       chars: mapStateToProps.choiceChar.chars,
     })
 )(ChoiceChar);
