@@ -2,6 +2,7 @@ const UserModel = require('../models/User.model');
 const CharModel = require('../models/Char.model');
 const game = require('../main/Game');
 const bcrypt = require("bcrypt");
+const fs = require("fs");
 
 module.exports = {
 
@@ -72,6 +73,7 @@ module.exports = {
         //socketRoutes.emit('CHARS_INITIAL', game.getCharsExceptSelf(socketRoutes.id));
         socket.emit('MAP_CELLS_INITIAL', game._maps[char.map].cells);
         socket.emit('SETTINGS_SET_MAP_SIZE', game._maps[char.map].size);
+        socket.emit('SETTINGS_SET_MAP_SIZE', game._maps[char.map].size);
     },
 
     exit (body, socket) {
@@ -84,5 +86,23 @@ module.exports = {
         socket.emit('MAIN_CHAR_DEFAULT', '');
         socket.emit('CHARS_DEFAULT', '');
         process.io.emit('CHARS_REMOVE', id);
+    },
+
+    getArts (body, socket) {
+        const paths = [];
+        const recursion = (path) => {
+            try {
+                const dirList = fs.readdirSync(path);
+                for (let dir of dirList) {
+                    if (dir !== 'utils' && dir !== 'pictures') {
+                        recursion(`${path}/${dir}`);
+                    }
+                }
+            } catch (error) {
+                paths.push(path);
+            }
+        }
+        recursion('arts');
+        socket.emit('SETTINGS_SET_ART_PATHS', paths);
     }
 } ;

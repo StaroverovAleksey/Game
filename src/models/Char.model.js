@@ -2,7 +2,7 @@ const {Schema, model} = require('mongoose');
 
 const schema = new Schema({
     name: {type: String, required: true, unique: true},
-    map: {ref: 'maps', type: Schema.Types.ObjectId, required: true},
+    map: {type: String, required: true},
     direction: {type: String, enum: ['front', 'back', 'right', 'left', ], default: 'front', required: true},
     level: {type: Number, default: 0, required: true},
     location: {

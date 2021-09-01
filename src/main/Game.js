@@ -1,4 +1,4 @@
-const MapModel = require('../models/Map.model');
+const fs = require("fs");
 
 class Game {
     constructor() {
@@ -13,8 +13,11 @@ class Game {
     }
 
     _initialMap = async () => {
-        for await (const map of MapModel.find().populate('cells.$*.terrains')) {
-            this._maps[map.id] = map;
+        const mapsList = fs.readdirSync('src/maps');
+        for await (const fileName of mapsList) {
+            const map = fs.readFileSync(`src/maps/${fileName}`);
+            const mapName = fileName.toString().split('.')[0];
+            this._maps[mapName] = JSON.parse(map.toString());
         }
     }
 

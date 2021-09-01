@@ -1,6 +1,5 @@
 const game = require('../main/Game');
 const UserModel = require('../models/User.model');
-const MapModel = require('../models/Map.model');
 const CharModel = require('../models/Char.model');
 const {START_LOCATION} = require("../utils/constants");
 
@@ -14,11 +13,10 @@ module.exports = {
             });
             return;
         }
-        const startMap = await MapModel.findOne();
         const character = new CharModel({
             name: login,
             appearance: {sex, bodyColor, hairType, hairColor},
-            map: startMap.id,
+            map: 'map1',
             location: START_LOCATION});
         await character.save();
 

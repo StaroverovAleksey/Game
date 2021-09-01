@@ -32,7 +32,7 @@ class App extends React.Component {
 
 
         /***Для автоматизации логина********   начало   */
-        this.socket.emit('auth/authorization', {email: 'w@mail.ru', password: 'Cnfhjdthjd1988'});
+        this.socket.emit('auth/authorization', {email: 'q@mail.ru', password: 'Cnfhjdthjd1988'});
         /**********************************    конец    */
     }
 
@@ -40,7 +40,8 @@ class App extends React.Component {
     componentDidUpdate(prevProps, prevState, snapshot) {
         const {routing} = this.props;
         if (prevProps.routing !== routing && routing === 'choiceChar') {
-            this.socket.emit('auth/enterGame', {id: '6125139a7db66b3e1003e82c'});
+            this.socket.emit('auth/enterGame', {id: '612ff71d433f1e327c0a9a49'});
+            this.socket.emit('auth/getArts');
         }
     }
     /**********************************    конец    */

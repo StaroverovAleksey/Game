@@ -12,6 +12,8 @@ export default function reducer(state = defaultState, action) {
       return { ...defaultState, socket: state.socket};
     case 'SETTINGS_SET_SOCKET':
       return { ...state, socket: action.payload };
+    case 'SETTINGS_SET_ART_PATHS':
+      return { ...state, artPath: action.payload };
     case 'SETTINGS_CHANGE_ROUTER':
       return { ...state, routing: action.payload };
     case 'SETTINGS_SET_MAP_SIZE':
