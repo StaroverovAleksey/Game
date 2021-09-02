@@ -3,11 +3,13 @@ const fs = require("fs");
 class Game {
     constructor() {
         this.start = false;
+        this._paths = {};
         this._users = {};
         this._chars = {};
         this._maps = {};
 
         this._initialMap().then(() => {
+            this._initialPaths();
             this.start = true;
         });
     }
@@ -19,6 +21,28 @@ class Game {
             const mapName = fileName.toString().split('.')[0];
             this._maps[mapName] = JSON.parse(map.toString());
         }
+    }
+
+    _initialPaths = () => {
+        const recursion = (array, path) => {
+            try {
+                const dirList = fs.readdirSync(path);
+                for (let dir of dirList) {
+                    recursion(array, `${path}/${dir}`);
+                }
+            } catch (error) {
+                const name = path.split('/').slice(2).join('/')
+                array.push(name);
+            }
+        }
+
+        const dirList = fs.readdirSync('arts');
+        dirList.forEach((value) => {
+            if (value !== 'utils' && value !== 'pictures') {
+                this._paths[value] = []
+                recursion(this._paths[value], `arts/${value}`);
+            }
+        });
     }
 
     addMap = () => {

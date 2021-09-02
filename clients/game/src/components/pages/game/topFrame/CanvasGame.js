@@ -13,38 +13,39 @@ const Canvas = styled.canvas`
 class CanvasGame extends React.Component {
     constructor(props) {
         super(props);
+        const {artPaths} = props.settings;
         this.state = {
-            arts: {},
-            ready: false
+            data: {
+                artPaths
+            },
+            game: {},
+            load: true
         }
     }
 
     componentDidMount() {
-        const loader = new ImageLoader();
-        const paths = this._getArtsPaths();
-        loader.load(paths).then((arts) => {
-            this.setState({arts, ready: true});
-        });
+        const {data} = this.state;
+        this.game = new Game(data, this.loadCallback);
+        this.game.initial().then(this.game.run);
+        console.log(this.game);
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        const {arts, ready} = this.state;
-        if (prevState.ready !== ready && ready) {
-            const game = new Game();
-            game.screen.arts = arts;
-            game.run();
+        if (prevProps !== this.props) {
+            this.game.updateData(this.data);
         }
     }
 
     render() {
-        const {ready} = this.state;
-        {return ready ? <Canvas/> : <Loading/>}
+        const {load} = this.state;
+        return <React.Fragment>
+            <Canvas/>
+            {load ? <Loading/> : null}
+        </React.Fragment>
     }
 
-    _getArtsPaths = () => {
-        const arts = {
-            terrains: ''
-        }
+    loadCallback = (value) => {
+        this.setState({load: value});
     }
 }
 

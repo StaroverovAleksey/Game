@@ -67,6 +67,15 @@ export const getTileCollage = (cell) => {
         .join(', ');
 };
 
+export const delExt = (value) => {
+    const splitValue = value.split('.');
+    return splitValue.slice(0, splitValue.length - 1).join('.');
+}
+
+export const getExt = (value) => {
+    return value.split('.').slice(-1).join('.');
+}
+
 export const randomElem = (array) => {
     return array[Math.floor(Math.random() * array.length)];
 };

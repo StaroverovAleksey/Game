@@ -178,7 +178,6 @@ class ChoiceChar extends WithRequest {
     const {socket} = this.props;
     const {chars, choiceChar} = this.state;
     socket.emit('auth/enterGame', {id: chars[choiceChar]._id});
-    socket.emit('auth/getArts', {});
   }
 }
 

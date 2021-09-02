@@ -23,8 +23,9 @@ class Game extends WithRequest {
 
   render() {
     const { topFrameHeight } = this.state;
-    const { mapCells, mainChar } = this.props;
-    if (isEmpty(mapCells) || isEmpty(mainChar)) {
+    const { mapCells, mainChar, settings } = this.props;
+    const { artPaths } = settings;
+    if (isEmpty(mapCells) || isEmpty(mainChar) || isEmpty(artPaths)) {
       return <Loading/>;
     }
     return (
@@ -58,6 +59,7 @@ class Game extends WithRequest {
 
 export default connect(
     (mapStateToProps) => ({
+      settings: mapStateToProps.settings,
       mapCells: mapStateToProps.mapCells,
       mainChar: mapStateToProps.mainChar,
     })
