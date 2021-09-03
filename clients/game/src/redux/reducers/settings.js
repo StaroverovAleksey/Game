@@ -5,7 +5,8 @@ const defaultState = {
   routing: ROUT_LOGIN,
   error: {},
   mapSize: {x: 0, y: 0},
-  artPaths: {}
+  artPaths: {},
+  topFrameHeight: 90
 };
 
 export default function reducer(state = defaultState, action) {
@@ -22,6 +23,8 @@ export default function reducer(state = defaultState, action) {
       return { ...state, mapSize: action.payload };
     case 'SETTINGS_SET_ERROR':
       return { ...state, error: action.payload };
+    case 'SETTINGS_TOP_FRAME_HEIGHT':
+      return { ...state, topFrameHeight: action.payload };
     default: return { ...state };
   }
 }

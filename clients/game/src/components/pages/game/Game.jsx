@@ -15,16 +15,12 @@ const Wrapper = styled.div`
 class Game extends WithRequest {
   constructor(props) {
     super(props);
-    this.state = {
-      topFrameHeight: 90
-    };
     this.topFrameRef = React.createRef();
   }
 
   render() {
-    const { topFrameHeight } = this.state;
     const { mapCells, mainChar, settings } = this.props;
-    const { artPaths } = settings;
+    const { artPaths, topFrameHeight } = settings;
     if (isEmpty(mapCells) || isEmpty(mainChar) || isEmpty(artPaths)) {
       return <Loading/>;
     }
@@ -45,15 +41,16 @@ class Game extends WithRequest {
   }
 
   _resize = (value) => {
-    const newHeight = this.topFrameRef.current.offsetHeight + parseInt(value);
-    let newHeightVH = Math.round((newHeight * 100) / document.documentElement.offsetHeight);
-    if (newHeightVH > 90) {
-      newHeightVH = 90;
-    }
-    if (newHeightVH < 10) {
-      newHeightVH = 10;
-    }
-    this.setState({topFrameHeight: newHeightVH});
+      const {dispatch} = this.props;
+      const newHeight = this.topFrameRef.current.offsetHeight + parseInt(value);
+      let newHeightVH = Math.round((newHeight * 100) / document.documentElement.offsetHeight);
+      if (newHeightVH > 90) {
+          newHeightVH = 90;
+      }
+      if (newHeightVH < 10) {
+          newHeightVH = 10;
+      }
+      dispatch({ type: 'SETTINGS_TOP_FRAME_HEIGHT', payload: newHeightVH });
   }
 }
 

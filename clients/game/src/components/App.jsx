@@ -40,7 +40,7 @@ class App extends React.Component {
     componentDidUpdate(prevProps, prevState, snapshot) {
         const {routing} = this.props;
         if (prevProps.routing !== routing && routing === 'choiceChar') {
-            this.socket.emit('auth/enterGame', {id: '612ff71d433f1e327c0a9a49'});
+            this.socket.emit('auth/enterGame', {id: '6125307d771ba43a30f0fcbe'});
         }
     }
     /**********************************    конец    */
